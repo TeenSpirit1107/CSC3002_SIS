@@ -1,4 +1,8 @@
 # CSC3002: sis_ws
+## GUI
+- src/guitest3.cpp 为登录界面的测试代码，可单独编译。仅绘制界面及控件，还未设计登录系统。编译需先安装EasyX图形库，本人环境为clion+minGW。
+
+
 ## 继承
 - Client类是基类，Registry, Staff, Student都是它的衍生类。
 - Course类会在Registry, Staff, Studetn ... 等类中被用到，但它和它们没有继承关系。
