@@ -1,4 +1,10 @@
 # CSC3002: sis_ws
+## GUI
+- src/guitest3.cpp 为登录界面的测试代码，绘制了界面及创建控件，可单独编译。
+- 编译需先安装EasyX图形库，本人环境为clion+minGW。clion配置EasyX：https://blog.csdn.net/qq_43556317/article/details/126253455 记得确定安装的minGW是clion中采用的那个minGW
+- Win11下编译好的程序脱离环境运行可能会出现键盘输入无效的问题，需要调整系统设置：https://blog.csdn.net/2301_76302542/article/details/135176309
+
+
 ## 继承
 - Client类是基类，Registry, Staff, Student都是它的衍生类。
 - Course类会在Registry, Staff, Studetn ... 等类中被用到，但它和它们没有继承关系。
