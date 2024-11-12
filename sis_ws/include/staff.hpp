@@ -15,6 +15,7 @@ class Staff: Client{
 
 public:
     Staff();
+    Staff(string prof_code);
     ~Staff();
     string getName();
 };

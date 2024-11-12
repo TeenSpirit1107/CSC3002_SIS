@@ -7,7 +7,7 @@
 
 // packages
 # include "staff.hpp"
-# include "student.hpp"
+//# include "student.hpp"
 
 using namespace std;
 
@@ -22,10 +22,12 @@ class Course{
     int capacity;
     int classCode;
 
+    int num_lec, num_tut;
+    int lec[28], tut[28];
     // people
     Staff instructor;
-    queue<Student> stuEnrol;
-    queue<Student> stuWait;
+    //queue<Student> stuEnrol;
+    //queue<Student> stuWait;
     
     // to be completed: define a struct requirement, requiring the student's major and year to be ....
     // typedef
@@ -33,12 +35,12 @@ class Course{
 public:
 
     // constructor destructor
-    Course(string inputCode, short inputName, Staff inputIns, int inputCap=100);
+    Course(string inputCode, string inputName, Staff inputIns, short inputClassCode, int n, int m, int lec[], int tut[], int inputCap=100);
     ~Course();
     
     // print
     void printCourse();
-    void addStu(Student newStu);
+    //void addStu(Student newStu);
 
 };
 # endif

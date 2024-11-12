@@ -5,13 +5,18 @@
 #include<string>
 
 // packages
-#include"client.hpp"
+#include "client.hpp"
+using namespace std;
 
-class Registry: Client{
+class Registry: public Client{
+
+protected:
+    int class_num = 0;
 
 public:
     Registry();
+    void claim_course();
+    void claim_class();
     ~Registry();
 };
-
 # endif
