@@ -20,6 +20,7 @@ class Course{
     string courseCode;
     string courseName;
     int capacity;
+    int classCode;
 
     // people
     Staff instructor;
