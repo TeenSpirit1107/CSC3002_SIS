@@ -1,11 +1,88 @@
 #include "registry.hpp"
+
 #include <iostream>
 #include <cstdio>
 #include <conio.h>
 #include <course.hpp>
 #include <fstream>
 #include <utility>
+#include <windows.h>
+#include <iomanip>
+#include <chrono>
+#include <ctime>
+
 using namespace std;
+
+Announcement::Announcement() {
+    this->textLineCount = 0;
+}
+
+void Announcement::setContent(string title, string text) {
+    this->title = std::move(title);
+    this->text = std::move(text);
+}
+
+void Announcement::setPromoter(string promoter) {
+    this->promoter = std::move(promoter);
+}
+
+void Announcement::setTarget(string idCode) {
+    this->targetUser = std::move(idCode);
+}
+
+void Announcement::send() {
+    HANDLE hFind;
+    WIN32_FIND_DATA FindFileData;
+    char working_dir[] = R"(.\sis_ws\data_repo\announcements\)";
+    strcat(working_dir, targetUser.c_str());
+    CreateDirectory(working_dir, nullptr);  //create an ID folder if it didn't exist
+    strcat(working_dir, "\\*.*");
+    hFind = FindFirstFile(working_dir, &FindFileData);
+    int maxNum = 0;
+    if (hFind == INVALID_HANDLE_VALUE) {  //no file in the folder
+        maxNum = 0;
+    } else {
+        while (FindNextFile(hFind, &FindFileData)) {  //find max n.txt from 1.txt 2.txt ...
+            CHAR *num = FindFileData.cFileName;
+            const size_t len = strlen(num);
+            if (len >= 4) {
+                num[len - 4] = '\0';
+                const char cur_num = *num;
+                if (cur_num -'0'> maxNum) {
+                    maxNum = cur_num - '0';
+                }
+            }
+        }
+    }
+    if (!text.empty()) {  //record possible \n in text
+        int newlineCount = 0;
+        for (const char ch : text) {
+            if (ch == '\n') {
+                ++newlineCount;
+            }
+        }
+        textLineCount = newlineCount;
+    }
+    cout << maxNum << endl;
+    const auto now = chrono::system_clock::now();
+    const time_t now_time_t = chrono::system_clock::to_time_t(now);  //get time
+    const tm* now_tm = std::localtime(&now_time_t);
+    ofstream outfile(R"(.\sis_ws\data_repo\announcements\)" + targetUser + "\\" + to_string(maxNum + 1) + ".txt");
+    if (!outfile.is_open()) {
+        cout << "Failed to open file for writing." << endl;
+    }else {
+        outfile << "0\n";
+        outfile << to_string(textLineCount) + "\n";
+        outfile << title + "\n";
+        outfile << text + "\n";
+        outfile << promoter + "\n";
+        outfile << put_time(now_tm, "%Y-%m-%d %H:%M:%S");
+    }
+    outfile.close();
+}
+
+Announcement::~Announcement() = default;
+
 
 Registry::Registry() {
     this->userID = "0000000";
