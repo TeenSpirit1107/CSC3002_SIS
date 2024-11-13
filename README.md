@@ -1,8 +1,12 @@
 # CSC3002: sis_ws
 ## GUI
 - src/guitest3.cpp 为登录界面的测试代码，绘制了界面及创建控件，可单独编译。
+- ![image](https://github.com/user-attachments/assets/d8a9d61a-72a8-4089-9777-00dd0f4ab55d)
 - 编译需先安装EasyX图形库，本人环境为clion+minGW。clion配置EasyX：https://blog.csdn.net/qq_43556317/article/details/126253455 记得确定安装的minGW是clion中采用的那个minGW
 - Win11下编译好的程序脱离环境运行可能会出现键盘输入无效的问题，需要调整系统设置：https://blog.csdn.net/2301_76302542/article/details/135176309
+- 文本框已实现输入功能，如clion中运行无效，需要在Edit Configuration中将Run in external console打钩 ![image](https://github.com/user-attachments/assets/79cc0478-ec03-43df-a970-b7d0d80566d0)
+- 已知问题：Clion+cmke3.29编译后的exe单独运行可能会缺库。vscode+cmake3.29编译则正常，可以单exe运行
+
 
 
 ## 继承
