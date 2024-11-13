@@ -275,7 +275,7 @@ CSC3002
 * 设置目标对象 class_pass.setTarget(string 学号或工号);
 * 确认发送公告 class_pass.send();
 
-**执行send后会在  .\announcements\学号或工号 下生成一个txt**
+**执行send后会在  .\data_repo\announcements\学号或工号 下生成一个txt**
 
 **公告txt组成：**
 * 是否已读（否为0，是为1）
