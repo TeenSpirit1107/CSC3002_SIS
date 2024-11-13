@@ -262,3 +262,49 @@ CSC3002
   16
 
   **解释**：教授工号、课程代号、上课时间
+<<<<<<< Updated upstream:项目笔记/1021合作单(reg a module).md
+=======
+
+### 公告系统
+
+**公告系统的使用：**
+* 类名 Announcement
+* 创建一个名为class_pass的公告 Announcement  class_pass;
+* 设置公告类型 class_pass.setContent(string 标题, string 正文)(如需换行，可在正文部分加入\n);
+* 设置发送人 class_pass.setPromoter(string 发送人名字);
+* 设置目标对象 class_pass.setTarget(string 学号或工号);
+* 确认发送公告 class_pass.send();
+
+**执行send后会在  .\announcements\学号或工号 下生成一个txt**
+
+**公告txt组成：**
+* 是否已读（否为0，是为1）
+* 正文的行数（用于处理正文存在换行符的情况）
+* 标题
+* 正文
+* 发起人
+* 发起时间（自动生成）
+
+**例：**
+
+0
+
+1
+
+Class application approved
+
+You application of adding CSC3100 at Wednesday has been approved!
+
+You can check weekly schedule now.
+
+Rui HUANG
+
+2024/11/13 00:01
+
+**txt的文件名由顺序数字组成**
+* 若目录为空，第一个公告将命名为1.txt
+* 若目录不为空，将获取当前目录下最大的n.txt，生成一个新的n+1.txt再存入公告内容
+
+
+  
+>>>>>>> Stashed changes:1021合作单(reg a module).md
