@@ -5,23 +5,22 @@
 #include <string>
 
 // namespace
-using std::string;
 
 class Client{
 
 protected:
-    string userID;
-    string userName;
-    char userType; // user Type: a: registry; b: professors; c: students; d: default (TBD)
-    string passcode;
+    std::string userID;
+    std::string passcode;
+    std::string userName;
 
 public:
     // constructor destructor
-    Client(int inputID, string inputName, char userType, string userPass);
-
+    Client(std::string &  inputID, std::string & inputName, std::string & userPass);
+    explicit Client(std::string & inputID);
     Client();
-    void setPasscode(string inputPass);
+    ~Client(); // [todo] to finish the destructor
+
+    static bool id_exist(std::string & inputID);
     void output_basic_info();
-    ~Client();
 };
 #endif

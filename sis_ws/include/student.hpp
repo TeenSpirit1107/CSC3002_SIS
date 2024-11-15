@@ -9,15 +9,10 @@
 #include"client.hpp"
 #include"course.hpp"
 
-using namespace std;
 
-class Student: Client{
+class Student: public Client{
 
-    // basic info
-    string school;
-    string major;
-    string college;
-    int year;
+    // Member Variables
 
     // academics
     vector<Course> courseEnrolled;
@@ -27,18 +22,39 @@ class Student: Client{
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
 
+    // Member Functions
+
+
 public:
-    Student(int inputID, string inputName, char inputType, string inputPass);
+
+    // Member Variables
+
+    // The path of the object's profile description file in data_repo.
+    static const std::string student_path;
+    const std::string profile_path;
+
+    // Member Functions
+
+    explicit Student(std::string & inputID);
+    // Retrieve a student without using passcode; only supposed to be used by someone with permission.
     ~Student();
 
-    // getters
-    string getName();
-    void setSchool();
-    void setMajor();
+    // [todo] shall this be made private, but can be visited by "friend" Classes?
+    static shared_ptr<Student> find_profile(std::string &inputID);
 
-    // connections
-    void addFrd();
+
+
+    //
+    // // getters
+    // string getName();
+    // void setSchool();
+    // void setMajor();
+    //
+    // // connections
+    // void addFrd();
 
 };
+
+
 
 # endif
