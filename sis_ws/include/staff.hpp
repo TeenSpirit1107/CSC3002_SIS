@@ -3,20 +3,46 @@
 
 // cpp lib
 #include<string>
+#include<vector>
 
-// packages
+// sis classes
+#include <memory>
+
 #include"client.hpp"
+#include"registry.hpp"
+#include"course.hpp"
 
+class Course;
 
-class Staff: Client{
+class Staff: public Client{
 
-    string school;
-    void openCourse();
+    // Member Variables
+
+    vector<Course> courses_;
+
+    // Member Functions
+
 
 public:
-    Staff();
-    Staff(string prof_code);
-    ~Staff();
-    string getName();
+
+    friend class Registry;
+
+    // Member Variables
+
+    // The path of the object's profile description file in data_repo.
+    static const std::string staff_path;
+    const std::string profile_path;
+
+    // Member Functions
+
+    // Constructor Destructor
+    explicit Staff(std::string & inputID);
+    // Retrieve a staff without using passcode; only supposed to be used by someone with permission.
+    ~Staff(); // [todo] not yet implemented
+    
+    static shared_ptr<Staff> find_profile(std::string &inputID);
+    // [todo] shall this be made private, and only be useed by some "friend" classes?
+
 };
+
 # endif

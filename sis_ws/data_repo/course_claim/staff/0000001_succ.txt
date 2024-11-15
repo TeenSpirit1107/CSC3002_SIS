@@ -4,3 +4,5 @@ STA2001
 Introduction to statistics
 MAT1001
 Introduction to calculus
+CSC3002
+C/C++ programming

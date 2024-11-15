@@ -12,34 +12,6 @@
 
 **数据传输简述：**
 
-### 教授信息表的建议
-
-**发起时间：**Oct 21
-
-**发起方：**Reg
-
-**接收方：**Staff
-
-**联系功能简述：**构建教授信息表
-
-**数据传输简述：**
-
-".\data_repo\staff\工号.txt"，包含教授的姓名和教授班级
-
-**举例：**
-
-"0000001.txt":
-
-Rui
-
-HUANG
-
-0001
-
-0002
-
-**解释：**黄教授教0001和0002两个班级，这两个班级可以在".\data_repo\class\0001.txt"（或"0002.txt"）中了解到具体的信息，如课程代号、授课时间等，具体见1.a.2的联系单
-
 ### 1.a.1: 创建课程
 
 **发起时间：**Oct. 21
@@ -176,6 +148,8 @@ CSC3002
 
 0000001
 
+140
+
 2
 
 3
@@ -210,6 +184,7 @@ CSC3002
 | 下午第二节 | 22   | 23   | 24   | 25   | 26   | 27   | 28   |
 | 晚上第一节 | 1    | 2    | 3    | 4    | 5    | 6    | 7    |
 | 晚上第二节 | 8    | 9    | 10   | 11   | 12   | 13   | 14   |
+| 晚上第三节 | 15   | 16   | 17   | 18   | 19   | 20   | 21   |
 
 * Reg --> Staff
 
@@ -261,4 +236,105 @@ CSC3002
 
   16
 
-  **解释**：教授工号、课程代号、上课时间
+  TBA
+
+  TBA
+
+  TBA
+
+  TBA
+
+  TBA
+
+  
+
+  **解释**：教授工号、课程代号、上课时间、教室（TBA=to be arranged）
+
+  ### 1.c 安排教室
+
+  暂时假定教室有4种，分别可以容纳40，60，90，140人。
+
+  **".\sis_ws\data_repo\class\classroom.txt"**
+
+  4
+  40
+  3
+  TC101
+  1
+  TC102
+  1
+  TC103
+  1
+  60
+  2
+  TA201
+  1
+  TA202
+  1
+  90
+  2
+  TC206
+  1
+  TC207
+  1
+  140
+  3
+  TB201
+  1
+  TB202
+  1
+  TB203
+  1
+  TB204
+  1
+
+  
+
+  
+
+  <<<<<<< Updated upstream:项目笔记/1021合作单(reg a module).md
+  =======
+
+### 公告系统
+
+**公告系统的使用：**
+* 类名 Announcement
+* 创建一个名为class_pass的公告 Announcement  class_pass;
+* 设置公告类型 class_pass.setContent(string 标题, string 正文)(如需换行，可在正文部分加入\n);
+* 设置发送人 class_pass.setPromoter(string 发送人名字);
+* 设置目标对象 class_pass.setTarget(string 学号或工号);
+* 确认发送公告 class_pass.send();
+
+**执行send后会在  .\data_repo\announcements\学号或工号 下生成一个txt**
+
+**公告txt组成：**
+* 是否已读（否为0，是为1）
+* 正文的行数（用于处理正文存在换行符的情况）
+* 标题
+* 正文
+* 发起人
+* 发起时间（自动生成）
+
+**例：**
+
+0
+
+1
+
+Class application approved
+
+You application of adding CSC3100 at Wednesday has been approved!
+
+You can check weekly schedule now.
+
+Rui HUANG
+
+2024/11/13 00:01
+
+**txt的文件名由顺序数字组成**
+* 若目录为空，第一个公告将命名为1.txt
+* 若目录不为空，将获取当前目录下最大的n.txt，生成一个新的n+1.txt再存入公告内容
+
+
+
+>>>>>>> Stashed changes:1021合作单(reg a module).md

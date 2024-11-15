@@ -1,16 +1,21 @@
 #include "registry.hpp"
+
 #include <iostream>
 #include <cstdio>
 #include <conio.h>
 #include <course.hpp>
 #include <fstream>
 #include <utility>
+#include <windows.h>
+#include <iomanip>
+#include <map>
+
 using namespace std;
 
 Registry::Registry() {
     this->userID = "0000000";
     this->userName = "Registry";
-    this->userType = 'a';
+    // this->userType = 'a';
     this->passcode = "1234567890";
     printf("Registry Connected\n");
 }
@@ -229,7 +234,7 @@ short getClassNum() {
     fscanf(file, "%hd", &n);
     return n;
 }
-void class_pass_process(string prof_code, string courseCode, short classNum, int N, int lec[], int M, int tut[]) {
+void class_pass_process(string prof_code, string courseCode, short classNum, int N, int lec[], int M, int tut[], int quota = 140) {
     // [todo] raise an announcement
     string work_dir = ".\\sis_ws\\data_repo\\class_claim\\staff\\"+prof_code+"_succ.txt";
     FILE *file = fopen(work_dir.c_str(), "a+");
@@ -252,14 +257,32 @@ void class_pass_process(string prof_code, string courseCode, short classNum, int
     fclose(file);
 
     work_dir = ".\\sis_ws\\data_repo\\class\\"+to_string(classNum)+".txt";
-    file = fopen(work_dir.c_str(), "a+");
+    file = fopen(work_dir.c_str(), "w");
     fprintf(file, "%s\n", prof_code.c_str());
     fprintf(file, "%s\n", courseCode.c_str());
+    fprintf(file, "%d\n", quota);
     fprintf(file, "%d\n", N);
     for (int i = 0; i < N; i++) fprintf(file, "%d\n", lec[i]);
     fprintf(file, "%d\n", M);
     for (int i = 0; i < M; i++) fprintf(file, "%d\n", tut[i]);
+    for (int i = 0; i < N; i++) fprintf(file, "TBA");
+    for (int i = 0; i < M; i++) fprintf(file, "TBA");
     fclose(file);
+
+    work_dir = ".\\sis_ws\\data_repo\\course\\"+courseCode+"_class_arrange.txt";
+    file = fopen(work_dir.c_str(), "r");
+    fscanf(file, "%d", &n);
+    string classCode[n];
+    for (int i = 0; i < n; i++) fscanf(file, "%s", classCode[i].c_str());
+    fclose(file);
+
+    work_dir = ".\\sis_ws\\data_repo\\course\\"+courseCode+"_class_arrange.txt";
+    file = fopen(work_dir.c_str(), "w");
+    fprintf(file, "%d\n", n+1);
+    for (int i = 0; i < n; i++) fprintf(file, "%s\n", classCode[i].c_str());
+    fprintf(file, "%d\n", classNum+1);
+    fclose(file);
+
 }
 void class_fail_process(string prof_code, string courseCode) {
     // [todo] raise an announcement
@@ -312,6 +335,8 @@ void Registry::claim_class() {
                 cout << "Course Name: " << courseName << endl;
                 string prof_code;
                 getline(class_file, prof_code);
+                int quota;
+                class_file >> quota;
                 int N, M;
                 int lec[28];
                 int tut[28];
@@ -321,14 +346,13 @@ void Registry::claim_class() {
                 for (int i = 0; i < M; i++) class_file >> tut[i];
                 class_file.close();
                 short classCode = getClassNum()+short(1);
-                Staff staff(prof_code);
-                Course course(courseCode, courseName, staff, classCode, N, M, lec, tut);
+                Course course(courseCode, courseName, prof_code, classCode, N, M, lec, tut);
                 course.printCourse();
                 char c;
                 printf("judgement: (P/F/S/B)\n"); // pass fail skip break
                 scanf("%c", &c);
                 while (c != 'P' && c != 'F' && c != 'S' && c != 'B') scanf("%c", &c);
-                if (c == 'P') class_pass_process(prof_code, courseCode, classCode, N, lec, M, tut);
+                if (c == 'P') class_pass_process(prof_code, courseCode, classCode, N, lec, M, tut, quota);
                 else if (c == 'F') class_fail_process(prof_code, courseCode);
                 else if (c == 'S') {
                     p = p->nxt;
@@ -359,5 +383,124 @@ void Registry::claim_class() {
             fclose(file);
         }
         printf("all claims are done\n");
+    }
+}
+typedef struct classroom{
+    int capacity;
+    int cnt;
+    string location;
+    bool usable;
+    bool lec_timeslot[28], tut_timeslot[21];
+    classroom *nxt;
+    explicit classroom(int capacity, string location, bool usable, int cnt=0, classroom *nxt = nullptr) {
+        this->capacity = capacity;
+        this->location = std::move(location);
+        this->usable = usable;
+        this->nxt = nxt;
+        this->cnt = cnt;
+        for (int i = 0; i < 28; i++) this->lec_timeslot[i] = true;
+        for (int i = 0; i < 21; i++) this->tut_timeslot[i] = true;
+    }
+}CR;
+
+void output_usable_classroom(CR *head[], int kinds_cr) {
+    for (int i = 0; i < kinds_cr; i++) {
+        printf("capacity: %d\n", head[i]->capacity);
+        for (CR *j = head[i]->nxt; j != nullptr; j = j->nxt) printf("location: %s usable: %d  ", j->location.c_str(), j->usable);
+        printf("\n");
+    }
+}
+map<int, int> mp;
+int load_classroom(CR *head[]) {
+    int cnt = 0;
+    string index_path = ".\\sis_ws\\data_repo\\class\\classroom.txt";
+    FILE *file = fopen(index_path.c_str(), "r");
+    int kinds_cr;
+    fscanf(file, "%d", &kinds_cr);
+    for(int i = 0; i < kinds_cr; i++) {
+        int capacity;
+        fscanf(file, "%d", &capacity);
+        head[i]->capacity = capacity;
+        mp[capacity] = i;
+        int num_classroom;
+        fscanf(file, "%d", &num_classroom);
+        CR *p = head[i];
+        for(int j = 0; j < num_classroom; j++) {
+            string location;
+            int usable;
+            char fn[20];
+            fscanf(file, "%s", fn);
+            location = string(fn);
+            fscanf(file, "%d", &usable);
+            CR *new_node = new CR(capacity, location, bool(usable), cnt++);
+            p->nxt = new_node;
+            p = p->nxt;
+        }
+    }
+    fclose(file);
+    return kinds_cr;
+}
+
+void Registry::classroom_arrangement() {
+    cout << "classroom_arrangement" << endl;
+    string work_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\to_claim_list.txt";
+    FILE *file = fopen(work_dir.c_str(), "r");
+    int n;
+    fscanf(file, "%d", &n);
+    fclose(file);
+    if(n != 0) printf("Warning: some classes haven't been approved\n");
+
+    work_dir = ".\\sis_ws\\data_repo\\class\\";
+    string index_path = work_dir + "Class Number.txt";
+    file = fopen(index_path.c_str(), "r");
+    fscanf(file, "%d", &n);
+    fclose(file);
+
+    // load classroom
+    CR *heads[50];
+    for (int i = 0; i < 50; i++) heads[i] = new CR(0, "TBA", false);
+    int kinds_cr = load_classroom(heads);
+    output_usable_classroom(heads, kinds_cr);
+
+    Course *course[n];
+    for(short i = 1; i <= n; i++) {
+        course[i] = new Course(i);
+        int cap = course[i]->capacity;
+        int num_lec = course[i]->num_lec, num_tut = course[i]->num_tut;
+        for (int j = 0; j < num_lec; j++) {
+            CR *head = heads[mp[cap]], *p = head->nxt;
+            while (p != nullptr && (!p->usable || !p->lec_timeslot[course[i]->lec[j]-1])) {
+                printf("%s %d %d %d\n", p->location.c_str(), p->usable, p->lec_timeslot[course[i]->lec[j]-1], course[i]->lec[j]);
+                p = p->nxt;
+            }
+            if (p == nullptr) printf("Warning: class %hd lec %d can't be arranged\n", course[i]->classCode, course[i]->lec[j]);
+            else {
+                p->lec_timeslot[course[i]->lec[j]-1] = false;
+                printf("%s ->lec_timeslot[%d] = false, %d occupied\n", p->location.c_str(), course[i]->lec[j], i);
+                course[i]->lec_classroom[j] = p->location;
+            }
+        }
+        for (int j = 0; j < num_tut; j++) {
+            CR *head = heads[mp[cap]], *p = head;
+            while (p != nullptr && (!p->usable || !p->lec_timeslot[course[i]->tut[j]-1])) p = p->nxt;
+            if (p == nullptr) printf("warning: class %hd tut %d cannot be arranged\n", course[i]->classCode, course[i]->tut[j]);
+            else {
+                p->tut_timeslot[course[i]->tut[j]-1] = false;
+                course[i]->tut_classroom[j] = p->location;
+            }
+        }
+    }
+
+    for (short i = 1; i <= n; i++) {
+        course[i]->print2File();
+        printf("%d\n", course[i]->capacity);
+        printf("lec:\n");
+        for(int j = 0; j < course[i]->num_lec; j++) {
+            printf("%d %d %s\n", course[i]->classCode, course[i]->lec[j], course[i]->lec_classroom[j].c_str());
+        }
+        printf("tut:\n");
+        for (int j = 0; j < course[i]->num_tut; j++) {
+            printf("%d %d %s\n", course[i]->classCode, course[i]->tut[j], course[i]->tut_classroom[j].c_str());
+        }
     }
 }
