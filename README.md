@@ -22,6 +22,11 @@ Client
 --Student
 ```
 
+## 命名规范
+
+- 面向对象编程时，成员变量若为私有变量private, 则在变量名后加一个下划线。例如：“Staff::course_”
+
+
 ## 项目结构
 - include用来放声明文件。
 - src用来放定义文件，以及运行文件（`startup.cpp`，没有对应的.hpp文件）
@@ -37,10 +42,6 @@ Client
     4. student.cpp
     5. course.hpp
     6. course.cpp
-
-## 团队合作编程习惯
-- 给自己的代码写注释；写.md文档来描述代码的功能
-- 上传到github的时候先创建分支branch，再pull request. 每次更新时最好标注这次更新了什么内容。
 
 ## 合作联系单
 
