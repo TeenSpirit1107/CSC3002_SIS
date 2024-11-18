@@ -1,4 +1,9 @@
 # CSC3002: sis_ws
+## registry gui.zip
+- 改动太多，且仅包含了registry运行的必要文件，故传zip
+- 批课、批班、排课、公告均已融合
+- 已知bug：文件夹announcements, claim_course, claim_class均不能为空，否则程序会崩，有时间再修
+
 ## GUI
 - src/guitest3.cpp 为登录界面的测试代码，绘制了界面及创建控件，可单独编译。
 - ![image](https://github.com/user-attachments/assets/d8a9d61a-72a8-4089-9777-00dd0f4ab55d)
