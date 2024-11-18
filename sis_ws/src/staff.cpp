@@ -23,10 +23,9 @@ const std::string Staff::staff_path = ".\\sis_ws\\data_repo\\staff\\";
 * @param inputID The ID of the staff member. Guaranteed to exist.
 */
 Staff::Staff(std::string & inputID):
-    Client(inputID),
-    profile_path(staff_path+inputID+".txt")
+    Client(inputID)
 {
-
+    profile_path=staff_path+inputID+".txt";
     ifstream fileReader(profile_path);
 
     if (!fileReader.is_open()) {
@@ -52,7 +51,7 @@ Staff::Staff(std::string & inputID):
         passcode = psc;
         userName = name1 + " " + name2;
         courses_ = std::vector<Course>();
-
+        
     }
 }
 
