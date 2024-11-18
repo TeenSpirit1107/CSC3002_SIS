@@ -31,7 +31,6 @@ public:
 
     // The path of the object's profile description file in data_repo.
     static const std::string staff_path;
-    const std::string profile_path;
 
     // Member Functions
 
@@ -42,6 +41,7 @@ public:
     
     static shared_ptr<Staff> find_profile(std::string &inputID);
     // [todo] shall this be made private, and only be useed by some "friend" classes?
+
 
 };
 
