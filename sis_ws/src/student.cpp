@@ -9,7 +9,7 @@
 #include"client.hpp"
 
 // Definition of const members
-const std::string Student::student_path = ".\\sis_ws\\data_repo\\staff\\";
+const std::string Student::student_path = ".\\sis_ws\\data_repo\\student\\";
 
 //Student::Student(int inputID, string inputName, char inputType, string inputPass):
 //Client(inputID, inputName, inputType, inputPass)
@@ -31,8 +31,9 @@ const std::string Student::student_path = ".\\sis_ws\\data_repo\\staff\\";
 */
 
 Student::Student(std::string & inputID):
-    Client(inputID),profile_path(student_path+inputID+".txt")
+    Client(inputID)
 {
+    profile_path=student_path+inputID+".txt";
     ifstream fileReader(profile_path);
     if (!fileReader.is_open()) {
         printf("Sorry, an error was encountered. Please try again.");
