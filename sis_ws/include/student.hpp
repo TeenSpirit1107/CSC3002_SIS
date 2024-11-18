@@ -31,7 +31,6 @@ public:
 
     // The path of the object's profile description file in data_repo.
     static const std::string student_path;
-    const std::string profile_path;
 
     // Member Functions
 
