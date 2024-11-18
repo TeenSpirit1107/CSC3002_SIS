@@ -12,6 +12,7 @@ protected:
     std::string userID;
     std::string passcode;
     std::string userName;
+    std::string profile_path;
 
 public:
     // constructor destructor
@@ -20,7 +21,26 @@ public:
     Client();
     ~Client(); // [todo] to finish the destructor
 
+    // setters and getters
+    std::string get_userID() const;
+    std::string get_passcode() const;
+    std::string get_userName() const;
+
+    // Feature: Processing ID
+    bool is_student() const;
+    static bool id_is_student(std::string & inputID);
+
+    // static std::string get_path(std::string & inputID); //TODO: 是否有必要写这个？
+
+
+    // Feature: log in
+    // static auto log_in(std::string & inputID, std::string & inputPass);
+    // prof and student has get_profile() function
     static bool id_exist(std::string & inputID);
-    void output_basic_info();
+    static bool validate_passcode(std::string & inputID, std::string & inputPass);
+
+    // Testing
+    void output_basic_info() const;
+
 };
 #endif
