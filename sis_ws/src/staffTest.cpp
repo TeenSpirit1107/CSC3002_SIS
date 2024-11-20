@@ -45,9 +45,7 @@ void printWorkingPath(string &  inputID) {
 
 }
 
-
-int main() {
-
+void test_logIn() {
     // the following code implement a log_in procedure.
     // ?? For reference.
 
@@ -78,6 +76,57 @@ int main() {
         std::shared_ptr<Staff> staff = Staff::find_profile(inputID);
         printf("Welcome, professor %s!\n",staff->get_userName().c_str());
     }
+}
+
+void test_create_course_parseCode(int code) {
+    if (code==0) {
+        cout<<"successfully created\n";
+    }else if (code==1) {
+        cout<<"the input requisites expression is invalid\n";
+    }else if (code==2) {
+        cout<<"the file cannot be written into (unknown error)\n";
+    }
+    else {
+        // This is not supposed to happen! 
+        cout<<"wrong return code\n";
+    }
+
+}
+
+void test_create_course() {
+
+    std::string inputID = "9100001";
+    std::shared_ptr<Staff> s = Staff::find_profile(inputID);
+    std::string courseName = "Linear Algebra";
+    std::string prereq = "(MAT1001|MAT1005|MAT1011)&(CSC1001|CSC1003)";
+    std::string year = "3 1 2 3";
+    std::string description = "Introduction to basic topics in linear algebra, including linear independence, bases, and eigenvalue.";
+
+    // case return 0: successfully created
+    int i = s->create_course(courseName, prereq, year, description);
+    test_create_course_parseCode(i);
+
+    // case return 1: the input requisites expression is invalid
+    std::string prereq2 = "(MAT1001|MAT1005|MAT1011)&(CSC1001|CSC1003";
+    i = s->create_course(courseName, prereq2, year, description);
+    test_create_course_parseCode(i);
+
+    // case return 2: the file cannot be written into . Unknown error or the file already exists.
+
+    // TODO: current problem, overwrite if exists. But no moode could make sure that,
+    // 1. if file dne, create;
+    // 2. and if file exists, don't open.
+    // out: only 1 not 2; __noreplace: only 2 not 1.
+    i = s->create_course(courseName, prereq, year, description);
+    test_create_course_parseCode(i);
+
+    s.reset();
+}
+
+int main() {
+    // test_logIn();
+    test_create_course();
+
 
     
 

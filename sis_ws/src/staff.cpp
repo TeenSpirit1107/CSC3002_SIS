@@ -3,6 +3,7 @@
 #include<fstream>
 #include<memory>
 #include<vector>
+#include<iostream>
 
 // sis lib
 #include "staff.hpp"
@@ -76,6 +77,46 @@ shared_ptr<Staff> Staff::find_profile(std::string &inputID) {
     // case 2, id does exists. Then create a new object in HEAP and return its pointer.
     shared_ptr<Staff> staff_ptr = std::make_shared<Staff>(inputID);
     return staff_ptr;
+}
+
+// Feature 1: Create Course
+
+
+// TODO: 流程。先验证输入，如果不对就提示用户重新输入；对就使用下面这个函数。
+// TODO: year这里，用户界面做成“多选”的那种形式？
+// TODO: finish comment on this function. return error code.
+
+/**
+ * @brief Create a course with the given information.
+ *
+ * First, validate expression. If valid, then, create the corresponding file.
+ * Return code explanation:
+ * 0 successfully created and written into file
+ * 1 the input requisites expression is invalid -- should ask the user to re-enter.
+ * 2 the file cannot be written into (unknown error; or a file with the same name exists)
+ * @param course_name The name of the course.
+ * @param pre_req The expression of prerequisites of the course. Not assumed to be valid.
+ * @param year The year of the course.
+ * @param description The description of the course.
+ * @return 0 if the course is created successfully, 1 if the input is invalid, 2 if the file cannot be opened.
+ */
+int Staff::create_course(std::string & course_name, std::string & pre_req, std::string & year, std::string & description) {
+
+    if (!is_valid_course_expr(pre_req)) return 1;
+    std::string file_name = course_name + "_"+get_current_datetime()+".txt";
+    std::string file_path = course_claim_path_prefix+"registry\\"+file_name;
+    std::ofstream os(file_path, std::ios::out) ; //std::ios::in means a new file will not be created if a file with the same name exists.
+    printf("Path: %s\n",file_path.c_str());
+    if (!os.is_open()) {
+        return 2;
+        // TODO: add explanation to error code
+    }
+    os << course_name << std::endl;
+    os << this->userID<< std::endl;
+    os << pre_req << std::endl;
+    os << year << std::endl;
+    os << description << std::endl;
+    return 0;
 }
 
 Staff::~Staff() {

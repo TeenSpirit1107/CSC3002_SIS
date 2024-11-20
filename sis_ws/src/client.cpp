@@ -3,6 +3,8 @@
 #include<string>
 #include<fstream>
 #include<memory>
+#include<stack>
+#include <ctime>
 
 // sis classes
 #include "client.hpp"
@@ -10,21 +12,22 @@
 #include "student.hpp"
 #include "course.hpp"
 
-Client::Client() {
+Client::Client():
+    course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
+{
     this->userID = "0000000";
     this->userName = "default";
     this->passcode = "123456";
-    
 }
 
 // [todo] this constructor with many inputs may be erased if it's not used elsewhere.
 Client::Client(std::string & inputID, std::string & inputName, std::string & userPass):
-    userID(inputID), userName(inputName),passcode(userPass)
+    userID(inputID), userName(inputName),passcode(userPass), course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
 {
 }
 
 Client::Client(std::string & inputID):
-    userID(inputID), userName(""), passcode(""),profile_path("")
+    userID(inputID), userName(""), passcode(""),profile_path(""),  course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
 {}
 
 Client::~Client() {
@@ -160,9 +163,82 @@ void Client::output_basic_info() const {
     std::cout<< "passcode: " << passcode<<"; userID: " << userID << "; userName: " << userName << std::endl;
 }
 
+// Feature: Create Course
 /**
- * @brief Log in to the system.
- * Caveat: Only for staff and student log_in.
- * @return A shared pointer to the client object.
+ * @brief Check whether the input course code is valid.
+ * However, whether the course code exists in the data base is not checked.
+ * Upper and lower case are treated as different.
+ * @param inputCourseCode The input course code to be checked.
+ * @return true if the input course code is valid, false if not.
  */
+bool Client::is_valid_course_code(std::string & inputCourseCode) {
+    if (!inputCourseCode.size() == 7) return false;
+    for (int i = 0; i < 3; i++) {
+        if (!isupper(inputCourseCode[i])) return false;
+    }
+    for (int i = 3; i < 7; i++) {
+        if (!isdigit(inputCourseCode[i])) return false;
+    }
+    return true;
+}
+
+/**
+ * @brief Check whether the input expression is a valid course expression.
+ * However, it's not checked taht whether the course exists in the current data base.
+ * @param inputExpr The input expression to be checked.
+ * @return true if the input expression is valid, false if not.
+ */
+
+bool Client::is_valid_course_expr(std::string &inputExpr) {
+    std::stack<char> bracketStack;
+    int len = inputExpr.size();
+    bool expectOperand = true;
+
+    int i =0;
+    while (i<len) {
+        char ch = inputExpr[i];
+
+        if (ch == '(') {
+            bracketStack.push(ch);
+            expectOperand = true;
+        } else if (ch == ')') {
+            if (bracketStack.empty() || bracketStack.top() != '(') {
+                return false;
+            }
+            bracketStack.pop();
+            expectOperand = false;
+        } else if (ch == '&' || ch == '|') {
+            if (expectOperand) {
+                return false;
+            }
+            expectOperand = true;
+        } else if (isupper(ch)) {
+            std::string courseCode = inputExpr.substr(i, 7);
+            if (!is_valid_course_code(courseCode)) {
+                return false;
+            }
+            i += 7; // Move index to the end of the course code
+            expectOperand = false;
+            continue;
+        } else {
+            return false;
+        }
+        i++;
+    }
+    return bracketStack.empty() && !expectOperand;
+}
+
+
+// Function to get the current date and time in the format "YYYYMMDDHHMMSS"
+std::string Client::get_current_datetime() {
+    std::time_t now = std::time(nullptr);
+    std::tm *ltm = std::localtime(&now);
+
+    char buffer[15];
+    std::strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", ltm);
+    std::string str(buffer);
+
+    return buffer;
+}
+
 
