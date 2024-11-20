@@ -5,11 +5,12 @@
 # include <string>
 # include <queue>
 
+
 // packages
 # include "staff.hpp"
 //# include "student.hpp"
 
-using namespace std;
+
 
 class Course{
 
@@ -27,6 +28,7 @@ public:
     // people
     string instructor;
     string lec_classroom[28], tut_classroom[21];
+    // Why the length of tut_classroom and tut_sessions doesn't match?
     //queue<Student> stuEnrol;
     //queue<Student> stuWait;
     
@@ -44,6 +46,9 @@ public:
     void printCourse();
     void print2File();
     //void addStu(Student newStu);
+
+    static bool is_valid_course_code(string & inputCourseCode);
+    static bool is_valid_course_expr(string & inputExpr);
 
 };
 # endif
