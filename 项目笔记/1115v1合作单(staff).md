@@ -207,7 +207,7 @@ It's a course for undergraduate students to learn more about data structure.
 
 0002
 
-**样例解释：**
+**样例解释：**[client.cpp](..%2Fsis_ws%2Fsrc%2Fclient.cpp)
 
 前若干行同理，倒数第三行的2表示这个课程一共有2个班级（将在下一张单子中具体说明），班级代号分别为0001和0002。
 
