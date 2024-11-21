@@ -25,7 +25,7 @@ passcode: 12345678; userID: 9100001; userName: Ruoyu SUN
 Sorry, the ID 3141593 cannot be found.
 */
 
-void printWorkingPath(string &  inputID) {
+void printWorkingPathID(string &  inputID) {
 
     // also can be done with filesystem, which doesn't support versions below c++17
     // path: "C:\Languages\C_Code\sis_versions\sis1115v1\CSC3002_SIS\cmake-build-debug\CSC3002_SIS.exe"
@@ -43,6 +43,15 @@ void printWorkingPath(string &  inputID) {
         }
     }
 
+}
+
+void printWorkingPath() {
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+        std::cout << "Current working directory: " << cwd << std::endl;
+    } else {
+        perror("getcwd() error");
+    }
 }
 
 void test_logIn() {
@@ -93,12 +102,20 @@ void test_create_course_parseCode(int code) {
 
 }
 
-void test_create_course() {
+void test_compute_final_grade_parseCode(int code) {
+    if (code==0) cout<<"The final grades were computed and written successfully.\n";
+    else if (code==1) cout<<"The class code does not exist (file cannot be opened).\n";
+    else if (code==2) cout<<"The output file cannot be written into (unknown error).\n";
+    else if (code==3) cout<<"The number of students in the file does not match the expected number.\n";
+    else cout<<"Wrong return code.\n";
+}
+
+void test_create_course(std::string & prereq) {
 
     std::string inputID = "9100001";
     std::shared_ptr<Staff> s = Staff::find_profile(inputID);
     std::string courseName = "Linear Algebra";
-    std::string prereq = "(MAT1001|MAT1005|MAT1011)&(CSC1001|CSC1003)";
+    prereq = "(MAT1001|MAT1005|MAT1011)&(CSC1001|CSC1003)";
     std::string year = "3 1 2 3";
     std::string description = "Introduction to basic topics in linear algebra, including linear independence, bases, and eigenvalue.";
 
@@ -123,12 +140,18 @@ void test_create_course() {
     s.reset();
 }
 
+void test_final_grade() {
+    test_create_course_parseCode(test_create_course(" (CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)
+"))
+    test_compute_final_grade_parseCode(Staff::compute_final_grade(1));
+    test_compute_final_grade_parseCode(Staff::compute_final_grade(2));
+}
+
 int main() {
+
     // test_logIn();
-    test_create_course();
-
-
-    
+    // test_create_course();
+    test_final_grade();
 
 }
 
