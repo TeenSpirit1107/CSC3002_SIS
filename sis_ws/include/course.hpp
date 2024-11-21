@@ -23,6 +23,10 @@ public:
     int capacity;
     short classCode;
 
+    // enrolled student ID
+    int enrolled_stu_id[140];
+    int enrolled_num;
+
     int num_lec, num_tut;
     int lec[28], tut[28];
     // people

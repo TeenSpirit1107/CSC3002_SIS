@@ -40,6 +40,7 @@ public:
     // static std::string get_path(std::string & inputID); //TODO: 是否有必要写这个？
 
 
+
     // Feature: log in
     // static auto log_in(std::string & inputID, std::string & inputPass);
     // prof and student has get_profile() function
@@ -54,5 +55,6 @@ public:
     static bool is_valid_course_expr(std::string & inputExpr);
 
     static std::string get_current_datetime();
+    static std::string id_get_name(std::string & inputID);
 };
 #endif
