@@ -12,15 +12,24 @@
 
 class Student: public Client{
 
+
     // Member Variables
 
-    // academics
+    //
+    //TODO :
+/*
+    vector<Course> courseFinished;
     vector<Course> courseEnrolled;
     vector<Course> courseWait;
     void enrollCourse();
-
+    void searchCourse();
+*/
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
+    void addFrd(const std::string &friendID);
+    void checkFrd();
+    void acceptFrd();
+    void viewFrd();
 
     // Member Functions
 
@@ -30,7 +39,8 @@ public:
     // Member Variables
 
     // The path of the object's profile description file in data_repo.
-    static const std::string student_path;
+    static const string student_path;
+    static const string stuFrd_path;
 
     // Member Functions
 
