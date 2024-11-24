@@ -11,7 +11,7 @@
 
 // Definition of const members
 const std::string Student::student_path = ".\\sis_ws\\data_repo\\student\\";
-const std::string Student::stuFrd_path= ".\\sis_ws\\data_repo\\Addfrds\\";
+const std::string Student::stuFrd_path= ".\\sis_ws\\data_repo\\addfrds\\";
 //Student::Student(int inputID, string inputName, char inputType, string inputPass):
 //Client(inputID, inputName, inputType, inputPass)
 //{
@@ -103,9 +103,9 @@ void Student::addFrd(const std::string &friendID) {
         std::cout << "已发送申请，请等待对方通过。" << std::endl;
 
         // 定义申请好友文件的路径
-        std::string addFriendFilePath = ".\\sis_ws\\data_repo\\AddFrds\\" + friendID + ".txt";
+        std::string addFriendFilePath = ".\\sis_ws\\data_repo\\addFrds\\" + friendID + ".txt";
 
-        // 在 AddFrds 文件夹中创建以目标好友学号命名的文件，填入当前用户的id
+        // 在 addFrds 文件夹中创建以目标好友学号命名的文件，填入当前用户的id
         std::ofstream addFriendFile(addFriendFilePath);
         if (addFriendFile.is_open()) {
             // 写入当前用户的 ID
@@ -123,7 +123,7 @@ void Student::addFrd(const std::string &friendID) {
 //通过好友申请
 void Student::acceptFrd() {
     // 定义当前用户的好友申请文件路径
-    std::string addFrdFilePath = ".\\sis_ws\\data_repo\\AddFrds\\" + this->userID + ".txt";
+    std::string addFrdFilePath = ".\\sis_ws\\data_repo\\addFrds\\" + this->userID + ".txt";
     std::string FrdFilePath = ".\\sis_ws\\data_repo\\frd\\" + this->userID + ".txt";
     // 打开好友申请文件
     std::ifstream inFile(addFrdFilePath);
