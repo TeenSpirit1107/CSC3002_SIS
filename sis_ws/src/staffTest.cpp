@@ -196,6 +196,10 @@ void test_claim_class() {
     s.reset();
 }
 
+void test_profile_add_class () {
+    Staff::profile_add_class("9200001", 6);
+}
+
 void test_find_profile() {
     // shared_ptr<Staff> ys = std::make_shared<Staff>("9200001");
     shared_ptr<Staff> ys = Staff::find_profile("9200001");
@@ -216,6 +220,7 @@ int main() {
     // test_name_process();
     // test_name_get_id();
     // test_claim_class();
+    test_profile_add_class();
     test_find_profile();
 
 
