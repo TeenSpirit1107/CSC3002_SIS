@@ -49,11 +49,14 @@ public:
     static bool is_valid_course_code(const std::string & inputCourseCode);
     static bool is_valid_course_expr(const std::string & inputExpr);
 
-static bool is_legal_name(const std::string &inputName);
-static std::string format_name(const std::string & inputName);
+    static bool is_legal_name(const std::string &inputName);
+    static std::string format_name(const std::string & inputName);
 
-static std::string get_current_datetime();
-// static std::string id_get_name(const std::string & inputID);
-static std::string name_get_id(const std::string & inputName, bool isStudent);
+    static std::string get_current_datetime();
+    // static std::string id_get_name(const std::string & inputID);
+    static std::string name_get_id(const std::string & inputName, bool isStudent);
+
+    // Tools: file handling
+    static int update_index_file(const std::string & index_dir, const std::string & file_name);
 };
 #endif

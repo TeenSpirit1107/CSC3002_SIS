@@ -47,19 +47,19 @@ cmake_force:
 SHELL = cmd.exe
 
 # The CMake executable.
-CMAKE_COMMAND = "C:\Program Files\JetBrains\CLion 2024.2.1\bin\cmake\win\x64\bin\cmake.exe"
+CMAKE_COMMAND = "C:\Program Files\JetBrains\CLion 2024.2.3\bin\cmake\win\x64\bin\cmake.exe"
 
 # The command to remove a file.
-RM = "C:\Program Files\JetBrains\CLion 2024.2.1\bin\cmake\win\x64\bin\cmake.exe" -E rm -f
+RM = "C:\Program Files\JetBrains\CLion 2024.2.3\bin\cmake\win\x64\bin\cmake.exe" -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "E:\blackboard\CSC3002CC++ Programming_L01L02\project\CSC3002_SIS"
+CMAKE_SOURCE_DIR = C:\Languages\C_Code\sis_versions\sis1125v4_local\CSC3002_SIS
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "E:\blackboard\CSC3002CC++ Programming_L01L02\project\CSC3002_SIS\cmake-build-debug"
+CMAKE_BINARY_DIR = C:\Languages\C_Code\sis_versions\sis1125v4_local\CSC3002_SIS\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -67,7 +67,7 @@ CMAKE_BINARY_DIR = "E:\blackboard\CSC3002CC++ Programming_L01L02\project\CSC3002
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
-	"C:\Program Files\JetBrains\CLion 2024.2.1\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available."
+	"C:\Program Files\JetBrains\CLion 2024.2.3\bin\cmake\win\x64\bin\cmake.exe" -E echo "No interactive CMake dialog available."
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -77,7 +77,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake to regenerate build system..."
-	"C:\Program Files\JetBrains\CLion 2024.2.1\bin\cmake\win\x64\bin\cmake.exe" --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	"C:\Program Files\JetBrains\CLion 2024.2.3\bin\cmake\win\x64\bin\cmake.exe" --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -86,9 +86,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "E:\blackboard\CSC3002CC++ Programming_L01L02\project\CSC3002_SIS\cmake-build-debug\CMakeFiles" "E:\blackboard\CSC3002CC++ Programming_L01L02\project\CSC3002_SIS\cmake-build-debug\\CMakeFiles\progress.marks"
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Languages\C_Code\sis_versions\sis1125v4_local\CSC3002_SIS\cmake-build-debug\CMakeFiles C:\Languages\C_Code\sis_versions\sis1125v4_local\CSC3002_SIS\cmake-build-debug\\CMakeFiles\progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "E:\blackboard\CSC3002CC++ Programming_L01L02\project\CSC3002_SIS\cmake-build-debug\CMakeFiles" 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Languages\C_Code\sis_versions\sis1125v4_local\CSC3002_SIS\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -200,30 +200,6 @@ sis_ws/src/registry.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.s
 .PHONY : sis_ws/src/registry.cpp.s
 
-sis_ws/src/registryTest.obj: sis_ws/src/registryTest.cpp.obj
-.PHONY : sis_ws/src/registryTest.obj
-
-# target to build an object file
-sis_ws/src/registryTest.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registryTest.cpp.obj
-.PHONY : sis_ws/src/registryTest.cpp.obj
-
-sis_ws/src/registryTest.i: sis_ws/src/registryTest.cpp.i
-.PHONY : sis_ws/src/registryTest.i
-
-# target to preprocess a source file
-sis_ws/src/registryTest.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registryTest.cpp.i
-.PHONY : sis_ws/src/registryTest.cpp.i
-
-sis_ws/src/registryTest.s: sis_ws/src/registryTest.cpp.s
-.PHONY : sis_ws/src/registryTest.s
-
-# target to generate assembly for a file
-sis_ws/src/registryTest.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registryTest.cpp.s
-.PHONY : sis_ws/src/registryTest.cpp.s
-
 sis_ws/src/staff.obj: sis_ws/src/staff.cpp.obj
 .PHONY : sis_ws/src/staff.obj
 
@@ -248,6 +224,54 @@ sis_ws/src/staff.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.s
 .PHONY : sis_ws/src/staff.cpp.s
 
+sis_ws/src/staffTest.obj: sis_ws/src/staffTest.cpp.obj
+.PHONY : sis_ws/src/staffTest.obj
+
+# target to build an object file
+sis_ws/src/staffTest.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.obj
+.PHONY : sis_ws/src/staffTest.cpp.obj
+
+sis_ws/src/staffTest.i: sis_ws/src/staffTest.cpp.i
+.PHONY : sis_ws/src/staffTest.i
+
+# target to preprocess a source file
+sis_ws/src/staffTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.i
+.PHONY : sis_ws/src/staffTest.cpp.i
+
+sis_ws/src/staffTest.s: sis_ws/src/staffTest.cpp.s
+.PHONY : sis_ws/src/staffTest.s
+
+# target to generate assembly for a file
+sis_ws/src/staffTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.s
+.PHONY : sis_ws/src/staffTest.cpp.s
+
+sis_ws/src/student.obj: sis_ws/src/student.cpp.obj
+.PHONY : sis_ws/src/student.obj
+
+# target to build an object file
+sis_ws/src/student.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj
+.PHONY : sis_ws/src/student.cpp.obj
+
+sis_ws/src/student.i: sis_ws/src/student.cpp.i
+.PHONY : sis_ws/src/student.i
+
+# target to preprocess a source file
+sis_ws/src/student.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.i
+.PHONY : sis_ws/src/student.cpp.i
+
+sis_ws/src/student.s: sis_ws/src/student.cpp.s
+.PHONY : sis_ws/src/student.s
+
+# target to generate assembly for a file
+sis_ws/src/student.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.s
+.PHONY : sis_ws/src/student.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -266,12 +290,15 @@ help:
 	@echo ... sis_ws/src/registry.obj
 	@echo ... sis_ws/src/registry.i
 	@echo ... sis_ws/src/registry.s
-	@echo ... sis_ws/src/registryTest.obj
-	@echo ... sis_ws/src/registryTest.i
-	@echo ... sis_ws/src/registryTest.s
 	@echo ... sis_ws/src/staff.obj
 	@echo ... sis_ws/src/staff.i
 	@echo ... sis_ws/src/staff.s
+	@echo ... sis_ws/src/staffTest.obj
+	@echo ... sis_ws/src/staffTest.i
+	@echo ... sis_ws/src/staffTest.s
+	@echo ... sis_ws/src/student.obj
+	@echo ... sis_ws/src/student.i
+	@echo ... sis_ws/src/student.s
 .PHONY : help
 
 

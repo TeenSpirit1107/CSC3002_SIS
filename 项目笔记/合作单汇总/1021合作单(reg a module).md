@@ -47,7 +47,7 @@ It's a course for undergraduate students to learn more about data structure.
 
 第二行为工号，7位数字
 
-接下来一行为先修课表达式，|为或 &为且
+接下来一行为先修课表达式，|为或 &为且。**如果没有先修课程则表达式为空**
 
 接下来一行中第一个数字为可选的年级个数，后面跟若干个数为年级数
 

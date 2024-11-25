@@ -50,7 +50,6 @@ Staff::Staff(const std::string &inputID): Client(inputID) {
 
         passcode = psc;
         userName = name1 + " " + name2;
-        courses_ = std::vector<Course>();
 
     }
 }
@@ -94,26 +93,35 @@ shared_ptr<Staff> Staff::find_profile(const std::string &inputID) {
  * 0 successfully created and written into file
  * 1 the input requisites expression is invalid -- should ask the user to re-enter.
  * 2 the file cannot be written into (unknown error; or a file with the same name exists)
+ * 3 if there's error in updating todo.txt file
  * @param course_name The name of the course.
  * @param pre_req The expression of prerequisites of the course. Not assumed to be valid.
  * @param year The year of the course.
  * @param description The description of the course.
- * @return 0 if the course is created successfully, 1 if the input is invalid, 2 if the file cannot be opened.
+ * @return status code
  */
 int Staff::create_course(const std::string &course_name, const std::string &pre_req, const std::string &year, const std::string &description) {
     if (!is_valid_course_expr(pre_req)) return 1;
-    std::string file_name = course_name + "_" + get_current_datetime() + ".txt";
+    std::string file_name = get_current_datetime()+ ".txt";
     std::string file_path = course_claim_path_prefix + "registry\\" + file_name;
+    std::string index_dir = ".\\sis_ws\\data_repo\\course_claim\\registry\\to_claim_list.txt";
     std::ofstream os(file_path, std::ios::out);
+
     //std::ios::in means a new file will not be created if a file with the same name exists.
-    printf("Path: %s\n", file_path.c_str());
     if (!os.is_open()) {
         return 2;
-        // TODO: add explanation to error code
     }
+    if (update_index_file(index_dir, file_name)!=0) {
+        return 3;
+    }
+
     os << course_name << std::endl;
     os << this->userID << std::endl;
-    os << pre_req << std::endl;
+    if (pre_req=="") {
+        os << "None" <<std::endl;
+    }else {
+        os << pre_req << std::endl;
+    }
     os << year << std::endl;
     os << description << std::endl;
     return 0;
@@ -206,6 +214,51 @@ int Staff::compute_final_grade(short class_code) {
         fileWriter << id_str << grade_str << std::endl;
     }
     fileWriter.close();
+    return 0;
+}
+
+/**
+ * @brief Creates a class with the given course code, class code, lecture times, and tutorial times.
+ *
+ * This function writes the class information to a file in the class claim registry.
+ *
+ * Return code explanation:
+ * 0 - The class was created and written to the file successfully.
+ * 1 - The file could not be opened (unknown error).
+ * 2 - Error in handling to_claim_list.txt
+ *
+ * @param course_code
+ * @param class_code
+ * @param input_lec A vector of integers representing lecture time slots, refer to the Communication Notes.
+ * @param input_tut A vector of integers representing tutorial time slots, with the same rule.
+ * @return status code.
+ */
+int Staff::create_class(const std::string & course_code, short class_code, vector<int> input_lec, vector<int> input_tut) {
+    // TODO: before, after? logic.
+    // TODO: test this.
+    std::string file_name = get_current_datetime() + ".txt";
+    std::string work_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\" + file_name;
+    std::string index_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\to_claim_list.txt";
+
+    std::ofstream os(work_dir, std::ios::out);
+    if (!os.is_open()) {
+        return 1;
+    }
+    if (update_index_file(index_dir, file_name)!=0) {
+        return 2;
+    }
+
+    os << course_code << std::endl;
+    os << this->userID <<std::endl;
+    os << class_code << std::endl;
+    os << input_lec.size() << std::endl;
+    for (int i = 0; i < input_lec.size(); i++) {
+        os << input_lec[i] << std::endl;
+    }
+    os << input_tut.size() << std::endl;
+    for (int i = 0; i < input_tut.size(); i++) {
+        os << input_tut[i] << std::endl;
+    }
     return 0;
 }
 

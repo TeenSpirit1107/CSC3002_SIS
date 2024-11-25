@@ -1,3 +1,4 @@
+
 // cpp lib
 #include <iostream>
 #include<string>
@@ -5,10 +6,14 @@
 #include<memory>
 #include<stack>
 #include <ctime>
-#include <sstream>
+
 
 // sis classes
 #include "client.hpp"
+
+#include <algorithm>
+#include <io.h>
+
 #include "staff.hpp"
 #include "student.hpp"
 #include "course.hpp"
@@ -19,6 +24,7 @@ Client::Client(): course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\
     this->userName = "default";
     this->passcode = "123456";
 }
+
 
 // [todo] this constructor with many inputs may be erased if it's not used elsewhere.
 Client::Client(const std::string &inputID, const std::string &inputName, const std::string &userPass): userID(inputID),
@@ -304,4 +310,44 @@ std::string Client::name_get_id(const std::string &inputName, bool isStudent) {
         }
     }
     return "x";
+}
+
+/**
+ * @brief Updates the index file with the new file name.
+ *
+ * This function updates the index file by incrementing the count of files and appending the new file name.
+ *
+ * Return code explanation:
+ * 0 - The index file was updated successfully.
+ * 1 - The index file could not be opened.
+ * 2 - The first line of the index file is not a valid number.
+ *
+ * @param index_dir The directory of the index file.
+ * @param file_name The name of the new file to be added to the index.
+ * @return status code
+ */
+int Client::update_index_file(const std::string & index_dir, const std::string & file_name) {
+    std::fstream fs(index_dir); //TODO: change mode later.
+    // TODO: is mode correct?
+    // TODO: test the whole function.
+
+    if (!fs.is_open()) {
+        return 1;
+    }
+
+    std::string s1;
+    std::getline(fs, s1);
+    if (s1.empty()) {
+        fs << 1 << std::endl;
+    } else if ( std::all_of(s1.begin(), s1.end(), ::isdigit)) {
+        int num = std::stoi(s1);
+        num += 1;
+        fs.seekp(0, std::ios::beg);
+        fs << num << std::endl;
+    } else {
+        return 2;
+    }
+    fs.seekp(0, std::ios::end);
+    fs << file_name << std::endl;
+    return 0;
 }
