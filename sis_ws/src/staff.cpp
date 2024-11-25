@@ -282,9 +282,79 @@ int Staff::claim_class(const std::string &course_code, short class_code, vector<
     return 0;
 }
 
+
 void Staff::profile_add_class(const std::string &userID, short class_code) {
     std::string work_dir = staff_path + userID + ".txt";
-    // TODO: finish this
+    std::fstream file(work_dir, std::ios::in | std::ios::out);
+
+    if (!file.is_open()) return;
+
+    std::vector<std::pair<std::string, std::vector<short>>> courses;
+    std::string line;
+    int course_num;
+
+    // Skip the first three lines
+    for (int i = 0; i < 3; ++i) std::getline(file, line);
+
+    // Read the number of courses
+    file >> course_num;
+    std::getline(file, line); // Move to the next line
+
+    // Read the courses and their classes
+    for (int i = 0; i < course_num; ++i) {
+        std::string course_code;
+        int class_num;
+        std::vector<short> class_codes;
+
+        file >> course_code;
+        file >> class_num;
+        for (int j = 0; j < class_num; ++j) {
+            short cls_code;
+            file >> cls_code;
+            class_codes.push_back(cls_code);
+        }
+        courses.emplace_back(course_code, class_codes);
+    }
+
+    // Insert the new course and class code
+    Course c = Course(class_code);
+    std::string new_course_code = c.courseCode;
+    bool course_found = false;
+
+    for (auto &course : courses) {
+        if (course.first == new_course_code) {
+            course.second.push_back(class_code);
+            course_found = true;
+            break;
+        }
+    }
+
+    if (!course_found) {
+        courses.emplace_back(new_course_code, std::vector<short>{class_code});
+        course_num++;
+    }
+
+    // Write the updated data back to the file
+    file.clear();
+    file.seekp(0, std::ios::beg);
+
+    // Write the first three lines back
+    for (int i = 0; i < 3; ++i) {
+        std::getline(file, line);
+        file << line << std::endl;
+    }
+
+    // Write the number of courses
+    file << course_num << std::endl;
+
+    // Write the courses and their classes
+    for (const auto &course : courses) {
+        file << course.first << std::endl;
+        file << course.second.size() << std::endl;
+        for (const auto &cls_code : course.second) {
+            file << cls_code << std::endl;
+        }
+    }
 }
 
 Staff::~Staff() {
