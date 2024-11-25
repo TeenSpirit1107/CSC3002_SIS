@@ -30,7 +30,7 @@ const std::string Student::student_path = ".\\sis_ws\\data_repo\\student\\";
 * @param inputID The ID of the student. Guaranteed to exist.
 */
 
-Student::Student(std::string & inputID):
+Student::Student(const std::string & inputID):
     Client(inputID)
 {
     profile_path=student_path+inputID+".txt";
@@ -69,7 +69,7 @@ Student::Student(std::string & inputID):
 * @param inputID The ID of the student to find.
 * @return shared_ptr<Student> A shared pointer to the Student object if found, otherwise nullptr.
 */
-shared_ptr<Student> Student::find_profile(std::string &inputID) {
+shared_ptr<Student> Student::find_profile(const std::string &inputID) {
     std::string find_path = student_path + inputID + ".txt";
 
     // check whether the id exists

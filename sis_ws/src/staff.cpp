@@ -27,7 +27,7 @@ const std::string Staff::staff_path = ".\\sis_ws\\data_repo\\staff\\";
 *
 * @param inputID The ID of the staff member. Guaranteed to exist.
 */
-Staff::Staff(std::string &inputID): Client(inputID) {
+Staff::Staff(const std::string &inputID): Client(inputID) {
     profile_path = staff_path + inputID + ".txt";
     ifstream fileReader(profile_path);
 
@@ -66,7 +66,7 @@ Staff::Staff(std::string &inputID): Client(inputID) {
  * @param inputID The ID of the staff member to find.
  * @return shared_ptr<Staff> A shared pointer to the Staff object if found, otherwise nullptr.
  */
-shared_ptr<Staff> Staff::find_profile(std::string &inputID) {
+shared_ptr<Staff> Staff::find_profile(const std::string &inputID) {
     std::string find_path = staff_path + inputID + ".txt";
 
     // check whether the id exists
@@ -100,7 +100,7 @@ shared_ptr<Staff> Staff::find_profile(std::string &inputID) {
  * @param description The description of the course.
  * @return 0 if the course is created successfully, 1 if the input is invalid, 2 if the file cannot be opened.
  */
-int Staff::create_course(std::string &course_name, std::string &pre_req, std::string &year, std::string &description) {
+int Staff::create_course(const std::string &course_name, const std::string &pre_req, const std::string &year, const std::string &description) {
     if (!is_valid_course_expr(pre_req)) return 1;
     std::string file_name = course_name + "_" + get_current_datetime() + ".txt";
     std::string file_path = course_claim_path_prefix + "registry\\" + file_name;

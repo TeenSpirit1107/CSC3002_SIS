@@ -9,7 +9,6 @@
 // testing; for printing current working path
 #include <iostream>
 #include <unistd.h>
-#include <limits.h>
 #include<fstream>
 
 // include sis classes
@@ -141,79 +140,66 @@ void test_create_course(std::string & prereq) {
 }
 
 void test_final_grade() {
-    test_create_course_parseCode(test_create_course(" (CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)
-"))
+    std::string pre = "(CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)";
+    test_create_course(pre);
     test_compute_final_grade_parseCode(Staff::compute_final_grade(1));
     test_compute_final_grade_parseCode(Staff::compute_final_grade(2));
+}
+
+
+
+void test_find_id_parseCode(int i) {
+    if (i==0) {
+
+    }
+
+}
+void test_find_id() {
+
+}
+
+void test_name_process() {
+    std::string illegal_names[5] = {"yimeng", "y1 meng", "   yimeng TENG", "yimeng   TENG", "yimeng TENG   "};
+    std::string legal_name6 = "yImEnG tENG";
+    for (std::string n : illegal_names) {
+        if (Client::is_legal_name(n)) {
+            printf("Error: illegal name mistaken as legal.");
+            break;
+        }
+    }
+    if (!Client::is_legal_name(legal_name6)) {
+        printf("Error: legal name mistaken as illegal.");
+    }
+
+    printf("unformatted name: %s\n",legal_name6.c_str());
+    std::string formatted_name6 = Client::format_name(legal_name6);
+    printf("formatted name: %s\n",formatted_name6.c_str());
+
+}
+
+void test_name_get_id() {
+
+    // Case 1: illegal name (failure)
+    if (Client::name_get_id("ym", true)=="i") printf("illegal name test passed.\n");
+
+    // Case 2: non-existing name (failure)
+    if (Client::name_get_id("Yimeng TENG", false)=="x") printf("non-existing name test passed.\n");
+    // yimeng TENG doesn't exist in the staff repo; but in the student repo. So here it returns "x"
+
+    // Case 3: legal, existing name, student. (success)
+    std::string name1 = "yImeng tenG";
+    printf("Student Name: %s; Student ID: %s\n",name1.c_str(),Client::name_get_id(name1, true).c_str());
+    // Case 4: legal, existing name, staff. (success)
+    std::string name2 = "Yangsheng XU";
+    printf("Staff Name: %s; Staff ID: %s\n",name2.c_str(),Client::name_get_id(name2, false).c_str());
+
 }
 
 int main() {
 
     // test_logIn();
     // test_create_course();
-    test_final_grade();
-
+    // test_final_grade();
+    // test_name_process();
+    test_name_get_id();
 }
-
-// testing 11/15
-// int main() {
-//
-//     // TRIAL 1: an ID that exists.
-//
-//     std::string inputID = "9100001";
-//     std::shared_ptr<Staff> staff = Staff::find_profile(inputID);
-//
-//     if(staff == nullptr) {
-//         printf("Sorry, the ID %s cannot be found.",inputID.c_str());
-//     }else{
-//         staff->output_basic_info();
-//     }
-//
-//     // TRIAL 2: an ID that dne
-//
-//     inputID = "3141593";
-//     staff = Staff::find_profile(inputID);
-//
-//     if(staff == nullptr) {
-//         printf("Sorry, the ID %s cannot be found.",inputID.c_str());
-//     }else{
-//         staff->output_basic_info();
-//     }
-//     // a method for "deleting" a shared pointer
-//     staff.reset();
-//
-//     // TRIAL 3: General Login for Students or Professor
-//
-//     printf("Please enter your ID: \n");
-//     std::string inputID2;
-//     std::cin >> inputID2;
-//     printf("Please enter your passcode: \n");
-//     std::string inputPass2;
-//     std::cin >> inputPass2;
-//
-//     if (Client::id_is_student(inputID2)) {
-//         std::shared_ptr<Student> student = Student::log_in(inputID2, inputPass2);
-//         while (student == nullptr) {
-//             printf("Sorry, your ID or passcode is incorrect, please try again.\n");
-//             printf("Please enter your ID: \n");
-//             std::cin >> inputID2;
-//             printf("Please enter your passcode: \n");
-//             std::cin >> inputPass2;
-//         }
-//         student->output_basic_info();
-//         printf("Welcome, student %s!\n",student->get_userName().c_str());
-//
-//     }else {
-//         std::shared_ptr<Staff> staff2 = Staff::log_in(inputID2, inputPass2);
-//         while (staff2 == nullptr) {
-//             printf("Sorry, your ID or passcode is incorrect, please try again.\n");
-//             printf("Please enter your ID: \n");
-//             std::cin >> inputID2;
-//             printf("Please enter your passcode: \n");
-//             std::cin >> inputPass2;
-//         }
-//         staff2->output_basic_info();
-//         printf("Welcome, staff %s!\n",staff2->get_userName().c_str());
-//     }
-//     return 0;
-// }
