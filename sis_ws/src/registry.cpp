@@ -1,5 +1,3 @@
-#include "registry.hpp"
-
 #include <iostream>
 #include <cstdio>
 #include <conio.h>
@@ -9,7 +7,11 @@
 #include <windows.h>
 #include <iomanip>
 #include <map>
+#include <set>
+#include <vector>
+
 #include <student.hpp>
+#include "registry.hpp"
 
 using namespace std;
 
@@ -524,8 +526,19 @@ void read_transcript(string stuID, map<string, multimap<string, double> > &stu_l
     fclose(file);
     stu_lst.insert(make_pair(stuID, this_grade));
 }
+typedef struct stu_final_gpa {
+    string stuID;
+    double gpa;
+    explicit stu_final_gpa(string inputstuID, double inputgpa) {
+        stuID = inputstuID; gpa = inputgpa;
+    }
+    bool operator<(const stu_final_gpa& other) const {
+        return this->gpa > other.gpa;
+    }
+}sfg;
 void print_transcript(map<string, multimap<string, double> > stu_lst, map<string, int> mp_unit) {
     string work_dir = ".\\sis_ws\\data_repo\\student\\transcript\\";
+    map<int, set<sfg> > mp_stu_grade;
     for(auto it = stu_lst.begin(); it != stu_lst.end(); it++) {
         double grade_point = 0, tot_unit = 0;
         multimap<string, double> this_grade = it->second;
@@ -541,6 +554,26 @@ void print_transcript(map<string, multimap<string, double> > stu_lst, map<string
             tot_unit += mp_unit[it1->first];
         }
         fprintf(fp, "%lf %lf %lf\n", tot_unit, grade_point, grade_point/tot_unit);
+        fclose(fp);
+        string stuID = it->first;
+        stu_final_gpa node(stuID, grade_point/tot_unit);
+        mp_stu_grade[atoi(stuID.substr(0,3).c_str())].insert(node);
+    }
+    work_dir = ".\\sis_ws\\data_repo\\registry\\";
+    for(auto it = mp_stu_grade.begin(); it != mp_stu_grade.end(); it++) {
+        printf("%d\n", it->first);
+        string curr_dir = work_dir + to_string(it->first) + ".txt";
+        FILE *file = fopen(curr_dir.c_str(), "w");
+        fprintf(file, "%llu\n", it->second.size());
+        for(const auto& it1 : it->second) {
+            printf("%s %lf\n", it1.stuID.c_str(), it1.gpa);
+            fprintf(file, "%s %lf\n", it1.stuID.c_str(), it1.gpa);
+            if(it1.gpa > 3.5) {
+                // [todo] raise announcement to stuID
+                // [todo] announcement could be raised to inform students' their GPA and rank, also Dean's list if they get in
+            }
+        }
+        fclose(file);
     }
 }
 void Registry::stu_final_grade() {
