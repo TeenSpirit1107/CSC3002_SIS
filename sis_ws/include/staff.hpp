@@ -44,8 +44,12 @@ public:
     // [todo] shall this be made private, and only be useed by some "friend" classes?
 
     // Features
+
     // Feature 1: 创建课程
     int create_course(std::string & course_name, std::string & pre_req, std::string & year, std::string & description); // TOOD: finish this
+
+    // Featrue 2: Grade Students in a course
+    static int compute_final_grade(short class_code);
 };
 
 # endif

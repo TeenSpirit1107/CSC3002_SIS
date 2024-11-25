@@ -5,12 +5,14 @@
 #include<memory>
 #include<stack>
 #include <ctime>
+#include <sstream>
 
 // sis classes
 #include "client.hpp"
 #include "staff.hpp"
 #include "student.hpp"
 #include "course.hpp"
+
 
 Client::Client():
     course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
@@ -240,5 +242,41 @@ std::string Client::get_current_datetime() {
 
     return buffer;
 }
+
+/**
+ * @brief Get the name associated with a given ID.
+ *
+ * This function checks if the given ID exists and retrieves the corresponding name
+ * from the appropriate roster file (either student or staff).
+ *
+ * @param inputID The ID of the client.
+ * @return The name associated with the given ID, or an empty string if the ID does not exist.
+ */
+
+std::string Client::id_get_name(std::string &inputID) {
+    if (id_exist(inputID))
+    {
+        std::string work_dir = ".\\sis_ws\\data_repo\\";
+        if (inputID[0]=='9') {
+            // then is professor
+            work_dir+="staff\\staff_roster.txt";
+        }else {
+            // we assume it's student; although could also registry
+            work_dir += "student\\student_roster.txt";
+        }
+        std::ifstream file(work_dir);
+        std::string line;
+        if (file.is_open()) {
+            while (std::getline(file, line)) {
+                if (line.substr(0, 7) == inputID) {
+                    return line.substr(8); // Return the name part
+                }
+            }
+        }
+    }
+    return "";
+}
+
+
 
 

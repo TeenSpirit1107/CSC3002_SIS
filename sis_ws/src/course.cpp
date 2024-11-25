@@ -33,9 +33,27 @@ Course::Course(string inputCode, string inputName, string inputIns, short inputC
         lec[i] = inputLec[i];
     for (int i = 0; i < num_tut; i++)
         tut[i] = inputTut[i];
+
+    // 11/21 test compute grade
+    // TODO: Change this to actual value.
+    enrolled_num = 4;
+    enrolled_stu_id[0] =1230001;
+    enrolled_stu_id[1] =1230002;
+    enrolled_stu_id[2] =1230003;
+    enrolled_stu_id[3] =1230004;
 }
 
 Course::Course(short class_Code) {
+
+    // 11/21test staff grade student
+    //
+    // TODO: Change this to actual value.
+    enrolled_num = 4;
+    enrolled_stu_id[0] =1230001;
+    enrolled_stu_id[1] =1230002;
+    enrolled_stu_id[2] =1230003;
+    enrolled_stu_id[3] =1230004;
+    // the following are not testing part
     classCode = class_Code;
     string work_dir = ".\\sis_ws\\data_repo\\class\\"+to_string(classCode)+".txt";
     FILE *file = fopen(work_dir.c_str(), "r");
@@ -108,6 +126,7 @@ void Course::print2File() {
     for (int i = 0; i < num_tut; i++) fprintf(file, "%s\n", tut_classroom[i].c_str());
     fclose(file);
 }
+
 
 /*void Course::addStu(Student newStu){
 
