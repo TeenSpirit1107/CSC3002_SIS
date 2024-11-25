@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <iomanip>
 #include <map>
+#include <student.hpp>
 
 using namespace std;
 
@@ -346,7 +347,7 @@ void Registry::claim_class() {
                 for (int i = 0; i < M; i++) class_file >> tut[i];
                 class_file.close();
                 short classCode = getClassNum()+short(1);
-                Course course(courseCode, courseName, prof_code, classCode, N, M, lec, tut);
+                Course course(courseCode, courseName, prof_code, 3, classCode, N, M, lec, tut, quota);
                 course.printCourse();
                 char c;
                 printf("judgement: (P/F/S/B)\n"); // pass fail skip break
@@ -503,4 +504,83 @@ void Registry::classroom_arrangement() {
             printf("%d %d %s\n", course[i]->classCode, course[i]->tut[j], course[i]->tut_classroom[j].c_str());
         }
     }
+}
+
+void read_transcript(string stuID, map<string, multimap<string, double> > &stu_lst) {
+    string work_dir = ".\\sis_ws\\data_repo\\student\\transcript\\"+stuID + ".txt";
+    FILE *file = fopen(work_dir.c_str(), "r");
+    if(file == nullptr) {
+        stu_lst[stuID] = multimap<string, double>();
+        return;
+    }
+    multimap<string, double> this_grade;
+    int n;
+    fscanf(file, "%d", &n);
+    for(int i = 0; i < n; i++) {
+        char courseCode[10]; double GPA;
+        fscanf(file, "%s %lf", courseCode, &GPA);
+        this_grade.insert(pair<string, double>(courseCode, GPA));
+    }
+    fclose(file);
+    stu_lst.insert(make_pair(stuID, this_grade));
+}
+void print_transcript(map<string, multimap<string, double> > stu_lst, map<string, int> mp_unit) {
+    string work_dir = ".\\sis_ws\\data_repo\\student\\transcript\\";
+    for(auto it = stu_lst.begin(); it != stu_lst.end(); it++) {
+        double grade_point = 0, tot_unit = 0;
+        multimap<string, double> this_grade = it->second;
+        printf("%s\n", it->first.c_str());
+        string stu_dir = work_dir + it->first + ".txt";
+        FILE *fp = fopen(stu_dir.c_str(), "w");
+        printf("%llu\n", this_grade.size());
+        fprintf(fp, "%llu\n", this_grade.size());
+        for(auto it1 = this_grade.begin(); it1 != this_grade.end(); it1++) {
+            printf("%s %d %lf\n", it1->first.c_str(), mp_unit[it1->first], it1->second);
+            fprintf(fp, "%s %lf\n", it1->first.c_str(), it1->second);
+            grade_point += it1->second;
+            tot_unit += mp_unit[it1->first];
+        }
+        fprintf(fp, "%lf %lf %lf\n", tot_unit, grade_point, grade_point/tot_unit);
+    }
+}
+void Registry::stu_final_grade() {
+    printf("stu_final_grade\n");
+    map<string, multimap<string, double> > stu_lst;
+    map<char, double> mp_grd;
+    map<string, int> mp_unit;
+    mp_grd['a'] = 4.0; mp_grd['b'] = 3.7; mp_grd['c'] = 3.3; mp_grd['d'] = 3.0; mp_grd['e'] = 2.7; mp_grd['f'] = 2.3; mp_grd['g'] = 2.0; mp_grd['h'] = 1.7; mp_grd['i'] = 1.3; mp_grd['j'] = 1.0; mp_grd['k'] = 0.7; mp_grd['l'] = 0;
+    ifstream infile;
+    string work_dir = ".\\sis_ws\\data_repo\\class\\Class Number.txt";
+    FILE *file = fopen(work_dir.c_str(), "r");
+    int n;
+    fscanf(file, "%d", &n);
+    fclose(file);
+    printf("%d classes in total\n", n);
+    work_dir = ".\\sis_ws\\data_repo\\student_grade\\";
+    for(int i = 1; i <= n; i++) {
+        infile.open(work_dir + "\\"+to_string(i)+".txt");
+        if(!infile.is_open()) {
+            printf("%d not found\n", i);
+            continue;
+        }
+        Course C = Course(i);
+        string courseCode = C.courseCode;
+        int unit = C.unit;
+        mp_unit[courseCode] = unit;
+        printf("%s\n", courseCode.c_str());
+        string line;
+        while(getline(infile, line)) {
+            string stu_ID = line.substr(0, 7);
+            double grade = mp_grd[line[7]];
+            printf("%s %lf\n", stu_ID.c_str(), grade);
+            map<string, multimap<string, double> >::iterator it = stu_lst.find(stu_ID);
+            if(it == stu_lst.end()) {
+                read_transcript(stu_ID, stu_lst);
+            }
+            stu_lst[stu_ID].insert(pair<string, double>(courseCode, grade));
+        }
+        infile.close();
+        printf("%d is over\n", i);
+    }
+    print_transcript(stu_lst, mp_unit);
 }

@@ -1,6 +1,7 @@
 #include "course.hpp"
 
 // cpp lib
+#include <fstream>
 #include<iostream>
 #include<string>
 #include"stdio.h"
@@ -11,7 +12,8 @@
 
 using namespace std;
 
-Course::Course(string inputCode, string inputName, string inputIns, short inputClassCode, int n, int m, int inputLec[], int inputTut[], int inputCap){
+Course::Course(string inputCode, string inputName, string inputIns, int inp_unit, short inputClassCode, int n, int m,
+               int inputLec[], int inputTut[], int inputCap) {
     
     // Validate
     if (inputCode.length()!=7){
@@ -26,6 +28,7 @@ Course::Course(string inputCode, string inputName, string inputIns, short inputC
     courseCode = inputCode;
     courseName = inputName;
     instructor = inputIns;
+    unit = inp_unit;
     classCode = inputClassCode;
     num_lec = n; num_tut = m;
     capacity = inputCap;
@@ -85,15 +88,15 @@ Course::Course(short class_Code) {
     major = courseCode.substr(0,3);
 
     work_dir = ".\\sis_ws\\data_repo\\course\\"+courseCode+".txt";
-    file = fopen(work_dir.c_str(), "r");
-    if (file== nullptr) {
-        cout<<"[System Message] File could not be opened."<<endl;
-        return;
-    }
-    fscanf(file, "%s", fn);
-    courseName = fn;
+    ifstream f(work_dir);
+    f >> courseName;
+    string tmp;
+    f >> tmp;
+    f >> tmp;
+    f >> tmp;
+    f >> unit;
     // [todo] read more information from this file.
-    fclose(file);
+    f.close();
 }
 
 Course::~Course(){

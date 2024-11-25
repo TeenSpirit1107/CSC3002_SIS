@@ -4,6 +4,7 @@
 // cpp lib
 #include<string>
 #include<vector>
+#include<map>
 
 // packages
 #include"client.hpp"
@@ -21,7 +22,6 @@ class Student: public Client{
 
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
-
     // Member Functions
 
 

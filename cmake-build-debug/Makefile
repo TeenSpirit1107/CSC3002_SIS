@@ -248,6 +248,30 @@ sis_ws/src/staff.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.s
 .PHONY : sis_ws/src/staff.cpp.s
 
+sis_ws/src/student.obj: sis_ws/src/student.cpp.obj
+.PHONY : sis_ws/src/student.obj
+
+# target to build an object file
+sis_ws/src/student.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj
+.PHONY : sis_ws/src/student.cpp.obj
+
+sis_ws/src/student.i: sis_ws/src/student.cpp.i
+.PHONY : sis_ws/src/student.i
+
+# target to preprocess a source file
+sis_ws/src/student.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.i
+.PHONY : sis_ws/src/student.cpp.i
+
+sis_ws/src/student.s: sis_ws/src/student.cpp.s
+.PHONY : sis_ws/src/student.s
+
+# target to generate assembly for a file
+sis_ws/src/student.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.s
+.PHONY : sis_ws/src/student.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -272,6 +296,9 @@ help:
 	@echo ... sis_ws/src/staff.obj
 	@echo ... sis_ws/src/staff.i
 	@echo ... sis_ws/src/staff.s
+	@echo ... sis_ws/src/student.obj
+	@echo ... sis_ws/src/student.i
+	@echo ... sis_ws/src/student.s
 .PHONY : help
 
 

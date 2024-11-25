@@ -1,5 +1,6 @@
 C/C++ programming
 0000001
 (CSC1001|CSC1003)&MAT1001
-3 2 3 4 
+3 2 3 4
+3
 It's a course for undergraduate students to learn more about C++ programming. 
