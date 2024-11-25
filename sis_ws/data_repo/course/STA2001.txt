@@ -1,6 +1,5 @@
 Introduction to statistics
 0000001
 None
-4 1 2 3 4
-3
+4 1 2 3 4 
 It's a fundamental course that introduces statistics. 
