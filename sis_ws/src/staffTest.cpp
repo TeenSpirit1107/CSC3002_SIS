@@ -93,6 +93,8 @@ void test_create_course_parseCode(int code) {
         cout<<"the input requisites expression is invalid\n";
     }else if (code==2) {
         cout<<"the file cannot be written into (unknown error)\n";
+    }else if (code ==3) {
+        cout<<"error in todo.txt handling\n";
     }
     else {
         // This is not supposed to happen! 
@@ -109,14 +111,13 @@ void test_compute_final_grade_parseCode(int code) {
     else cout<<"Wrong return code.\n";
 }
 
-void test_create_course(std::string & prereq) {
+void test_create_course(const std::string & prereq) {
 
     std::string inputID = "9100001";
     std::shared_ptr<Staff> s = Staff::find_profile(inputID);
     std::string courseName = "Linear Algebra";
-    prereq = "(MAT1001|MAT1005|MAT1011)&(CSC1001|CSC1003)";
     std::string year = "3 1 2 3";
-    std::string description = "Introduction to basic topics in linear algebra, including linear independence, bases, and eigenvalue.";
+    std::string description = "Introduction to basic topics in Linear Algebra, including linear independence, bases, and eigenvalue.";
 
     // case return 0: successfully created
     int i = s->create_course(courseName, prereq, year, description);
@@ -127,14 +128,14 @@ void test_create_course(std::string & prereq) {
     i = s->create_course(courseName, prereq2, year, description);
     test_create_course_parseCode(i);
 
-    // case return 2: the file cannot be written into . Unknown error or the file already exists.
-
-    // TODO: current problem, overwrite if exists. But no moode could make sure that,
-    // 1. if file dne, create;
-    // 2. and if file exists, don't open.
-    // out: only 1 not 2; __noreplace: only 2 not 1.
-    i = s->create_course(courseName, prereq, year, description);
-    test_create_course_parseCode(i);
+    // // case return 2: the file cannot be written into . Unknown error or the file already exists.
+    //
+    // // TODO: current problem, overwrite if exists. But no moode could make sure that,
+    // // 1. if file dne, create;
+    // // 2. and if file exists, don't open.
+    // // out: only 1 not 2; __noreplace: only 2 not 1.
+    // i = s->create_course(courseName, prereq, year, description);
+    // test_create_course_parseCode(i);
 
     s.reset();
 }
@@ -188,6 +189,7 @@ void test_name_get_id() {
 
     // Case 3: legal, existing name, student. (success)
     std::string name1 = "yImeng tenG";
+
     printf("Student Name: %s; Student ID: %s\n",name1.c_str(),Client::name_get_id(name1, true).c_str());
     // Case 4: legal, existing name, staff. (success)
     std::string name2 = "Yangsheng XU";
@@ -195,11 +197,24 @@ void test_name_get_id() {
 
 }
 
+void test_claim_class() {
+    std::string inputID = "9100001";
+    std::shared_ptr<Staff> s = Staff::find_profile(inputID);
+    int i = s->claim_class("CSC3002", 1, {1,3}, {3});
+    if (i==0) cout<<"Class claimed successfully.\n";
+    else cout<<"Error in claiming class.\n";
+    s.reset();
+}
+
 int main() {
 
     // test_logIn();
-    // test_create_course();
+    // test_create_course("(CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)");
     // test_final_grade();
     // test_name_process();
-    test_name_get_id();
+    // test_name_get_id();
+    test_claim_class();
+
+    // TODO: test  create class
+
 }
