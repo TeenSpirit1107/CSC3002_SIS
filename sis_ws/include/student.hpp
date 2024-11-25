@@ -34,12 +34,12 @@ public:
 
     // Member Functions
 
-    explicit Student(std::string & inputID);
+    explicit Student(const std::string & inputID);
     // Retrieve a student without using passcode; only supposed to be used by someone with permission.
     ~Student();
 
     // [todo] shall this be made private, but can be visited by "friend" Classes?
-    static shared_ptr<Student> find_profile(std::string &inputID);
+    static shared_ptr<Student> find_profile(const std::string &inputID);
 
 
 

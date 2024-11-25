@@ -14,23 +14,20 @@
 #include "course.hpp"
 
 
-Client::Client():
-    course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
-{
+Client::Client(): course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
     this->userID = "0000000";
     this->userName = "default";
     this->passcode = "123456";
 }
 
 // [todo] this constructor with many inputs may be erased if it's not used elsewhere.
-Client::Client(std::string & inputID, std::string & inputName, std::string & userPass):
-    userID(inputID), userName(inputName),passcode(userPass), course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
-{
+Client::Client(const std::string &inputID, const std::string &inputName, const std::string &userPass): userID(inputID),
+    userName(inputName), passcode(userPass), course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
 }
 
-Client::Client(std::string & inputID):
-    userID(inputID), userName(""), passcode(""),profile_path(""),  course_claim_path_prefix( ".\\sis_ws\\data_repo\\course_claim\\")
-{}
+Client::Client(const std::string &inputID): userID(inputID), userName(""), passcode(""), profile_path(""),
+                                            course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
+}
 
 Client::~Client() {
     // [todo] finish destructor
@@ -71,19 +68,20 @@ bool Client::is_student() const {
  * @return true if the client is a student, false if  otherwise.
  */
 
-bool Client::id_is_student(std::string & inputID) {
+bool Client::id_is_student(const std::string &inputID) {
     return inputID[0] == '1';
 }
 
 // Feature: Log In
 
-bool Client::id_exist(std::string & inputID) {
-
+bool Client::id_exist(const std::string &inputID) {
     char firstChar = inputID[0];
 
     // Check whether it's a professor or a student. Find the id in the corresponding path.
-    std::string input_path = firstChar == '9' ? Staff::staff_path+inputID+".txt" : Student::student_path+inputID+".txt";
-    std::ifstream file(input_path,std::ios::in);
+    std::string input_path = firstChar == '9'
+                                 ? Staff::staff_path + inputID + ".txt"
+                                 : Student::student_path + inputID + ".txt";
+    std::ifstream file(input_path, std::ios::in);
 
     // Case 1: the id doesn't exist.
     if (!file.is_open()) {
@@ -100,72 +98,35 @@ bool Client::id_exist(std::string & inputID) {
  * @param inputPass The passcode to be validated.
  * @return true if the passcode is correct, false if the ID doesn't exist, or passcode is wrong.
  */
-bool Client::validate_passcode(std::string &inputID, std::string &inputPass) {
-
+bool Client::validate_passcode(const std::string &inputID, const std::string &inputPass) {
     if (!id_exist(inputID)) {
         printf("Failure: ID doesn't exist.\n");
         return false;
     }
     bool valid_pass = false;
     if (id_is_student(inputID)) {
-        std::string work_dir = Student::student_path+inputID+".txt";
+        std::string work_dir = Student::student_path + inputID + ".txt";
         std::ifstream file(work_dir);
         std::string real_pass;
-        std::getline(file,real_pass);
+        std::getline(file, real_pass);
         valid_pass = real_pass == inputPass;
-    }else {
-        std::string work_dir = Staff::staff_path+inputID+".txt";
+    } else {
+        std::string work_dir = Staff::staff_path + inputID + ".txt";
         std::ifstream file(work_dir);
         std::string real_pass;
-        std::getline(file,real_pass);
-        valid_pass= real_pass == inputPass;
+        std::getline(file, real_pass);
+        valid_pass = real_pass == inputPass;
     }
     return valid_pass;
 }
 
-
-
-/*
-
-auto Client::log_in(std::string & inputID, std::string & inputPass) {
-
-    // Step 1: check client type.
-    bool is_stu = id_is_student(inputID);
-
-    // Step 2: check whether the id exists.
-    if(!Client::id_exist(inputID)) {
-        return nullptr;
-    }
-
-    // Step 3: create a new object in HEAP and return its pointer.
-    // Step 4: Validate the passcode.
-    if (is_stu) {
-        auto new_stu = std::make_shared<Student>(inputID);
-        if (new_stu->get_passcode() != inputPass) {
-            new_stu.reset();
-            return nullptr;
-        }
-        return new_stu;
-    }
-    auto new_stf = std::make_shared<Staff>(inputID);
-    // TODO: 这里写Student new_stu有红色波浪线；建议改成auto. 稍后研究原理。
-    if (new_stf->get_passcode()!=inputPass) {
-        new_stf.reset();
-        return nullptr;
-    }
-    return new_stf;
-
-}*/
-
-
-// Testing
-// TODO: may remove those after debugging?
-
 void Client::output_basic_info() const {
-    std::cout<< "passcode: " << passcode<<"; userID: " << userID << "; userName: " << userName << std::endl;
+    std::cout << "passcode: " << passcode << "; userID: " << userID << "; userName: " << userName << std::endl;
 }
 
 // Feature: Create Course
+
+// Tools: Formatting
 /**
  * @brief Check whether the input course code is valid.
  * However, whether the course code exists in the data base is not checked.
@@ -173,7 +134,7 @@ void Client::output_basic_info() const {
  * @param inputCourseCode The input course code to be checked.
  * @return true if the input course code is valid, false if not.
  */
-bool Client::is_valid_course_code(std::string & inputCourseCode) {
+bool Client::is_valid_course_code(const std::string &inputCourseCode) {
     if (!inputCourseCode.size() == 7) return false;
     for (int i = 0; i < 3; i++) {
         if (!isupper(inputCourseCode[i])) return false;
@@ -191,13 +152,13 @@ bool Client::is_valid_course_code(std::string & inputCourseCode) {
  * @return true if the input expression is valid, false if not.
  */
 
-bool Client::is_valid_course_expr(std::string &inputExpr) {
+bool Client::is_valid_course_expr(const std::string &inputExpr) {
     std::stack<char> bracketStack;
     int len = inputExpr.size();
     bool expectOperand = true;
 
-    int i =0;
-    while (i<len) {
+    int i = 0;
+    while (i < len) {
         char ch = inputExpr[i];
 
         if (ch == '(') {
@@ -229,6 +190,69 @@ bool Client::is_valid_course_expr(std::string &inputExpr) {
     }
     return bracketStack.empty() && !expectOperand;
 }
+/**
+ * @brief Check whether the input name is legal.
+ *
+ * A legal name must contain a space separating the first and last name,
+ * and both the first and last names must consist of alphabetic characters only.
+ * But there's no requirement regarding the case of the characters.
+ *
+ * @param inputName The input name to be checked.
+ * @return true if the input name is legal, false otherwise.
+ */
+bool Client::is_legal_name(const std::string &inputName) {
+
+    size_t spacePos = inputName.find(' ');
+
+    if (spacePos == std::string::npos || spacePos == 0 || spacePos == inputName.length() - 1) {
+        return false;
+    }
+
+    std::string firstName = inputName.substr(0, spacePos);
+    std::string lastName = inputName.substr(spacePos + 1);
+
+    for (char c : firstName) {
+        if (!isalpha(c)) {
+            return false;
+        }
+    }
+
+    for (char c : lastName) {
+        if (!isalpha(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * @brief Format the input name.
+ *
+ * This function formats the input name by converting the first letter of the first name to uppercase
+ * and the rest to lowercase, and converting the entire last name to uppercase.
+ *
+ * @param inputName The input name to be formatted.
+ * @return The formatted name.
+ */
+std::string Client::format_name(const std::string &inputName) {
+    size_t spacePos = inputName.find(' ');
+    std::string firstName = inputName.substr(0, spacePos);
+    std::string lastName = inputName.substr(spacePos + 1);
+
+    // Convert first name to proper format
+    firstName[0] = toupper(firstName[0]);
+    for (size_t i = 1; i < firstName.length(); ++i) {
+        firstName[i] = tolower(firstName[i]);
+    }
+
+    // Convert last name to upper case
+    for (char &c : lastName) {
+        c = toupper(c);
+    }
+
+    return firstName + " " + lastName;
+}
+
 
 
 // Function to get the current date and time in the format "YYYYMMDDHHMMSS"
@@ -244,39 +268,40 @@ std::string Client::get_current_datetime() {
 }
 
 /**
- * @brief Get the name associated with a given ID.
+ * @brief Get the ID associated with a given name.
  *
- * This function checks if the given ID exists and retrieves the corresponding name
+ * This function checks if the given name is legal and retrieves the corresponding ID
  * from the appropriate roster file (either student or staff).
  *
- * @param inputID The ID of the client.
- * @return The name associated with the given ID, or an empty string if the ID does not exist.
+ * @param inputName The name of the client.
+ * @param isStudent A boolean indicating if the client is a student.
+ * @return The ID associated with the given name, or an error code:
+ *         - "i" if the name is illegal. (Note that unformatted name can be handled; but illegal name cannot.)
+ *         - "f" if the roster file could not be opened. (unknown error, not supposed to happen)
+ *         - "x" if the name was not found in the roster.
  */
-
-std::string Client::id_get_name(std::string &inputID) {
-    if (id_exist(inputID))
-    {
-        std::string work_dir = ".\\sis_ws\\data_repo\\";
-        if (inputID[0]=='9') {
-            // then is professor
-            work_dir+="staff\\staff_roster.txt";
-        }else {
-            // we assume it's student; although could also registry
-            work_dir += "student\\student_roster.txt";
-        }
-        std::ifstream file(work_dir);
-        std::string line;
-        if (file.is_open()) {
-            while (std::getline(file, line)) {
-                if (line.substr(0, 7) == inputID) {
-                    return line.substr(8); // Return the name part
-                }
+std::string Client::name_get_id(const std::string &inputName, bool isStudent) {
+    // TODO: complete this. error code comment.
+    if (!is_legal_name(inputName)) return"i";
+    std::string keyName = format_name(inputName);
+    std::string work_dir;
+    if (isStudent) {
+        work_dir = Student::student_path + "student_roster.txt";
+    }else {
+        work_dir = Staff::staff_path + "staff_roster.txt";
+    }
+    std::ifstream file(work_dir);
+    if (!file.is_open()) return "f";
+    std::string line;
+    while (std::getline(file, line)) {
+        size_t spacePos = line.find(' ');
+        if (spacePos != std::string::npos) {
+            std::string id = line.substr(0, 7);
+            std::string name = line.substr(spacePos + 1);
+            if (name == keyName) {
+                return id;
             }
         }
     }
-    return "";
+    return "x";
 }
-
-
-
-

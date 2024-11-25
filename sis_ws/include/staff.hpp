@@ -36,17 +36,17 @@ public:
     // Member Functions
 
     // Constructor Destructor
-    explicit Staff(std::string & inputID);
+    explicit Staff(const std::string & inputID);
     // Retrieve a staff without using passcode; only supposed to be used by someone with permission.
     ~Staff(); // [todo] not yet implemented
     
-    static shared_ptr<Staff> find_profile(std::string &inputID);
+    static shared_ptr<Staff> find_profile(const std::string & inputID);
     // [todo] shall this be made private, and only be useed by some "friend" classes?
 
     // Features
 
     // Feature 1: 创建课程
-    int create_course(std::string & course_name, std::string & pre_req, std::string & year, std::string & description); // TOOD: finish this
+    int create_course(const std::string & course_name, const std::string & pre_req, const std::string & year, const std::string & description); // TOOD: finish this
 
     // Featrue 2: Grade Students in a course
     static int compute_final_grade(short class_code);
