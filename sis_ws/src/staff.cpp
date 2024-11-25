@@ -292,7 +292,7 @@ void Staff::profile_add_class(const std::string &userID, short class_code) {
     std::vector<std::pair<std::string, std::vector<short>>> courses;
     std::string line;
     int course_num;
-
+/*
     // Skip the first three lines
     for (int i = 0; i < 3; ++i) std::getline(file, line);
 
@@ -354,7 +354,7 @@ void Staff::profile_add_class(const std::string &userID, short class_code) {
         for (const auto &cls_code : course.second) {
             file << cls_code << std::endl;
         }
-    }
+    }*/
 }
 
 Staff::~Staff() {
