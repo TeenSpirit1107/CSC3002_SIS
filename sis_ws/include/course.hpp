@@ -1,56 +1,58 @@
-# ifndef STAFF_HPP
-# define STAFF_HPP
+# ifndef COURSE_HPP
+# define COURSE_HPP
 
 // cpp lib
-#include<string>
-#include<vector>
-#include<tuple>
+# include <string>
+# include <queue>
 
-// sis classes
-#include <memory>
 
-#include"client.hpp"
-#include"registry.hpp"
-#include"course.hpp"
+// packages
+# include "staff.hpp"
+//# include "student.hpp"
 
-class Course;
 
-class Staff: public Client{
 
+class Course{
+
+    // private, by default
 public:
+    // attributes
+    string major;
+    int unit;
+    string courseCode;
+    string courseName;
+    int capacity;
+    short classCode;
 
-    friend class Registry;
+    // enrolled student ID
+    int enrolled_stu_id[140]{};
+    int enrolled_num;
 
-    // Member Variables
+    int num_lec, num_tut;
+    int lec[28]{}, tut[28]{};
+    // people
+    string instructor;
+    string lec_classroom[28], tut_classroom[21];
+    // Why the length of tut_classroom and tut_sessions doesn't match?
+    //queue<Student> stuEnrol;
+    //queue<Student> stuWait;
 
-    vector<Course> course;
-    vector<Course> submitted_course;
+    // to be completed: define a struct requirement, requiring the student's major and year to be ....
+    // typedef
 
-    // TODO: GUI view submitted create course applicatoins
 
-    // The path of the object's profile description file in data_repo.
-    static const std::string staff_path;
 
-    // Member Functions
+    // constructor destructor
+    Course(string CourseCode, string CourseName, string inputIns, int inp_unit, short inputClassCode, int n, int m,
+               int inputLec[], int inputTut[], int inputCap);
 
-    // Constructor Destructor
-    explicit Staff(const std::string & inputID);
-    // Retrieve a staff without using passcode; only supposed to be used by someone with permission.
-    ~Staff(); // [todo] not yet implemented
-    
-    static shared_ptr<Staff> find_profile(const std::string & inputID);
-    // [todo] shall this be made private, and only be useed by some "friend" classes?
+    explicit Course(short classCode);
+    ~Course();
 
-    // Features
+    void printCourse();
+    void print2File();
+    static bool is_valid_course_code(string & inputCourseCode);
+    static bool is_valid_course_expr(string & inputExpr);
 
-    // Feature 1: Claim Course
-    int create_course(const std::string & course_name, const std::string & pre_req, const std::string & year, const std::string & description); // TOOD: finish this
-// TODO: automatic prereq verification, given a course database large enough already
-    // Feature 2: Grade Students in a course
-    static int compute_final_grade(short class_code);
-
-    // Feature 3: Claim Class
-    int claim_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
 };
-
 # endif

@@ -4,6 +4,7 @@
 // cpp lib
 #include<string>
 #include<vector>
+#include<unordered_map>
 #include<tuple>
 
 // sis classes
@@ -17,18 +18,18 @@ class Course;
 
 class Staff: public Client{
 
-    // Member Variables
-
-    vector<Course> courses_;
-
-    // Member Functions
-
-
 public:
+
+    // courses
+
+    std::unordered_map<std::string,std::vector<short>> courses;
+    // string: course code; short: class code.
 
     friend class Registry;
 
     // Member Variables
+
+    // TODO: GUI view submitted create course applicatoins
 
     // The path of the object's profile description file in data_repo.
     static const std::string staff_path;
@@ -45,11 +46,15 @@ public:
 
     // Features
 
-    // Feature 1: 创建课程
+    // Feature 1: Claim Course
     int create_course(const std::string & course_name, const std::string & pre_req, const std::string & year, const std::string & description); // TOOD: finish this
-
-    // Featrue 2: Grade Students in a course
+// TODO: automatic prereq verification, given a course database large enough already
+    // Feature 2: Grade Students in a course
     static int compute_final_grade(short class_code);
+
+    // Feature 3: Claim Class
+    int claim_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
+    static void profile_add_class(const std::string & userID, short class_code);
 };
 
 # endif
