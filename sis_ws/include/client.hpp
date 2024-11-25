@@ -58,5 +58,6 @@ public:
 
     // Tools: file handling
     static int update_index_file(const std::string & index_dir, const std::string & file_name);
+
 };
 #endif

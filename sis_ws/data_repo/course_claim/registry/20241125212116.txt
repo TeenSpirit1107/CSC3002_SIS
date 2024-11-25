@@ -1,5 +1,5 @@
-Linear Algebra
-9100001
-(CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)
-3 1 2 3
-Introduction to basic topics in Linear Algebra, including linear independence, bases, and eigenvalue.
+Introduction to calculus
+0000001
+None
+4 1 2 3 4
+It's a fundamental course that introduces calculus.

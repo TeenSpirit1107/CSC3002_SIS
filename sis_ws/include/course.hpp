@@ -49,11 +49,8 @@ public:
     explicit Course(short classCode);
     ~Course();
 
-    // print
     void printCourse();
     void print2File();
-    //void addStu(Student newStu);
-
     static bool is_valid_course_code(string & inputCourseCode);
     static bool is_valid_course_expr(string & inputExpr);
 

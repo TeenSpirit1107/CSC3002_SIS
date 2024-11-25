@@ -42,15 +42,31 @@ Staff::Staff(const std::string &inputID): Client(inputID) {
         std::string name1;
         std::string name2;
 
-        std::string classes; // [todo] read classes
-        classes = ""; //testing
-        std::getline(fileReader, psc);
-        std::getline(fileReader, name1);
-        std::getline(fileReader, name2);
+        fileReader >> psc;
+        fileReader >> name1;
+        fileReader >> name2;
 
         passcode = psc;
         userName = name1 + " " + name2;
 
+        int course_num = 0;
+        fileReader >> course_num;
+
+        for (int i = 0; i < course_num; i++) {
+            std::string course_code;
+            fileReader >> course_code;
+            courses[course_code] = std::vector<short>();
+            std::vector<short> *v_ptr = &(courses[course_code]);
+            int class_num = 0;
+            fileReader >> class_num;
+            for (int j = 0; j < class_num; j++) {
+                std::string cls_str;
+                fileReader >> cls_str;
+                short class_code = static_cast<short>(std::stoi(cls_str));
+                v_ptr->push_back(class_code);
+            }
+            v_ptr = nullptr;
+        }
     }
 }
 
@@ -100,9 +116,10 @@ shared_ptr<Staff> Staff::find_profile(const std::string &inputID) {
  * @param description The description of the course.
  * @return status code
  */
-int Staff::create_course(const std::string &course_name, const std::string &pre_req, const std::string &year, const std::string &description) {
+int Staff::create_course(const std::string &course_name, const std::string &pre_req, const std::string &year,
+                         const std::string &description) {
     if (!is_valid_course_expr(pre_req)) return 1;
-    std::string file_name = get_current_datetime()+ ".txt";
+    std::string file_name = get_current_datetime() + ".txt";
     std::string file_path = course_claim_path_prefix + "registry\\" + file_name;
     std::string index_dir = ".\\sis_ws\\data_repo\\course_claim\\registry\\to_claim_list.txt";
     std::ofstream os(file_path, std::ios::out);
@@ -111,15 +128,15 @@ int Staff::create_course(const std::string &course_name, const std::string &pre_
     if (!os.is_open()) {
         return 2;
     }
-    if (update_index_file(index_dir, file_name)!=0) {
+    if (update_index_file(index_dir, file_name) != 0) {
         return 3;
     }
 
     os << course_name << std::endl;
     os << this->userID << std::endl;
-    if (pre_req=="") {
-        os << "None" <<std::endl;
-    }else {
+    if (pre_req == "") {
+        os << "None" << std::endl;
+    } else {
         os << pre_req << std::endl;
     }
     os << year << std::endl;
@@ -208,7 +225,7 @@ int Staff::compute_final_grade(short class_code) {
 
     for (int i = 0; i < enrolled_num; ++i) {
         std::string id_str = std::to_string(std::get<0>(id_avg[i]));
-        int grade_ind = std::floor(PARTITION_NUM*i/enrolled_num);
+        int grade_ind = std::floor(PARTITION_NUM * i / enrolled_num);
         char grade = LETTER_GRADE[grade_ind];
         std::string grade_str(1, grade);
         fileWriter << id_str << grade_str << std::endl;
@@ -233,9 +250,12 @@ int Staff::compute_final_grade(short class_code) {
  * @param input_tut A vector of integers representing tutorial time slots, with the same rule.
  * @return status code.
  */
-int Staff::create_class(const std::string & course_code, short class_code, vector<int> input_lec, vector<int> input_tut) {
+int Staff::claim_class(const std::string &course_code, short class_code, vector<int> input_lec, vector<int> input_tut) {
     // TODO: before, after? logic.
     // TODO: test this.
+    // TODO: claim_class, claim_course, add to local directory.
+    // TODO: check class exists
+
     std::string file_name = get_current_datetime() + ".txt";
     std::string work_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\" + file_name;
     std::string index_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\to_claim_list.txt";
@@ -244,12 +264,12 @@ int Staff::create_class(const std::string & course_code, short class_code, vecto
     if (!os.is_open()) {
         return 1;
     }
-    if (update_index_file(index_dir, file_name)!=0) {
+    if (update_index_file(index_dir, file_name) != 0) {
         return 2;
     }
 
     os << course_code << std::endl;
-    os << this->userID <<std::endl;
+    os << this->userID << std::endl;
     os << class_code << std::endl;
     os << input_lec.size() << std::endl;
     for (int i = 0; i < input_lec.size(); i++) {
@@ -260,6 +280,11 @@ int Staff::create_class(const std::string & course_code, short class_code, vecto
         os << input_tut[i] << std::endl;
     }
     return 0;
+}
+
+void Staff::profile_add_class(const std::string &userID, short class_code) {
+    std::string work_dir = staff_path + userID + ".txt";
+    // TODO: finish this
 }
 
 Staff::~Staff() {

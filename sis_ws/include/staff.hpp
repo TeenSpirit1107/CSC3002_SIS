@@ -4,6 +4,7 @@
 // cpp lib
 #include<string>
 #include<vector>
+#include<unordered_map>
 #include<tuple>
 
 // sis classes
@@ -19,12 +20,14 @@ class Staff: public Client{
 
 public:
 
+    // courses
+
+    std::unordered_map<std::string,std::vector<short>> courses;
+    // string: course code; short: class code.
+
     friend class Registry;
 
     // Member Variables
-
-    vector<Course> course;
-    vector<Course> submitted_course;
 
     // TODO: GUI view submitted create course applicatoins
 
@@ -50,7 +53,8 @@ public:
     static int compute_final_grade(short class_code);
 
     // Feature 3: Claim Class
-    int create_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
+    int claim_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
+    static void profile_add_class(const std::string & userID, short class_code);
 };
 
 # endif

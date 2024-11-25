@@ -259,8 +259,6 @@ std::string Client::format_name(const std::string &inputName) {
     return firstName + " " + lastName;
 }
 
-
-
 // Function to get the current date and time in the format "YYYYMMDDHHMMSS"
 std::string Client::get_current_datetime() {
     std::time_t now = std::time(nullptr);

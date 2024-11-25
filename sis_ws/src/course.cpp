@@ -115,6 +115,7 @@ void Course::printCourse(){
     printf("Number of tuts %d\n", num_tut);
     for (int i = 0; i < num_tut; i++) printf("%d ", tut[i]); printf("\n");
 }
+
 void Course::print2File() {
     string work_dir = ".\\sis_ws\\data_repo\\class\\"+to_string(classCode)+".txt";
     FILE *file = fopen(work_dir.c_str(), "w");
@@ -129,19 +130,3 @@ void Course::print2File() {
     for (int i = 0; i < num_tut; i++) fprintf(file, "%s\n", tut_classroom[i].c_str());
     fclose(file);
 }
-
-
-/*void Course::addStu(Student newStu){
-
-    // case 1: full
-    if(stuEnrol.size()==capacity){
-        printf("[System Message] Fail to add student %s course %s, because the class is full.\n",(newStu.getName().c_str(),courseCode.c_str()));
-        return;
-    }
-
-    // case 2: not full
-    printf("[System Message] The student %s is successfully added to the course %s. Remaining quota: %d.\n",
-    newStu.getName().c_str(),
-    courseCode.c_str(),
-    capacity - stuEnrol.size());
-}*/
