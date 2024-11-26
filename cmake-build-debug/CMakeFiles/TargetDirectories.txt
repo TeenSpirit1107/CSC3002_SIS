@@ -1,3 +1,3 @@
-C:/Languages/C_Code/sis_versions/sis1115v1/CSC3002_SIS/cmake-build-debug/CMakeFiles/CSC3002_SIS.dir
-C:/Languages/C_Code/sis_versions/sis1115v1/CSC3002_SIS/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Languages/C_Code/sis_versions/sis1115v1/CSC3002_SIS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Languages/C_Code/sis_versions/sis1126v1_fromMain/CSC3002_SIS/cmake-build-debug/CMakeFiles/CSC3002_SIS.dir
+C:/Languages/C_Code/sis_versions/sis1126v1_fromMain/CSC3002_SIS/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Languages/C_Code/sis_versions/sis1126v1_fromMain/CSC3002_SIS/cmake-build-debug/CMakeFiles/rebuild_cache.dir

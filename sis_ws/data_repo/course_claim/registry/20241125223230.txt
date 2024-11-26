@@ -1,0 +1,5 @@
+Linear Algebra
+9100001
+(CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)
+3 1 2 3
+Introduction to basic topics in Linear Algebra, including linear independence, bases, and eigenvalue.

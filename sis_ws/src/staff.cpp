@@ -27,7 +27,7 @@ const std::string Staff::staff_path = ".\\sis_ws\\data_repo\\staff\\";
 *
 * @param inputID The ID of the staff member. Guaranteed to exist.
 */
-Staff::Staff(std::string &inputID): Client(inputID) {
+Staff::Staff(const std::string &inputID): Client(inputID) {
     profile_path = staff_path + inputID + ".txt";
     ifstream fileReader(profile_path);
 
@@ -42,16 +42,36 @@ Staff::Staff(std::string &inputID): Client(inputID) {
         std::string name1;
         std::string name2;
 
-        std::string classes; // [todo] read classes
-        classes = ""; //testing
-        std::getline(fileReader, psc);
-        std::getline(fileReader, name1);
-        std::getline(fileReader, name2);
+        fileReader >> psc;
+        fileReader >> name1;
+        fileReader >> name2;
 
         passcode = psc;
         userName = name1 + " " + name2;
-        courses_ = std::vector<Course>();
 
+        int course_num = 0;
+        fileReader >> course_num;
+
+        for (int i = 0; i < course_num; i++) {
+            std::string course_code;
+            fileReader >> course_code;
+            courses[course_code] = std::vector<short>();
+            std::vector<short> *v_ptr = &(courses[course_code]);
+            int class_num = 0;
+            fileReader >> class_num;
+            for (int j = 0; j < class_num; j++) {
+                std::string cls_str;
+                fileReader >> cls_str;
+                    try {
+                        short class_code = static_cast<short>(std::stoi(cls_str));
+                        v_ptr->push_back(class_code);
+                        classes.insert(class_code);
+                    } catch (const std::invalid_argument &e) {
+                        std::cerr << "Invalid class code: " << cls_str << std::endl;
+                    }
+            }
+            v_ptr = nullptr;
+        }
     }
 }
 
@@ -66,7 +86,7 @@ Staff::Staff(std::string &inputID): Client(inputID) {
  * @param inputID The ID of the staff member to find.
  * @return shared_ptr<Staff> A shared pointer to the Staff object if found, otherwise nullptr.
  */
-shared_ptr<Staff> Staff::find_profile(std::string &inputID) {
+shared_ptr<Staff> Staff::find_profile(const std::string &inputID) {
     std::string find_path = staff_path + inputID + ".txt";
 
     // check whether the id exists
@@ -94,26 +114,36 @@ shared_ptr<Staff> Staff::find_profile(std::string &inputID) {
  * 0 successfully created and written into file
  * 1 the input requisites expression is invalid -- should ask the user to re-enter.
  * 2 the file cannot be written into (unknown error; or a file with the same name exists)
+ * 3 if there's error in updating todo.txt file
  * @param course_name The name of the course.
  * @param pre_req The expression of prerequisites of the course. Not assumed to be valid.
  * @param year The year of the course.
  * @param description The description of the course.
- * @return 0 if the course is created successfully, 1 if the input is invalid, 2 if the file cannot be opened.
+ * @return status code
  */
-int Staff::create_course(std::string &course_name, std::string &pre_req, std::string &year, std::string &description) {
+int Staff::create_course(const std::string &course_name, const std::string &pre_req, const std::string &year,
+                         const std::string &description) {
     if (!is_valid_course_expr(pre_req)) return 1;
-    std::string file_name = course_name + "_" + get_current_datetime() + ".txt";
+    std::string file_name = get_current_datetime() + ".txt";
     std::string file_path = course_claim_path_prefix + "registry\\" + file_name;
+    std::string index_dir = ".\\sis_ws\\data_repo\\course_claim\\registry\\to_claim_list.txt";
     std::ofstream os(file_path, std::ios::out);
+
     //std::ios::in means a new file will not be created if a file with the same name exists.
-    printf("Path: %s\n", file_path.c_str());
     if (!os.is_open()) {
         return 2;
-        // TODO: add explanation to error code
     }
+    if (update_index_file(index_dir, file_name) != 0) {
+        return 3;
+    }
+
     os << course_name << std::endl;
     os << this->userID << std::endl;
-    os << pre_req << std::endl;
+    if (pre_req == "") {
+        os << "None" << std::endl;
+    } else {
+        os << pre_req << std::endl;
+    }
     os << year << std::endl;
     os << description << std::endl;
     return 0;
@@ -200,13 +230,121 @@ int Staff::compute_final_grade(short class_code) {
 
     for (int i = 0; i < enrolled_num; ++i) {
         std::string id_str = std::to_string(std::get<0>(id_avg[i]));
-        int grade_ind = std::floor(PARTITION_NUM*i/enrolled_num);
+        int grade_ind = std::floor(PARTITION_NUM * i / enrolled_num);
         char grade = LETTER_GRADE[grade_ind];
         std::string grade_str(1, grade);
         fileWriter << id_str << grade_str << std::endl;
     }
     fileWriter.close();
     return 0;
+}
+
+/**
+ * @brief Creates a class with the given course code, class code, lecture times, and tutorial times.
+ *
+ * This function writes the class information to a file in the class claim registry.
+ *
+ * Return code explanation:
+ * 0 - The class was created and written to the file successfully.
+ * 1 - The file could not be opened (unknown error).
+ * 2 - Error in handling to_claim_list.txt
+ *
+ * @param course_code
+ * @param class_code
+ * @param input_lec A vector of integers representing lecture time slots, refer to the Communication Notes.
+ * @param input_tut A vector of integers representing tutorial time slots, with the same rule.
+ * @return status code.
+ */
+int Staff::claim_class(const std::string &course_code, short class_code, vector<int> input_lec, vector<int> input_tut) {
+    // TODO: before, after? logic.
+    // TODO: test this.
+    // TODO: claim_class, claim_course, add to local directory.
+    // TODO: check class exists
+
+    std::string file_name = get_current_datetime() + ".txt";
+    std::string work_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\" + file_name;
+    std::string index_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\to_claim_list.txt";
+
+    std::ofstream os(work_dir, std::ios::out);
+    if (!os.is_open()) {
+        return 1;
+    }
+    if (update_index_file(index_dir, file_name) != 0) {
+        return 2;
+    }
+
+    os << course_code << std::endl;
+    os << this->userID << std::endl;
+    os << class_code << std::endl;
+    os << input_lec.size() << std::endl;
+    for (int i = 0; i < input_lec.size(); i++) {
+        os << input_lec[i] << std::endl;
+    }
+    os << input_tut.size() << std::endl;
+    for (int i = 0; i < input_tut.size(); i++) {
+        os << input_tut[i] << std::endl;
+    }
+    return 0;
+}
+
+
+void Staff::profile_add_class( short class_code) {
+    // update object
+    std::vector<std::string> lines;
+    std::string line;
+    Course new_class = Course(class_code);
+    std::string new_course_code = new_class.courseCode;
+
+    auto it = courses.find(new_course_code);
+    bool has_course = (it!=courses.end());
+    classes.insert(class_code);
+    if (!has_course) courses[new_course_code] = vector<short>();
+    auto it2 = courses.find(new_course_code);
+    if (it2!=courses.end()) {
+        it2->second.push_back(class_code);
+    }
+    // update file
+
+    // save to temporary vector; do modifications
+
+
+
+    std::fstream file(profile_path, std::ios::in | std::ios::out);
+
+    if (!file.is_open()) {
+        std::cerr << "Error: the file could not be opened." << std::endl;
+        return;
+    }
+
+    // case 1: doesn't have this course's classes before
+
+    if (!has_course) {
+        while (std::getline(file, line)) {
+            lines.push_back(line);
+        }
+        lines.at(3)=std::to_string(courses.size());
+        lines.push_back(new_course_code);
+        lines.push_back("1");
+        lines.push_back(std::to_string(class_code));
+    }else {
+        // case 2: has another course of this class before
+        while (std::getline(file, line)) {
+            lines.push_back(line);
+            if (line==new_course_code) {
+                std::getline(file, line);//discard
+                lines.push_back(std::to_string(it->second.size()));
+                lines.push_back(std::to_string(class_code));
+            }
+        }
+    }
+
+    // from temporary vector to file
+    file.clear();
+    file.seekp(0, std::ios::beg);
+    for (const auto &l : lines) {
+        file << l << std::endl;
+    }
+
 }
 
 Staff::~Staff() {

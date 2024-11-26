@@ -33,6 +33,7 @@ public:
     void claim_course();
     void claim_class();
     void classroom_arrangement();
+    void stu_final_grade();
     ~Registry();
 };
 # endif

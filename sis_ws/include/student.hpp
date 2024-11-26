@@ -7,6 +7,7 @@
 #include<memory>
 #include <sstream>
 #include <unordered_set>
+#include<map>
 
 // packages
 #include"client.hpp"
@@ -31,6 +32,12 @@ public:
     int addFrd(const std::string &friendID);
     int checkFrd();
     int acceptFrd();
+    // Member Functions
+
+
+public:
+
+    // Member Variables
 
     // The path of the object's profile description file in data_repo.
     static const string student_path;
@@ -40,15 +47,20 @@ public:
 
     // Member Functions
 
-    explicit Student(std::string & inputID);
+    explicit Student(const std::string & inputID);
     // Retrieve a student without using passcode; only supposed to be used by someone with permission.
     ~Student();
 
     // [todo] shall this be made private, but can be visited by "friend" Classes?
+
     static shared_ptr<Student> find_profile(std::string &inputID);
     //static shared_ptr<Student> search_class(std::string &inputID);
 
 
+
+    // Feature: homework
+    vector<double> get_hw_scores (const short class_code);
+    void set_hw_scores (const short class_code, const int hw_num, double new_score);
 };
 
 # endif

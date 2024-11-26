@@ -1,0 +1,20 @@
+Objects
+3
+1
+1. Which of the following is the correct way to define a class in C++?
+A. `class MyClass { int x; };`
+B. `MyClass class { int x; };`
+C. `class { int x; } MyClass;`
+D. `class MyClass { int x }`
+4
+2. Which of the following is not a valid access specifier in C++?
+A. `public`
+B. `private`
+C. `protected`
+D. `internal`
+3
+3. What is the purpose of the `virtual` keyword in C++?
+A. To define a constant
+B. To declare a pointer
+C. To enable polymorphism
+D. To create a template

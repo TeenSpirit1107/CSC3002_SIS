@@ -25,6 +25,9 @@ int main(){
         else if(op == 'c') {
             reg.classroom_arrangement();
         }
+        else if(op == 'd') {
+          reg.stu_final_grade();
+        }
         else if(op == 'e') {
             break;
         }
