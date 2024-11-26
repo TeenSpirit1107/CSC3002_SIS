@@ -12,6 +12,8 @@
 #include<fstream>
 
 // include sis classes
+#include <iomanip>
+
 #include "client.hpp"
 #include "staff.hpp"
 #include "student.hpp"
@@ -218,16 +220,107 @@ void test_profile_add_class () {
 }
 
 void test_find_profile() {
+
+    // ui在做的时候麻烦输入输出改成用户页面的
+
     // shared_ptr<Staff> ys = std::make_shared<Staff>("9200001");
     shared_ptr<Staff> ys = Staff::find_profile("9200001");
     auto it = (ys->courses.find("STA2001"));
     if (it == (ys->courses).end()) {
-        printf("Something's wrong: thiis is not found in map\n");
+        printf("Something's wrong: this is not found in map\n");
         return;
     }
     vector<short> temp_v = it->second;
     Course c = Course(temp_v.at(1));
     c.printCourse();
+}
+
+void test_do_hw() {
+    shared_ptr<Student> gly = Student::find_profile("1230001");
+    if (gly==nullptr) {
+        printf("Error: student not found.\n");
+        return;
+    }
+    int class_code = 1;
+    Course c = Course(class_code);
+    printf("GLY is going to do %s assignment. He wants to open HW1.\n", c.courseName.c_str());
+
+    // function 1: get homework scores and the homeworks yet to complete.
+    vector<double> prev_scr = gly->get_hw_scores(1);
+    if (prev_scr.size() == 0) {
+        printf("Error: no previous scores found.\n");
+        return;
+    }
+
+    // list all the home work not yet completed.
+
+    for (int i = 0;i<3;i++) {
+        if ((prev_scr.at(i))!=-1) {
+            printf("The score for HW %d is %.2f.\n", i+1, prev_scr.at(i));
+        }
+        else {
+            printf("HW %d is not completed.\n", i+1);
+        }
+    }
+
+    if (!(prev_scr.at(0)==-1)) {
+        printf("He has already completed HW1 so he cannot open it. He goes to HW2. \n");
+    }else {
+        printf("Error: unexpected in test. hw1 is supposed to be done. return.");
+        return;
+    }
+
+    if (!(prev_scr.at(1)==-1)) {
+        printf("Error: unexpected in test. hw2 is NOT supposed to be done. return.");
+        return;
+    }else {
+        printf("He hasn't completed HW2 yet. So he open it.\n");
+    }
+
+    ifstream fileReader(".\\sis_ws\\data_repo\\hw\\"+c.courseCode+"\\"+"2.txt"); // 最后的2.txt因为是hw2所以.
+    if (!fileReader.is_open()) {
+        printf("Error: file not found.\n");
+        return;
+    }
+    std::string line;
+    std::getline(fileReader,line);
+    printf("The Topic of HW2 is: %s\n", line.c_str());
+
+
+    int question_num;
+
+
+    vector<int> v_stu;
+    vector<int> v_true;
+
+    fileReader >> question_num;
+    v_stu.resize(question_num);
+    v_true.resize(question_num);
+    double total_score = 0.0;
+    double ques_score = double(1)/question_num;
+
+    for (int i = 0;i<question_num;i++) {
+
+        fileReader>>v_true.at(i);
+        fileReader.ignore(); // rather than fileReader>>line, which consumes the first character from the next line, too.
+        for (int j = 0;j<5;j++) {
+            // read one question
+            std::getline(fileReader,line);
+            std::cout<<line<<std::endl;
+        }
+        printf("Your answer is: \n"); // 这里1234而不是abcd回答，只是为了处理控制台输入方便。
+        std::cin >> v_stu.at(i);
+
+        if (v_stu.at(i)==v_true.at(i)) {
+            printf("Your answer is correct.\n");
+            total_score+=ques_score;
+        }else {
+            char c = 96+v_true.at(i);
+            std::cout<<"Your answer is wrong, the correct answer is "<<c<<std::endl;
+        }
+    }
+    printf("Your total score is %.2f.\n", total_score);
+
 }
 
 int main() {
@@ -237,10 +330,10 @@ int main() {
     // test_name_process();
     // test_name_get_id();
     // test_claim_class();
-    test_profile_add_class();
+    // test_profile_add_class();
     // test_find_profile();
     // test_rewrite_file();
-
+    test_do_hw();
 
     // TODO: test  create class
 }

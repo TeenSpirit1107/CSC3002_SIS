@@ -4,6 +4,7 @@
 #include<string>
 #include<fstream>
 #include<memory>
+#include<sstream>
 
 // sis classes
 #include"client.hpp"
@@ -80,6 +81,38 @@ shared_ptr<Student> Student::find_profile(const std::string &inputID) {
     shared_ptr<Student> student_ptr = std::make_shared<Student>(inputID);
     return student_ptr;
 }
+
+// Feature: homework
+
+vector<double> Student::get_hw_scores(const short class_code) {
+    vector<double> v = vector<double>();
+    v.resize(3);
+    std::string class_code_str = std::to_string(class_code);
+    std::string work_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\"+class_code_str+".txt";
+    ifstream fileReader(work_dir);
+    std::string line;
+    std::string key = userID;
+    if (fileReader.is_open()) {
+        while (std::getline(fileReader,line)) {
+            std::istringstream iss(line);
+            std::string student_id;
+            double score1, score2, score3;
+            iss >> student_id >>score1 >> score2 >> score3;
+            if (student_id==key) {
+                v[0] = score1;
+                v[1] = score2;
+                v[2] = score3;
+                fileReader.close();
+                return v;
+            }
+        }
+    }
+    return v;
+}
+
+// std::string Student::answer_check(const short class_code, int hw, double score);
+
+
 
 Student::~Student(){
     // tbc

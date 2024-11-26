@@ -350,16 +350,3 @@ void Staff::profile_add_class( short class_code) {
 Staff::~Staff() {
     //[todo] finish destructor
 }
-/*
-CUHKsz
-Yangsheng
-XU
-2
-STA2001
-1
-5
-CSC3002
-1
-1
-
- */

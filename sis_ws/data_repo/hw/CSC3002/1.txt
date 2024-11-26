@@ -1,0 +1,26 @@
+Data Type
+4
+2
+1. What is the correct syntax to declare a pointer in C++?
+A. `int ptr;`
+B. `int *ptr;`
+C. `int &ptr;`
+D. `int ptr*;`
+2
+2. Which of the following is used to define a constant in C++?
+A. `#define`
+B. `const`
+C. `static`
+D. `final`
+1
+3. What is the output of the following code? "int a = 5; int b = 10; cout << a + b;"
+A. `15`
+B. `510`
+C. `5`
+D. `10`
+2
+4. Which of the following is the correct way to allocate memory dynamically for an array in C++?
+A. `int arr = new int[10];`
+B. `int *arr = new int[10];`
+C. `int arr[10];`
+D. `int *arr = malloc(10 * sizeof(int));

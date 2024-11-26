@@ -1,0 +1,20 @@
+Operators and Functions
+3
+3
+1. Which of the following operators cannot be overloaded in C++?
+A. `+`
+B. `-`
+C. `::`
+D. `*`
+2
+2. What is the output of the following code?   int x = 10;   int y = 20;   int *p = &x;   *p = 30;   cout << x << " " << y;
+A. `10 20`
+B. `30 20`
+C. `10 30`
+D. `30 30`
+1
+3, What is the correct way to declare a function that does not return any value in C++?
+A. `void functionName();`
+B. `int functionName();`
+C. `functionName();`
+D. `void functionName;`
