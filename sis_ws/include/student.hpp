@@ -4,6 +4,9 @@
 // cpp lib
 #include<string>
 #include<vector>
+#include<memory>
+#include <sstream>
+#include <unordered_set>
 
 // packages
 #include"client.hpp"
@@ -12,35 +15,28 @@
 
 class Student: public Client{
 
-
+public:
     // Member Variables
+    vector<std::string> shoppingCart;
 
-    //
-    //TODO :
-/*
-    vector<Course> courseFinished;
-    vector<Course> courseEnrolled;
-    vector<Course> courseWait;
+    //functions
+    int searchCourse(std::string coursename);
+    void addToShoppingCart(std::string class_number);
     void enrollCourse();
-    void searchCourse();
-*/
+    //辅助函数：返回txt文件指定行
+    string readTxt(string filename, int line);
+
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
-    void addFrd(const std::string &friendID);
-    void checkFrd();
-    void acceptFrd();
-    void viewFrd();
-
-    // Member Functions
-
-
-public:
-
-    // Member Variables
+    int addFrd(const std::string &friendID);
+    int checkFrd();
+    int acceptFrd();
 
     // The path of the object's profile description file in data_repo.
     static const string student_path;
     static const string stuFrd_path;
+    static const string class_path;
+
 
     // Member Functions
 
@@ -50,20 +46,9 @@ public:
 
     // [todo] shall this be made private, but can be visited by "friend" Classes?
     static shared_ptr<Student> find_profile(std::string &inputID);
+    //static shared_ptr<Student> search_class(std::string &inputID);
 
-
-
-    //
-    // // getters
-    // string getName();
-    // void setSchool();
-    // void setMajor();
-    //
-    // // connections
-    // void addFrd();
 
 };
-
-
 
 # endif
