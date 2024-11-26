@@ -320,7 +320,7 @@ void test_do_hw() {
         }
     }
     printf("Your total score is %.2f.\n", total_score);
-
+    gly->set_hw_scores(class_code,2,total_score); // 这里的2是第二次作业。从1开始计数，而不是从0
 }
 
 int main() {
@@ -333,6 +333,7 @@ int main() {
     // test_profile_add_class();
     // test_find_profile();
     // test_rewrite_file();
+
     test_do_hw();
 
     // TODO: test  create class

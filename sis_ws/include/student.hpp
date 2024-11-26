@@ -52,8 +52,7 @@ public:
 
     // Feature: homework
     vector<double> get_hw_scores (const short class_code);
-    vector<double> set_hw_scores (const short class_code, int hw, double score);
-    void update_hw_scores (const short class_code, int hw_num, double score);
+    void set_hw_scores (const short class_code, const int hw_num, double new_score);
 };
 
 
