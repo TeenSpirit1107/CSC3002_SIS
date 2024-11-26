@@ -338,9 +338,6 @@ void Staff::profile_add_class( short class_code) {
         file << l << std::endl;
     }
 
-    while(!file.eof()) {
-        file >> line;
-    }
 
     // update object
 
