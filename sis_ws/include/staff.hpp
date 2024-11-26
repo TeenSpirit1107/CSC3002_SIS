@@ -5,6 +5,7 @@
 #include<string>
 #include<vector>
 #include<unordered_map>
+#include<unordered_set>
 #include<tuple>
 
 // sis classes
@@ -23,6 +24,7 @@ public:
     // courses
 
     std::unordered_map<std::string,std::vector<short>> courses;
+    unordered_set<short> classes;
     // string: course code; short: class code.
 
     friend class Registry;

@@ -198,9 +198,22 @@ void test_claim_class() {
 
 void test_profile_add_class () {
     shared_ptr<Staff> ys = Staff::find_profile("9200001");
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!
     // MUST READ THE CORRESPONDING FILE (1126 ...) BEFORE DOING THIS!! OTHERWISE MAY CAUSE UNWANTED MODIFICATION TO THE PROFILE.
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!
     // ys->profile_add_class(4);
+    //
+    // for (short st : ys->classes) {
+    //     Course c = Course(st);
+    //     c.printCourse();
+    // }
+
     // ys->profile_add_class(6);
+    // for (short st : ys->classes) {
+    //     Course c = Course(st);
+    //     c.printCourse();
+    // }
+
     ys.reset();
 }
 

@@ -65,6 +65,7 @@ Staff::Staff(const std::string &inputID): Client(inputID) {
                     try {
                         short class_code = static_cast<short>(std::stoi(cls_str));
                         v_ptr->push_back(class_code);
+                        classes.insert(class_code);
                     } catch (const std::invalid_argument &e) {
                         std::cerr << "Invalid class code: " << cls_str << std::endl;
                     }
@@ -288,11 +289,7 @@ int Staff::claim_class(const std::string &course_code, short class_code, vector<
 
 
 void Staff::profile_add_class( short class_code) {
-
-    // update file
-
-    // save to temporary vector; do modifications
-
+    // update object
     std::vector<std::string> lines;
     std::string line;
     Course new_class = Course(class_code);
@@ -300,6 +297,17 @@ void Staff::profile_add_class( short class_code) {
 
     auto it = courses.find(new_course_code);
     bool has_course = (it!=courses.end());
+    classes.insert(class_code);
+    if (!has_course) courses[new_course_code] = vector<short>();
+    auto it2 = courses.find(new_course_code);
+    if (it2!=courses.end()) {
+        it2->second.push_back(class_code);
+    }
+    // update file
+
+    // save to temporary vector; do modifications
+
+
 
     std::fstream file(profile_path, std::ios::in | std::ios::out);
 
@@ -314,18 +322,17 @@ void Staff::profile_add_class( short class_code) {
         while (std::getline(file, line)) {
             lines.push_back(line);
         }
-        lines.at(3)=std::to_string(courses.size()+1);
+        lines.at(3)=std::to_string(courses.size());
         lines.push_back(new_course_code);
         lines.push_back("1");
         lines.push_back(std::to_string(class_code));
     }else {
-
         // case 2: has another course of this class before
         while (std::getline(file, line)) {
             lines.push_back(line);
             if (line==new_course_code) {
-                std::getline(file, line);
-                lines.push_back(std::to_string(it->second.size()+1));
+                std::getline(file, line);//discard
+                lines.push_back(std::to_string(it->second.size()));
                 lines.push_back(std::to_string(class_code));
             }
         }
@@ -338,16 +345,21 @@ void Staff::profile_add_class( short class_code) {
         file << l << std::endl;
     }
 
-
-    // update object
-
-    if (!has_course) courses[new_course_code] = vector<short>();
-    auto it2 = courses.find(new_course_code);
-    if (it2!=courses.end()) {
-        it2->second.push_back(class_code);
-    }
 }
 
 Staff::~Staff() {
     //[todo] finish destructor
 }
+/*
+CUHKsz
+Yangsheng
+XU
+2
+STA2001
+1
+5
+CSC3002
+1
+1
+
+ */
