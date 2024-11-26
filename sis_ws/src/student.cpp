@@ -98,7 +98,6 @@ Student::~Student() {
 //1申请发送成功
 //2打不开加好友文件
 int Student::addFrd(const std::string &friendID) {
-
     // 学生信息文件路径
     std::string friendFilePath = ".\\sis_ws\\data_repo\\student\\" + friendID + ".txt";
     std::ifstream friendFile(friendFilePath);
@@ -129,7 +128,7 @@ int Student::addFrd(const std::string &friendID) {
         //std::cout << "未找到该好友的学号，请检查输入。" << std::endl;
         return 0;
     }
-=======
+}
 // Feature: homework
 /**
  * @brief Retrieves the homework scores for a specific class.
@@ -215,10 +214,6 @@ void Student::set_hw_scores(const short class_code, const int hw_num, double new
     }
 }
 
-Student::~Student(){
-    // tbc
-
-}
 
 //函数--通过好友申请 (文件夹：addFrds；文件名：（有待处理申请的学号）.txt
 //访问文件输出待处理的学号，同意1（在文件夹frd两人学号txt中加入对方）或者拒绝0，操作后删除已处理学号，更新加好友文件)
@@ -289,7 +284,6 @@ int Student::acceptFrd() {
                     FrdAccFile.close();
                 } else {
                     //std::cout << "错误：好友文件无法写入。" << std::endl;
-                    return 2;
                 }
                 //std::cout << "已同意 " << friendID << " 的好友申请。" << std::endl;
                 return 1;
@@ -311,18 +305,18 @@ int Student::acceptFrd() {
                 outFile << friendID << std::endl;
             }
             outFile.close();
+            return 1;
         } else {
             //std::cout << "错误：无法更新好友申请文件。" << std::endl;
             return 4;
         }
     }
-
-
 }
 
 //函数--查看好友列表（打开frd文件夹，输出（学号）.txt内容）
 //返回值：0好友文件无法打开
 //1好友列表输出成功
+
 int Student::checkFrd() {
     std::string FrdFilePath = ".\\sis_ws\\data_repo\\frd\\" + this->userID + ".txt";
     std::ifstream in(FrdFilePath);
@@ -368,7 +362,7 @@ void Student::addToShoppingCart(std::string class_number) {
 /*
   **辅助函数：读取txt指定行数据存入string
   */
-string readTxt(string filename, int line){
+string Student::readTxt(const string & filename, int line){
     //line行数限制 1 - lines
     ifstream text;
     text.open(filename, ios::in);

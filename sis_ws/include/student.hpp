@@ -25,7 +25,7 @@ public:
     void addToShoppingCart(std::string class_number);
     void enrollCourse();
     //辅助函数：返回txt文件指定行
-    string readTxt(string filename, int line);
+    string readTxt(const std::string &filename, int line);
 
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
@@ -53,7 +53,7 @@ public:
 
     // [todo] shall this be made private, but can be visited by "friend" Classes?
 
-    static shared_ptr<Student> find_profile(std::string &inputID);
+    static shared_ptr<Student> find_profile(const std::string &inputID);
     //static shared_ptr<Student> search_class(std::string &inputID);
 
 
