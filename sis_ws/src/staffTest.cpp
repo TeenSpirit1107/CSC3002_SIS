@@ -197,7 +197,11 @@ void test_claim_class() {
 }
 
 void test_profile_add_class () {
-    Staff::profile_add_class("9200001", 6);
+    shared_ptr<Staff> ys = Staff::find_profile("9200001");
+    // MUST READ THE CORRESPONDING FILE (1126 ...) BEFORE DOING THIS!! OTHERWISE MAY CAUSE UNWANTED MODIFICATION TO THE PROFILE.
+    // ys->profile_add_class(4);
+    // ys->profile_add_class(6);
+    ys.reset();
 }
 
 void test_find_profile() {
@@ -221,7 +225,8 @@ int main() {
     // test_name_get_id();
     // test_claim_class();
     test_profile_add_class();
-    test_find_profile();
+    // test_find_profile();
+    // test_rewrite_file();
 
 
     // TODO: test  create class

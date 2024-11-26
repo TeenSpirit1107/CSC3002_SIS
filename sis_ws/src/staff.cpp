@@ -62,8 +62,12 @@ Staff::Staff(const std::string &inputID): Client(inputID) {
             for (int j = 0; j < class_num; j++) {
                 std::string cls_str;
                 fileReader >> cls_str;
-                short class_code = static_cast<short>(std::stoi(cls_str));
-                v_ptr->push_back(class_code);
+                    try {
+                        short class_code = static_cast<short>(std::stoi(cls_str));
+                        v_ptr->push_back(class_code);
+                    } catch (const std::invalid_argument &e) {
+                        std::cerr << "Invalid class code: " << cls_str << std::endl;
+                    }
             }
             v_ptr = nullptr;
         }
@@ -283,77 +287,67 @@ int Staff::claim_class(const std::string &course_code, short class_code, vector<
 }
 
 
-void Staff::profile_add_class(const std::string &userID, short class_code) {
-    std::string work_dir = staff_path + userID + ".txt";
-    std::fstream file(work_dir, std::ios::in | std::ios::out);
+void Staff::profile_add_class( short class_code) {
 
-    if (!file.is_open()) return;
+    // update file
 
-    std::vector<std::pair<std::string, std::vector<short>>> courses;
+    // save to temporary vector; do modifications
+
+    std::vector<std::string> lines;
     std::string line;
-    int course_num;
+    Course new_class = Course(class_code);
+    std::string new_course_code = new_class.courseCode;
 
-    // Skip the first three lines
-    for (int i = 0; i < 3; ++i) std::getline(file, line);
+    auto it = courses.find(new_course_code);
+    bool has_course = (it!=courses.end());
 
-    // Read the number of courses
-    file >> course_num;
-    std::getline(file, line); // Move to the next line
+    std::fstream file(profile_path, std::ios::in | std::ios::out);
 
-    // Read the courses and their classes
-    for (int i = 0; i < course_num; ++i) {
-        std::string course_code;
-        int class_num;
-        std::vector<short> class_codes;
-
-        file >> course_code;
-        file >> class_num;
-        for (int j = 0; j < class_num; ++j) {
-            short cls_code;
-            file >> cls_code;
-            class_codes.push_back(cls_code);
-        }
-        courses.emplace_back(course_code, class_codes);
+    if (!file.is_open()) {
+        std::cerr << "Error: the file could not be opened." << std::endl;
+        return;
     }
 
-    // Insert the new course and class code
-    Course c = Course(class_code);
-    std::string new_course_code = c.courseCode;
-    bool course_found = false;
+    // case 1: doesn't have this course's classes before
 
-    for (auto &course : courses) {
-        if (course.first == new_course_code) {
-            course.second.push_back(class_code);
-            course_found = true;
-            break;
+    if (!has_course) {
+        while (std::getline(file, line)) {
+            lines.push_back(line);
+        }
+        lines.at(3)=std::to_string(courses.size()+1);
+        lines.push_back(new_course_code);
+        lines.push_back("1");
+        lines.push_back(std::to_string(class_code));
+    }else {
+
+        // case 2: has another course of this class before
+        while (std::getline(file, line)) {
+            lines.push_back(line);
+            if (line==new_course_code) {
+                std::getline(file, line);
+                lines.push_back(std::to_string(it->second.size()+1));
+                lines.push_back(std::to_string(class_code));
+            }
         }
     }
 
-    if (!course_found) {
-        courses.emplace_back(new_course_code, std::vector<short>{class_code});
-        course_num++;
-    }
-
-    // Write the updated data back to the file
+    // from temporary vector to file
     file.clear();
     file.seekp(0, std::ios::beg);
-
-    // Write the first three lines back
-    for (int i = 0; i < 3; ++i) {
-        std::getline(file, line);
-        file << line << std::endl;
+    for (const auto &l : lines) {
+        file << l << std::endl;
     }
 
-    // Write the number of courses
-    file << course_num << std::endl;
+    while(!file.eof()) {
+        file >> line;
+    }
 
-    // Write the courses and their classes
-    for (const auto &course : courses) {
-        file << course.first << std::endl;
-        file << course.second.size() << std::endl;
-        for (const auto &cls_code : course.second) {
-            file << cls_code << std::endl;
-        }
+    // update object
+
+    if (!has_course) courses[new_course_code] = vector<short>();
+    auto it2 = courses.find(new_course_code);
+    if (it2!=courses.end()) {
+        it2->second.push_back(class_code);
     }
 }
 

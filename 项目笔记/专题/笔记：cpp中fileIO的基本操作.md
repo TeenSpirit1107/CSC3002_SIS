@@ -145,3 +145,51 @@ int main() {
   1. `ios::in|ios::out`。 当找不到文件的时候，**不会**创造新文件（对应到应用中，是用户输错了id的时候）；当找到文件的时候，也不会重写文件。
   2. `ios::out`。可以用来创建新文件。
 
+### 更改文件的两种做法
+
+- 没有函数可以直接更改文件。所以有以下俩种做法：
+1. 存在vector<string>里，例如staff.profile_add_class(short class_code)中的写法
+2. 用一个temp文件，把原文件的内容读入，然后更改，最后再写入原文件。代码和更改前后文件如下。
+例子：
+```c++
+void test_rewrite_file() {
+std::string work_dir = "sis_ws/src/testFile.txt";
+std::ifstream fileReader(work_dir);
+std::ofstream tempWriter("temp.txt");
+std::string line;
+
+    while (std::getline(fileReader, line)) {
+        if (line == "change") {
+            tempWriter << "hello1" << std::endl;
+        } else {
+            tempWriter << line << std::endl;
+            if (line == "hi") {
+                tempWriter << "hello2" << std::endl;
+            }
+        }
+    }
+
+    fileReader.close();
+    tempWriter.close();
+    std::remove(work_dir.c_str());
+    std::rename("temp.txt", work_dir.c_str());
+}
+```
+
+- testFile.txt before
+```text
+empty
+change
+hi
+world
+```
+
+- testFile.txt after
+```text
+empty
+hello1
+hi
+hello2
+world
+
+```
