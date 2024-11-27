@@ -1,6 +1,3 @@
-//
-// Created by Tester on 2024/11/26.
-//
 
 // include cpp lib
 #include <iostream>
@@ -11,10 +8,14 @@
 #include "stdio.h"
 #include <memory>
 #include <unistd.h>
+#include <ctime>
+#include<vector>
+#include <string>
 
 // include sis classes
 #include "student.hpp"
 #include "client.hpp"
+#include "staff.hpp"
 
 // expected outcome of this testing file:
 /*
@@ -85,7 +86,7 @@ void test_logIn() {
     }
 }
 void test_find_profile() {
-    std::string inputID = "123090001"; // Example student ID
+    std::string inputID = "1230901"; // Example student ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student == nullptr) {
@@ -99,11 +100,11 @@ void test_find_profile() {
 
 void test_add_friend() {
     // Test adding a friend
-    std::string inputID = "123090001";     // Current student's ID
+    std::string inputID = "1230901";     // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
-        std::string friendID = "123090002"; // Example friend's ID
+        std::string friendID = "1230902"; // Example friend's ID
         int result = student->addFrd(friendID);
 
         if (result == 1) {
@@ -122,7 +123,7 @@ void test_add_friend() {
 
 void test_accept_friend() {
     // Test accepting a friend request
-    std::string inputID = "123090002"; // Current student's ID
+    std::string inputID = "1230902"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -148,7 +149,7 @@ void test_accept_friend() {
 
 void test_check_friend_list() {
     // Test checking the friend list
-    std::string inputID = "123090001"; // Current student's ID
+    std::string inputID = "1230901"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -168,7 +169,7 @@ void test_check_friend_list() {
 
 void test_add_to_shopping_cart() {
     // Test adding a class to the shopping cart
-    std::string inputID = "123090001"; // Current student's ID
+    std::string inputID = "1230901"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -188,6 +189,111 @@ void test_friend_workflow() {
     test_check_friend_list();
 }
 
+void test_add_class() {
+    // Test adding a class
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int classNumber = 2; // Example class number
+        std::string addReason = "Quota is full, but this course is in my school package."; // Example reason for adding a class
+        int result = student->addClass(classNumber, addReason);
+
+        if (result == 1) {
+            printf("Class add application handed in successfully. Class number: %d\n", classNumber);
+        } else if (result == 0) {
+            printf("Error: Add class request file could not be opened.\n");
+        } else if (result == 2) {
+            printf("Error: Class number file could not be opened.\n");
+        } else if (result == 3) {
+            printf("Error: Class number %d does not exist.\n", classNumber);
+        } else if (result == 4) {
+            printf("Error: Unable to view current enrolled classes.\n");
+        } else if (result == 5) {
+            printf("Error: Already enrolled in class number %d.\n", classNumber);
+        } else {
+            printf("Unexpected error occurred while adding class.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_drop_class() {
+    // Test dropping a class
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int classNumber = 1; // Example class number
+        std::string dropReason = "No longer need this class."; // Example reason for dropping a class
+        int result = student->dropClass(classNumber, dropReason);
+
+        if (result == 1) {
+            printf("Class drop application handed in successfully. Class number: %d\n", classNumber);
+        } else if (result == 0) {
+            printf("Error: Drop class request file could not be opened.\n");
+        } else if (result == 2) {
+            printf("Error: Class number file could not be opened.\n");
+        } else if (result == 3) {
+            printf("Error: Class number %d does not exist.\n", classNumber);
+        } else if (result == 4) {
+            printf("Error: Unable to view current enrolled classes.\n");
+        } else if (result == 5) {
+            printf("Error: Not enrolled in class number %d, cannot drop this class.\n", classNumber);
+        } else {
+            printf("Unexpected error occurred while dropping class.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_view_transcript() {
+    // Test viewing the transcript
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        std::vector<std::vector<std::string>> transcript = student->viewTranscript();
+
+        if (!transcript.empty()) {
+            printf("Transcript for student ID %s:\n", inputID.c_str());
+            for (const auto& record : transcript) {
+                for (const auto& field : record) {
+                    printf("%s ", field.c_str());
+                }
+                printf("\n");
+            }
+        } else {
+            printf("Error: Unable to retrieve transcript for student ID %s.\n", inputID.c_str());
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_check_completed() {
+    // Test checking completed courses
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        std::vector<std::string> completedCourses = student->checkCompleted();
+
+        if (!completedCourses.empty()) {
+            printf("Completed courses for student ID %s:\n", inputID.c_str());
+            for (const auto& course : completedCourses) {
+                printf("%s\n", course.c_str());
+            }
+        } else {
+            printf("Error: Unable to retrieve completed courses for student ID %s.\n", inputID.c_str());
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
 int main() {
     printf("Testing Student Module...\n");
 
@@ -197,10 +303,15 @@ int main() {
     //test_logIn();
     //test_find_profile();
 
-//    // Test adding, accepting, and checking friends
-    test_friend_workflow();
+        // Test adding, accepting, and checking friends
+    //test_friend_workflow();
 
     //test_add_to_shopping_cart();
+
+    //test_add_class();
+    //test_drop_class();
+    //test_view_transcript();
+    //test_check_completed();
 
     printf("Student Module Testing Complete.\n");
     return 0;

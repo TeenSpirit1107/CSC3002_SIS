@@ -5,17 +5,20 @@
 #include<fstream>
 #include<memory>
 #include<iostream>
-#include<sstream>
+#include <sstream>
+#include <ctime>
+#include<vector>
+#include <string>
+#include<direct.h>
 
 // sis classes
-#include <iomanip>
-
 #include"client.hpp"
+#include"course.hpp"
 
 // Definition of const members
 const std::string Student::student_path = ".\\sis_ws\\data_repo\\student\\";
 const std::string Student::stuFrd_path= ".\\sis_ws\\data_repo\\addfrds\\";
-const std::string Student::class_path= ".\\sis_ws\\data_repo\\class\\";
+const std::string Student::course_path= ".\\sis_ws\\data_repo\\course\\";
 //Student::Student(int inputID, string inputName, char inputType, string inputPass):
 //Client(inputID, inputName, inputType, inputPass)
 //{
@@ -35,6 +38,7 @@ const std::string Student::class_path= ".\\sis_ws\\data_repo\\class\\";
 * @param inputID The ID of the student. Guaranteed to exist.
 */
 
+//艺萌1126晚帮忙更新的构造器
 Student::Student(const std::string & inputID):
     Client(inputID)
 {
@@ -51,8 +55,6 @@ Student::Student(const std::string & inputID):
         std::string psc;
         std::string name1;
         std::string name2;
-        std::string classes; // [todo] read classes
-        classes = ""; //testing
 
         std::getline(fileReader,psc);
         std::getline(fileReader,name1);
@@ -60,7 +62,17 @@ Student::Student(const std::string & inputID):
 
         passcode = psc;
         userName = name1 + " " + name2;
-// [todo] read and add classes; add friends
+
+        int class_num;
+        fileReader >> class_num;
+
+        for (int i = 0;i<class_num;i++) {
+            short cls;
+            fileReader>>cls;
+            classes.insert(cls);
+        }
+        // TODO: schedule
+
     }
 }
 
@@ -74,7 +86,7 @@ Student::Student(const std::string & inputID):
 * @param inputID The ID of the student to find.
 * @return shared_ptr<Student> A shared pointer to the Student object if found, otherwise nullptr.
 */
-shared_ptr<Student> Student::find_profile(const std::string &inputID) {
+shared_ptr<Student> Student::find_profile(std::string &inputID) {
     std::string find_path = student_path + inputID + ".txt";
 
     // check whether the id exists
@@ -129,95 +141,6 @@ int Student::addFrd(const std::string &friendID) {
         //std::cout << "未找到该好友的学号，请检查输入。" << std::endl;
         return 0;
     }
-=======
-// Feature: homework
-/**
- * @brief Retrieves the homework scores for a specific class.
- *
- * This function reads the homework scores for the student from a file
- * corresponding to the given class code. It returns a vector containing
- * the scores for the three homework assignments.
- *
- * @param class_code The code of the class.
- * @return vector<double> A vector containing the scores for all three homework assignments, rounded to 2nd decimal; unfinished hw are -1.
- */
-vector<double> Student::get_hw_scores(const short class_code) {
-    vector<double> v = vector<double>();
-    v.resize(3);
-    std::string class_code_str = std::to_string(class_code);
-    std::string work_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\"+class_code_str+".txt";
-    ifstream fileReader(work_dir);
-    std::string line;
-    std::string key = userID;
-    if (fileReader.is_open()) {
-        while (std::getline(fileReader,line)) {
-            std::istringstream iss(line);
-            std::string student_id;
-            double score1, score2, score3;
-            iss >> student_id >>score1 >> score2 >> score3;
-            if (student_id==key) {
-                v[0] = score1;
-                v[1] = score2;
-                v[2] = score3;
-                fileReader.close();
-                return v;
-            }
-        }
-    }
-    return v;
-}
-
-/**
- * @brief Sets the homework score for a specific class and homework number.
- *
- * This function updates the homework score for a specific class and homework number
- * for the student. It reads the current scores from a file, updates the score for the
- * specified homework, and writes the updated scores back to the file.
- *
- * @param class_code The code of the class.
- * @param hw_num The homework number (1-based index). (1-BASED INDEX!!!!!)
- * @param new_score The new score to set for the specified homework.
- */
-void Student::set_hw_scores(const short class_code, const int hw_num, double new_score) {
-
-    // the front part is similar get_hw_scores()'s file handling
-    vector<double> v = vector<double>();
-    vector<std::string> lines = vector<std::string>();
-    std::string class_code_str = std::to_string(class_code);
-    std::string work_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\"+class_code_str+".txt";
-    ifstream fileReader(work_dir);
-    std::string line;
-    std::string key = userID;
-
-    if (!fileReader.is_open()) return;
-    while (std::getline(fileReader,line)) {
-        if (line.substr(0, 7) == key) {
-            std::istringstream iss(line);
-            std::string student_id;
-            double scores[3];
-            iss >> student_id >> scores[0] >> scores[1] >> scores[2];
-            if (scores[hw_num-1]==-1) scores[hw_num-1] = new_score; // double check: this is the student's 1st time doing this homework.
-            std::ostringstream oss;
-            oss << student_id << " " <<std::setprecision(2)<< scores[0] << " " << scores[1] << " " <<scores[2];
-            line = oss.str();
-        }
-        lines.push_back(line);
-    }
-
-    fileReader.close();
-
-    ofstream fileWriter(work_dir);
-    if (!fileWriter.is_open()) return;
-    fileWriter.clear();
-    fileWriter.seekp(0, std::ios::beg);
-    for (const auto &l : lines) {
-        fileWriter << l << std::endl;
-    }
-}
-
-Student::~Student(){
-    // tbc
-
 }
 
 //函数--通过好友申请 (文件夹：addFrds；文件名：（有待处理申请的学号）.txt
@@ -248,8 +171,11 @@ int Student::acceptFrd() {
             }
         }
         inFile.close();
-        //TODO 删除txt文件并新建空文件,但是两个括号删不了文件，我后续再改，目前加好友是不会有影响的
-        remove("FrdFilePath");
+
+        //保存到数组后删除文件然后创建同名空文件
+        remove(addFrdFilePath.c_str());
+        std::ofstream ipFile(addFrdFilePath);
+        ipFile.close();
 
         // 如果文件内容为空
         if (pendingFriends.empty()) {
@@ -261,8 +187,7 @@ int Student::acceptFrd() {
         std::vector<std::string> remainingFriends;  // 保存未处理的好友申请
         for (const std::string &friendID : pendingFriends) {
             std::cout << "Accept/Reject " << friendID << " s friend adding application?"
-                                                        " Type integer 1(Accept) or 0(Reject), "
-                                                        "any other number be skip&remain the application" << std::endl;
+                                                        " Type integer 1(Accept) or 0(Reject)"<< std::endl;
 
             int userChoice;
             std::cin >> userChoice;
@@ -292,16 +217,17 @@ int Student::acceptFrd() {
                     return 2;
                 }
                 //std::cout << "已同意 " << friendID << " 的好友申请。" << std::endl;
-                return 1;
+
             } else if (userChoice == 0) {
                 // 用户拒绝好友申请
                 //std::cout << "已拒绝 " << friendID << " 的好友申请。" << std::endl;
-                return 1;
-            } else {
-                //std::cout << "输入无效，已保留" << friendID << " 的好友申请。" << std::endl;
-                remainingFriends.push_back(friendID);
-                return 3;
             }
+            return 1;
+            // } else {
+            //     //std::cout << "输入无效，已保留" << friendID << " 的好友申请。" << std::endl;
+            //     remainingFriends.push_back(friendID);
+            //     return 3;
+            // }
         }
 
         // 将未处理的好友申请写回文件
@@ -311,6 +237,7 @@ int Student::acceptFrd() {
                 outFile << friendID << std::endl;
             }
             outFile.close();
+            return 1;
         } else {
             //std::cout << "错误：无法更新好友申请文件。" << std::endl;
             return 4;
@@ -341,34 +268,62 @@ int Student::checkFrd() {
     }
 }
 
-//返回指针--搜索课程代码，返回班级名以及教授，教学时间，课室
-//返回值：0输入的课程代码无效
-//1搜索成功
-//2无法打开Course List.txt
-//3无法打开班级文件
-//返回班级信息对象，这个部分根据更新正在重写，需要做ptr指针返回
+//返回指针--搜索课程代码 （1127下午说交给ui的同学做，已删除，保留注释）
+// vector<shared_ptr<Course>> Student::get_course(std::string &inputID) {
+//
+//     std::string courseListPath = course_path + inputID + "_class_arrange.txt";
+//     std::ifstream courseFile(courseListPath);
+//     std::string li;
+//
+//     // check whether the id exists
+//     if(!courseFile.is_open()) {// case 1, id doesn't exist
+//         return std::vector<shared_ptr<Course>>();
+//     }
+//     //从文件获取班级代码
+//     vector<short> classID;
+//     while (std::getline(courseFile, li)) {
+//         if (!li.empty()) {
+//             classID.push_back(stoi(li));
+//             int q = classID.size();
+//             std::vector<shared_ptr<Course>> ptrVec(q);
+//             for (int i = 0; i < q; i++) {
+//                 shared_ptr<Course> course_pctr=make_shared<Course>(classID[i]);
+//                 ptrVec[i]=course_pctr;
+//                 return ptrVec;
+//             }
+//         }else {
+//             return std::vector<shared_ptr<Course>>();
+//         }
+//     }
+//
+// }
+
 
 //函数--加入购物车
-void Student::addToShoppingCart(std::string class_number) {
+//返回值：0输入的班级代码不存在
+//1：成功加入购物车
+int Student::addToShoppingCart(std::string class_number) {
     std::string classSrhPath = ".\\sis_ws\\data_repo\\class\\"+class_number+ ".txt";
     std::ifstream inclassfile(classSrhPath);
     if (inclassfile.is_open()) {
         shoppingCart.push_back(class_number);
+        return 1;
     }else{
-        cout<< "输入的班级代码不存在" <<endl;
+        //cout<< "输入的班级代码不存在" <<endl;
+        return 0;
     }
-};
+}
 
-//函数--检查先修与时间后向教务处提交选课
-//shoppingCart班级代码-》课程代码-》获取先修课（先修课=enrolled=.\data_repo\student\(ID.txt)）
+//函数--检查先修与时间后向教务处提交选课(艺萌在做)
+//思路：shoppingCart班级代码-》课程代码-》获取先修课（先修课=enrolled=.\data_repo\student\(ID.txt)）
 //shoppingCart班级代码-》上课时间
 //打开文件夹看先修课，7*7的表格检查时间（注册时0改1）返回成功(加入enrolled)/失败
 //这个函数正在写，改完search函数就接着写这个
 
 /*
   **辅助函数：读取txt指定行数据存入string
-  */
-string readTxt(string filename, int line){
+  *///这个函数的line从0开始计数
+string Student::readTxt(string filename, int line){
     //line行数限制 1 - lines
     ifstream text;
     text.open(filename, ios::in);
@@ -383,9 +338,175 @@ string readTxt(string filename, int line){
     return strVec[line - 1];
 }
 
-//函数--查看公告与成绩
 
 //函数--加课
+//返回值：0加课申请文件无法打开
+//1:加课申请发送成功
+//2:班级总数量文件无法打开
+//3:不存在该班级代码
+//4:无法查看本学期在修课程文件
+//5：本学期已经在修该班级，不能重复加课
+//6:已写入加课文件，但无法写入toDo文件
+int Student::addClass(int cls_number,std::string add_reason) {
+
+    //检查1班级代码是否存在，2是否选上了，没有就创建加课文件
+    std::string clsNumPath = ".\\sis_ws\\data_repo\\class\\Class Number.txt";
+    std::ifstream clsNumfile(clsNumPath);
+    if (clsNumfile.is_open()) {
+        string TotalNum;
+        clsNumfile >> TotalNum;//这地方没有写检查只有一行有点怕怕的，不过这个文件应该就只有一行一个数字
+        //string转int
+        std::istringstream sst(TotalNum);
+        int tnum;
+        sst >> tnum;
+        if (cls_number  > tnum || cls_number < 1) {
+            return 3;//3:不存在该班级代码
+        }else{
+            //第四行：class总数，接下去就是这学期的class
+            std::string inProcessCls = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
+            std::ifstream inProcessfile(inProcessCls);
+            if (!inProcessfile.is_open()) {
+                return 4;//4:无法查看本学期在修课程文件
+            }else{
+                std::string inPCls = readTxt(inProcessCls, 4); //这个函数的line从1开始计数
+                //cout<< " 4 th string(number of class enrolled): " << inPCls << endl;
+                int clsNum = stoi(inPCls);
+                vector<int> clsPIDs;
+                for (int i = 5; i < 5 + clsNum; i++) { //文件第五行开始为班级，如有2个，读到第六行,检验正确）
+                    int clsP = stoi(readTxt(inProcessCls, i));
+                    clsPIDs.push_back(clsP) ;
+                    //cout<< clsP << endl;
+                }
+                for (int j = 0; j < clsNum; j++) {
+                    if (cls_number == clsPIDs[j]) {
+                        return 5;//5：本学期已经在修该班级，不能重复加课
+                    }
+                }
+
+                string path = ".\\sis_ws\\data_repo\\course_add\\"+ this -> userID ;
+                mkdir(path.c_str());
+
+                time_t curtime;
+                time(&curtime);
+                tm *nowtime = localtime(&curtime);
+                int year = 1900 + nowtime->tm_year;
+                int month = 1 + nowtime->tm_mon;
+                int day = nowtime->tm_mday;
+                int hour = nowtime->tm_hour;
+                int min = nowtime->tm_min;
+                std::string filName = std::to_string(year) + std::to_string(month)  + std::to_string(day)
+                        + std::to_string(hour)  + std::to_string(min) ;
+
+                std::string addCrsPath = ".\\sis_ws\\data_repo\\course_add\\"+ this -> userID + "\\"+ filName +".txt";
+                std::ofstream clsAdFile(addCrsPath);
+                if (!clsAdFile.is_open()) {
+                    return 0;//0加课申请文件无法打开
+                }else{
+                    clsAdFile << this -> userID << std::endl;
+                    clsAdFile << cls_number << std::endl;
+                    clsAdFile << add_reason << std::endl;
+                    clsAdFile.close();
+
+                    std::string toDoPath = ".\\sis_ws\\data_repo\\course_add\\staff2reg.txt";
+                    std::ofstream tdFile(toDoPath);
+                    if (!tdFile.is_open()) {
+                        return 6;//6:已写入加课文件，但无法写入toDo文件
+                    }else {
+                        tdFile <<  addCrsPath << std::endl;
+                        return 1;//1:加课申请发送成功
+                    }
+                }
+            }
+        }
+    }else {
+        return 2;//2:班级总数量文件无法打开
+    }
+}
 
 //函数--退课
+//返回值：0退课申请文件无法打开
+//1:退课申请发送成功
+//2:班级总数量文件无法打开
+//3:不存在该班级代码
+//4:无法查看本学期在修课程文件
+//5：本学期无该在修该班级，不能退课
+int Student::dropClass(int cls_number,std::string drop_reason) {
+
+    //检查1班级代码是否存在，2是否选上了，有就创建加课文件
+    std::string clsNumPath = ".\\sis_ws\\data_repo\\class\\Class Number.txt";
+    std::ifstream clsNumfile(clsNumPath);
+    if (clsNumfile.is_open()) {
+        string TotalNum;
+        clsNumfile >> TotalNum;//这地方没有写检查只有一行有点怕怕的，不过这个文件应该就只有一行一个数字
+        //string转int
+        std::istringstream sst(TotalNum);
+        int tnum;
+        sst >> tnum;
+        if (cls_number  > tnum || cls_number < 1) {
+            return 3;//3:不存在该班级代码
+        }else{
+            //第四行：class总数，接下去就是这学期的class
+            std::string inProcessCls = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
+            std::ifstream inProcessfile(inProcessCls);
+            if (!inProcessfile.is_open()) {
+                return 4;//4:无法查看本学期在修课程文件
+            }else{
+                std::string inPCls = readTxt(inProcessCls, 4); //这个函数的line从1开始计数
+                //cout<< " 4 th string(number of class enrolled): " << inPCls << endl;
+                int clsNum = stoi(inPCls);
+                vector<int> clsPIDs;
+                for (int i = 5; i < 5 + clsNum; i++) { //文件第五行开始为班级，如有2个，读到第六行,检验正确）
+                    int clsP = stoi(readTxt(inProcessCls, i));
+                    clsPIDs.push_back(clsP) ;
+                    //cout<< clsP << endl;
+                }
+                for (int j = 0; j < clsNum; j++) {
+                    if( cls_number == clsPIDs[j]) {
+                        string path = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID ;
+                        mkdir(path.c_str());
+
+                        time_t curtime;
+                        time(&curtime);
+                        tm *nowtime = localtime(&curtime);
+                        int year = 1900 + nowtime->tm_year;
+                        int month = 1 + nowtime->tm_mon;
+                        int day = nowtime->tm_mday;
+                        int hour = nowtime->tm_hour;
+                        int min = nowtime->tm_min;
+                        std::string filName = std::to_string(year) + std::to_string(month)  + std::to_string(day)
+                                + std::to_string(hour)  + std::to_string(min) ;
+
+                        std::string dropCrsPath = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID + "\\"+ filName +".txt";
+                        std::ofstream clsAdFile(dropCrsPath);
+                        if (!clsAdFile.is_open()) {
+                            return 0;//0退课申请文件无法打开
+                        }else{
+                            clsAdFile << this -> userID + "\n"<< std::endl;
+                            clsAdFile << cls_number + "\n"<< std::endl;
+                            clsAdFile << drop_reason << std::endl;
+                            clsAdFile.close();
+                            std::string toDoPath = ".\\sis_ws\\data_repo\\course_drop\\regToDo.txt";
+                            std::ofstream tdFile(toDoPath);
+                            if (!tdFile.is_open()) {
+                                return 6;//6:已写入加课文件，但无法写入toDo文件
+                            }else {
+                                tdFile <<  dropCrsPath << std::endl;
+                                return 1;//1:加课申请发送成功
+                            }
+                        }
+                    }
+                }
+                return 5;//5：本学期无该在修该班级，不能退课
+            }
+        }
+    }else {
+        return 2;//2:班级总数量文件无法打开
+    }
+}
+
+//查看教务处审批加退课的todo.txt
+
+
+//函数--查看公告(ui已融合)
+
 
