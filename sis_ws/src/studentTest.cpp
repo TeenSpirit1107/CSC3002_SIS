@@ -208,15 +208,11 @@ void print_schedule(std::array<short,49> sc) {
         std::cout<<std::endl;
     }
 }
+
 void test_get_schedule(){
-  shared_ptr<Student> tym = Student::find_profile("1230004");
+  shared_ptr<Student> tym = Student::find_profile("1230002");
     printf("name: %s\n",tym->get_userName().c_str());
     print_schedule(tym->get_schedule());
-      // for (short srt: tym->classes) {
-      //     printf("class code: %d\n",srt);
-      //   Course c = Course(srt);
-      //   c.printCourse();
-      // }
 }
 
 void test_find_schedule() {
@@ -252,7 +248,7 @@ int main() {
     //test_add_to_shopping_cart();
 
     // ym's student test
-    // test_get_schedule();
+    test_get_schedule();
     test_find_schedule();
 
 
