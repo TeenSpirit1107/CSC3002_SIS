@@ -635,22 +635,25 @@ void normal_addition_next_process(string fn, string stuCode, short classCode, st
         fprintf(file, "%s\n", reason.c_str());
         fclose(file);
     }
-    work_dir = ".\\sis_ws\\data_repo\\"+subpath+"reg2stu.txt";
+    work_dir = ".\\sis_ws\\data_repo\\"+subpath+stuCode+"\\reg2stu.txt";
     ifstream infile(work_dir);
     int n;
-    infile >> n;
-    string tmp;
-    getline(infile, tmp);
-    string filenames[n];
-    for(int i = 0; i < n; i++) getline(infile, filenames[i]);
-    infile.close();
+    string filenames[1000];
+    if(infile.is_open()) {
+        infile >> n;
+        string tmp;
+        getline(infile, tmp);
+        for(int i = 0; i < n; i++) getline(infile, filenames[i]);
+        infile.close();
+    } else {
+        n = 0;
+    }
     file = fopen(work_dir.c_str(), "w");
     fprintf(file, "%d\n", n+1);
     for(int i = 0; i < n; i++) {
         fprintf(file, "%s\n", filenames[i].c_str());
-        printf("%s!!\n", filenames[i].c_str());
     }
-    fprintf(file, "%s\n", fn.c_str());
+    fprintf(file, "%s\n", fn.substr(9).c_str());
     fclose(file);
 }
 void Registry::Add_and_Drop(bool addition)
