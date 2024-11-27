@@ -30,8 +30,8 @@ public:
     int addToShoppingCart(std::string class_number);
     int addClass(int cls_number,std::string add_reason);
     int dropClass(int cls_number,std::string add_reason);
-    //vector<vector<string>> viewTranscript();
-    //vector<string> checkCompleted();
+    vector<vector<string>> viewTranscript();
+
 
 
     //辅助函数：返回txt文件指定行
