@@ -121,9 +121,9 @@ void Course::print2File() {
     fprintf(file, "%s\n", courseCode.c_str());
     fprintf(file, "%d\n", capacity);
     fprintf(file, "%d\n", num_lec);
-    for (int i = 0; i < num_lec; i++) fprintf(file, "%d ", lec[i]); printf("\n");
+    for (int i = 0; i < num_lec; i++) fprintf(file, "%d\n", lec[i]);
     fprintf(file, "%d\n", num_tut);
-    for (int i = 0; i < num_tut; i++) fprintf(file, "%d ", tut[i]); printf("\n");
+    for (int i = 0; i < num_tut; i++) fprintf(file, "%d\n", tut[i]);
     for (int i = 0; i < num_lec; i++) fprintf(file, "%s\n", lec_classroom[i].c_str());
     for (int i = 0; i < num_tut; i++) fprintf(file, "%s\n", tut_classroom[i].c_str());
     fclose(file);

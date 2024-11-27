@@ -28,6 +28,12 @@ int main(){
         else if(op == 'd') {
           reg.stu_final_grade();
         }
+        else if(op == 'f') {
+            reg.Add_and_Drop(true);
+        }
+        else if(op == 'g') {
+            reg.Add_and_Drop(false);
+        }
         else if(op == 'e') {
             break;
         }

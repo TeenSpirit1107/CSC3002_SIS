@@ -239,7 +239,6 @@ short getClassNum() {
     return n;
 }
 void class_pass_process(string prof_code, string courseCode, short classNum, int N, int lec[], int M, int tut[], int quota = 140) {
-    // [todo] raise an announcement
     string work_dir = ".\\sis_ws\\data_repo\\class_claim\\staff\\"+prof_code+"_succ.txt";
     FILE *file = fopen(work_dir.c_str(), "a+");
     fprintf(file, "%s\n", courseCode.c_str());
@@ -289,7 +288,6 @@ void class_pass_process(string prof_code, string courseCode, short classNum, int
 
 }
 void class_fail_process(string prof_code, string courseCode) {
-    // [todo] raise an announcement
     string reason;
     cin >> reason;
     string work_dir = ".\\sis_ws\\data_repo\\class_claim\\staff\\"+prof_code+"_fail.txt";
@@ -617,4 +615,122 @@ void Registry::stu_final_grade() {
         printf("%d is over\n", i);
     }
     print_transcript(stu_lst, mp_unit);
+}
+void normal_addition_next_process(string fn, string stuCode, short classCode, string description, string subpath, bool passed) {
+    printf("normal addition next process\n");
+    string reason = "";
+    if(!passed) {
+        cin >> reason;
+    }
+    string work_dir = ".\\sis_ws\\data_repo\\"+subpath+fn;
+    FILE *file = fopen(work_dir.c_str(), "w");
+    if(!file) {
+        printf("File not found\n");
+    } else {
+        fprintf(file, "%s\n", stuCode.c_str());
+        fprintf(file, "%04d\n", classCode);
+        fprintf(file, "%s\n", description.c_str());
+        fprintf(file, "%d\n", 1);
+        fprintf(file, "%d\n", passed);
+        fprintf(file, "%s\n", reason.c_str());
+        fclose(file);
+    }
+    work_dir = ".\\sis_ws\\data_repo\\"+subpath+"reg2stu.txt";
+    ifstream infile(work_dir);
+    int n;
+    infile >> n;
+    string tmp;
+    getline(infile, tmp);
+    string filenames[n];
+    for(int i = 0; i < n; i++) getline(infile, filenames[i]);
+    infile.close();
+    file = fopen(work_dir.c_str(), "w");
+    fprintf(file, "%d\n", n+1);
+    for(int i = 0; i < n; i++) {
+        fprintf(file, "%s\n", filenames[i].c_str());
+        printf("%s!!\n", filenames[i].c_str());
+    }
+    fprintf(file, "%s\n", fn.c_str());
+    fclose(file);
+}
+void Registry::Add_and_Drop(bool addition)
+{
+    string subpath = "";
+    if(addition) subpath = "course_add\\";
+    else subpath = "course_drop\\";
+    cout << "Dealing Student Enrollments" << endl;
+    string work_dir = ".\\sis_ws\\data_repo\\"+subpath;
+    string index_dir = work_dir + "staff2reg.txt";
+    FILE *file = fopen(index_dir.c_str(), "r");
+    if (!file) {
+        cout << "could not open file " << index_dir << endl;
+    } else {
+        int n;
+        fscanf(file, "%d", &n);
+        printf("%d to be claim\n", n);
+        char fn[20];
+        fscanf(file, "%s", fn);
+        node *head = new node(fn);
+        head->prv = head; head->nxt = head;
+        for (int i = 1; i < n; i++) {
+            fscanf(file, "%s", fn);
+            insert_at_tail(head, fn);
+        }
+        printf("normal addition list\n");
+        print_list(head);
+        node *p = head;
+        while(n) {
+            string fn = p->filename;
+            printf("student %s\n", fn.c_str());
+            string stu_path = work_dir + fn;
+            ifstream class_file(stu_path);
+            if (!class_file.is_open()) {
+                cout << "could not open file " << stu_path << endl;
+            } else {
+                string stuCode, description;
+                getline(class_file, stuCode);
+                string tmp;
+                getline(class_file, tmp);
+                short classCode = static_cast<short>(stoi(tmp));
+                getline(class_file, description);
+                class_file.close();
+                printf("student code: %s\n", stuCode.c_str());
+                printf("student description: %s\n", description.c_str());
+                // get transcript
+                Course C = Course(classCode);
+                printf("%s: %s\n", C.courseCode.c_str(), C.courseName.c_str());
+                printf("Instructor: %s\n", C.instructor.c_str());
+                printf("Capacity: %d\n", C.capacity);
+                printf("Unit: %d\n", C.unit);
+                char c;
+                printf("judgement: (P/F/S/B)\n"); // pass fail skip break
+                scanf("%c", &c);
+                while (c != 'P' && c != 'F' && c != 'S' && c != 'B') scanf("%c", &c);
+                if (c == 'P') normal_addition_next_process(fn, stuCode, classCode, description, subpath, true);
+                else if (c == 'F') normal_addition_next_process(fn, stuCode, classCode, description, subpath, false);
+                else if (c == 'S') {
+                    p = p->nxt;
+                    continue;
+                }
+                else if(c == 'B') break;
+                printf("%s claimed successfully\n", p->filename.c_str());
+                p = p->nxt;
+                list_delete(head, p->prv);
+                n--;
+            }
+        }
+        fclose(file);
+        FILE *file = fopen(index_dir.c_str(), "w");
+        if (!file) {
+            cout << "could not open file " << index_dir << endl;
+        } else {
+            fprintf(file, "%d\n", n);
+            p = head;
+            for (int i = 0; i < n; i++, p = p->nxt) {
+                fprintf(file, "%s\n", p->filename.c_str());
+            }
+            fclose(file);
+        }
+        printf("all claims are done\n");
+    }
 }
