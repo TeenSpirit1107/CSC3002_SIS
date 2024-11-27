@@ -14,6 +14,6 @@ add_executable(CSC3002_SIS
         sis_ws/src/course.cpp
         sis_ws/src/staff.cpp
         sis_ws/src/student.cpp
-        sis_ws/src/staffTest.cpp
-
+#        sis_ws/src/staffTest.cpp
+        sis_ws/src/studentTest.cpp
 )

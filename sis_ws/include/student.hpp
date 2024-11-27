@@ -27,7 +27,8 @@ public:
     static const string class_path;
 
     //functions
-    int searchCourse(std::string coursename);
+    vector<int> searchCourse(std::string coursename);
+
     void addToShoppingCart(std::string class_number);
     void enrollCourse();
     //辅助函数：返回txt文件指定行
@@ -54,6 +55,13 @@ public:
     // Feature: homework
     vector<double> get_hw_scores (const short class_code);
     void set_hw_scores (const short class_code, const int hw_num, double new_score);
+
+    // Feature: Normal Course Registration
+    int class_validation(const short new_class[6]);
+    void class_enroll();
+    void student_add_classes();
+    void class_add_student(const short class_code);
+    vector<std::string> get_taken_courses();
 
 
 };

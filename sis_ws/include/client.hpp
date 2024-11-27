@@ -71,7 +71,7 @@ public:
     // Tools: schedule handling
     // void print_schedule(std::shared_ptr<Course> classes);
     std::array<short,49> get_schedule();
-
+    static std::array<short,49> find_schedule(vector<short> input_class);
 
 };
 #endif

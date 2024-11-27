@@ -5,11 +5,13 @@
 // include cpp lib
 #include "stdio.h"
 #include <memory>
+#include <bits/stdc++.h>
 
 // testing; for printing current working path
 #include <iostream>
 #include <unistd.h>
 #include<fstream>
+
 
 // include sis classes
 #include <iomanip>
@@ -123,7 +125,6 @@ void test_schedule() {
     (Course(4)).printCourse();
     printf("MON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\t\n");
     std::array<short, 49> schedule = tym->get_schedule();
-
     shared_ptr<Course> cour_sche[7][7];
 
     // value assignment
@@ -373,6 +374,7 @@ void test_final_grade() {
 }
 
 
+
 int main() {
     // test_logIn();
     // test_create_course("(CSC3002|CSC3001)&CSC3100&(MAT1001|MAT1002)");
@@ -385,7 +387,11 @@ int main() {
     // test_rewrite_file();
     // test_do_hw();
     // test_student_find_profile();
-    test_schedule();
+    // test_schedule();
+
+
+
+    // TODO: test PROF schedule!
 
 
 

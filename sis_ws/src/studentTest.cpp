@@ -15,6 +15,8 @@
 // include sis classes
 #include "student.hpp"
 #include "client.hpp"
+#include "staff.hpp"
+#include "course.hpp"
 
 // expected outcome of this testing file:
 /*
@@ -188,6 +190,53 @@ void test_friend_workflow() {
     test_check_friend_list();
 }
 
+void print_schedule(std::array<short,49> sc) {
+    std::string time[7] = {"8:30","10:30","13:30","15:30","18:00","19:00","20:00"};
+    printf("\tMON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\n");
+    for (int i = 0;i<7;i++) {
+        printf("%s\t",time[i].c_str());
+        for (int j= 0;j<7;j++) {
+            int cls_code = sc[i*7+j];
+            if (cls_code>0) {
+                std::string cour = Course::get_courseCode(cls_code);
+                printf("%s\t",cour.c_str());
+            }
+            else {
+                printf("\t");
+            }
+        }
+        std::cout<<std::endl;
+    }
+}
+void test_get_schedule(){
+  shared_ptr<Student> tym = Student::find_profile("1230004");
+    printf("name: %s\n",tym->get_userName().c_str());
+    print_schedule(tym->get_schedule());
+      // for (short srt: tym->classes) {
+      //     printf("class code: %d\n",srt);
+      //   Course c = Course(srt);
+      //   c.printCourse();
+      // }
+}
+
+void test_find_schedule() {
+    vector<short> v;
+    v.push_back(1);
+    // v.push_back(4);
+    v.push_back(1002);
+    std::array<short,49> sc = Client::find_schedule(v);
+    if (sc[0]==-2) {
+        printf("Time conflict within the classes.\n");
+    } else {
+        printf("Schedule found.\n");
+        print_schedule(sc);
+    }
+
+}
+
+
+
+
 int main() {
     printf("Testing Student Module...\n");
 
@@ -198,9 +247,15 @@ int main() {
     //test_find_profile();
 
 //    // Test adding, accepting, and checking friends
-    test_friend_workflow();
+//    test_friend_workflow();
 
     //test_add_to_shopping_cart();
+
+    // ym's student test
+    // test_get_schedule();
+    test_find_schedule();
+
+
 
     printf("Student Module Testing Complete.\n");
     return 0;

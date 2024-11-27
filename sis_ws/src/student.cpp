@@ -5,6 +5,8 @@
 #include<iostream>
 #include<sstream>
 #include <iomanip>
+#include<unordered_set>
+#include<set>
 
 // sis classes
 #include"student.hpp"
@@ -21,6 +23,7 @@ const std::string Student::class_path= ".\\sis_ws\\data_repo\\class\\";
 //    // assign the student to a random college
 //
 //}
+
 
 /**
 * @brief Constructs a Student object with the given input ID.
@@ -93,6 +96,15 @@ shared_ptr<Student> Student::find_profile(const std::string &inputID) {
 
 Student::~Student() {
     std::cout << "*Student destructor" << std::endl;
+}
+
+
+/**
+ * @brief Retrieves the course code for a given course.
+ */
+std::string Course::get_courseCode(short srt) {
+    Course c = Course(srt);
+    return c.courseCode;
 }
 
 
@@ -382,6 +394,135 @@ string Student::readTxt(const string & filename, int line){
         strVec.push_back(inbuf);
     }
     return strVec[line - 1];
+}
+
+
+
+/**
+ * @brief Validates the new class schedule for the student.
+ *
+ * This function checks if the new class schedule provided in `new_class` is valid.
+ * It performs various checks including total unit limit, course repetition, grade requirements,
+ * prerequisite satisfaction, and time conflicts.
+ *
+ * @param new_class An array of short integers representing the new class codes.
+ * @return int A code indicating the result of the validation:
+ *         - 0: Valid schedule.
+ *         - A minus number indicates the corresonding class's prerequisite is not satisfied.
+ *         - 1: Exceeds total unit limit.
+ *         - 2: Course repetition detected.
+ *         - 3: Grade requirement not satisfied.
+ *         - 5: Time conflict within the new schedule.
+ *         - 6: Time conflict with currently enrolled classes.
+ *
+ */
+
+int Student::class_validation(const short new_class[6]) {
+
+    // Decide the true size
+    vector<short> new_class_vec;
+    int ctn = 1;
+    while (ctn<6) {
+        if (new_class[ctn]<=0) {
+            // more specifically, should be -1
+            break;
+        }
+        ctn++;
+    }
+
+    // 1. Check total unit
+    if (ctn+classes.size()>=7) {
+        return 1;
+    } // exceeds 18 units limit
+
+    // interpret class code to class
+    new_class_vec.reserve(ctn);
+    for (int i = 0;i<ctn;i++) {
+        new_class_vec.push_back(new_class[i]);
+    }
+
+
+    vector<Course> new_classes;
+    vector<Course> cur_classes;
+    vector<std::string> learnt_vec = get_taken_courses();
+    std::set<std::string> learnt_str;
+    std::set<std::string> cur_str;
+
+    // 1. new
+    for (int i = 0;i<ctn;i++) {
+        new_classes.push_back(Course(new_class[i]));
+    }
+    // 2. current
+    for (short s: classes) {
+        Course cour = Course(s);
+        cur_classes.push_back(cour);
+        cur_str.insert(cour.courseCode);
+    }
+    //3. learnt
+    for (std::string s: learnt_vec) {
+        learnt_str.insert(s);
+    }
+
+    // Check time conflict
+    std::array<short,49> cur_sche = get_schedule();
+    std::array<short,49> new_sche = find_schedule(new_class_vec);
+    if (new_sche[0]==-2) {
+        // indicating a conflict within the submitted classes
+        return 5; // time conflict within new schedule
+    }
+    for (int i = 0;i<49;i++) {
+        if (new_sche[i]>=0&&cur_sche[i]>=0) {
+            return 6; // time conflict with old schedule
+        }
+    }
+
+    for (Course nc: new_classes) {
+
+        // Check COURSE repetition
+        std::string new_course_code = nc.courseCode;
+        if (learnt_str.find(new_course_code)!=learnt_str.end()||cur_str.find(new_course_code)!=cur_str.end()) return 2; // repetition
+
+        // Check grade
+        int g;
+        int entranceYear = std::stoi(userID.substr(1, 2));
+        int grade = 24 - entranceYear + 1; // 0-indexing; at Term 1, year 2024
+        if (!nc.grade[g]) return 3; // grade requirement not satisfied
+
+        // Check prerequisite
+        std::string pr = nc.prereq;
+
+        if (!(Course::pre_request_test(pr,learnt_str))) {
+            int ret = -(short(nc.classCode));
+            return ret;
+        }
+    }
+    return 0;
+    // TODO: Registration
+    // TODO: Schedule generation
+    // TODO: When submit class schedule, only allow prof select the available time.
+    // TODO: after enroll, add studnet to class.
+}
+
+
+/**
+ * @brief Retrieves the list of courses taken by the student.
+ *
+ * This function reads the student's transcript file and extracts the course codes
+ * of all the courses the student has taken. It returns a vector of strings containing
+ * the course codes.
+ *
+ * @return vector<std::string> A vector containing the course codes of the taken courses.
+ */
+vector<std::string> Student::get_taken_courses() {
+    std::string work_dir =".\\sis_ws\\data_repo\\student\\transcript\\"+userID+".txt";
+    ifstream fileReader(work_dir);
+    vector<std::string> v;
+    if (!fileReader.is_open()) return v;
+    std::string line;
+    while (std::getline(fileReader,line)) {
+        v.push_back(line.substr(0,7)); // coursecode only the first seven characters
+    }
+    return v;
 }
 
 //函数--查看公告与成绩
