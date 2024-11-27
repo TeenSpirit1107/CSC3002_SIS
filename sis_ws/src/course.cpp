@@ -7,8 +7,6 @@
 #include"stdio.h"
 
 // packages
-#include "staff.hpp"
-#include "student.hpp"
 
 using namespace std;
 
@@ -37,13 +35,13 @@ Course::Course(string inputCode, string inputName, string inputIns, int inp_unit
     for (int i = 0; i < num_tut; i++)
         tut[i] = inputTut[i];
 
-    // 11/21 test compute grade
-    // TODO: Change this to actual value.
-    enrolled_num = 4;
-    enrolled_stu_id[0] =1230001;
-    enrolled_stu_id[1] =1230002;
-    enrolled_stu_id[2] =1230003;
-    enrolled_stu_id[3] =1230004;
+    // // 11/21 test compute grade
+    // // TODO: Change this to actual value.
+    // enrolled_num = 4;
+    // enrolled_stu_id[0] =1230001;
+    // enrolled_stu_id[1] =1230002;
+    // enrolled_stu_id[2] =1230003;
+    // enrolled_stu_id[3] =1230004;
 }
 
 Course::Course(short class_Code) {
@@ -51,11 +49,11 @@ Course::Course(short class_Code) {
     // 11/21test staff grade student
     //
     // TODO: Change this to actual value.
-    enrolled_num = 4;
-    enrolled_stu_id[0] =1230001;
-    enrolled_stu_id[1] =1230002;
-    enrolled_stu_id[2] =1230003;
-    enrolled_stu_id[3] =1230004;
+    // enrolled_num = 4;
+    // enrolled_stu_id[0] =1230001;
+    // enrolled_stu_id[1] =1230002;
+    // enrolled_stu_id[2] =1230003;
+    // enrolled_stu_id[3] =1230004;
     // the following are not testing part
     classCode = class_Code;
     string work_dir = ".\\sis_ws\\data_repo\\class\\"+to_string(classCode)+".txt";
@@ -89,7 +87,7 @@ Course::Course(short class_Code) {
 
     work_dir = ".\\sis_ws\\data_repo\\course\\"+courseCode+".txt";
     ifstream f(work_dir);
-    f >> courseName;
+    getline(f,courseName);
     string tmp;
     f >> tmp;
     f >> tmp;

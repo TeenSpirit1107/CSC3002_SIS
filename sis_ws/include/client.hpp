@@ -3,19 +3,27 @@
 
 // cpp lib
 #include <string>
+#include <memory>
+#include<array>
+#include<unordered_set>
+
+// sis
+
+#include "course.hpp"
 
 // namespace
 
 class Client{
 
 protected:
+
+
+public:
     std::string userID;
     std::string passcode;
     std::string userName;
     std::string profile_path;
     // Paths in data_repo
-
-public:
 
     // constructor destructor
     // TODO: Repalce this by "create Client" function
@@ -31,6 +39,7 @@ public:
     std::string get_userID() const;
     std::string get_passcode() const;
     std::string get_userName() const;
+    unordered_set<short> classes;
 
     // Feature: Processing ID
     bool is_student() const;
@@ -58,6 +67,11 @@ public:
 
     // Tools: file handling
     static int update_index_file(const std::string & index_dir, const std::string & file_name);
+
+    // Tools: schedule handling
+    // void print_schedule(std::shared_ptr<Course> classes);
+    std::array<short,49> get_schedule();
+
 
 };
 #endif

@@ -6,33 +6,32 @@
 #include<memory>
 #include<stack>
 #include <ctime>
+#include <algorithm>
+#include <io.h>
 
 
 // sis classes
 #include "client.hpp"
-
-#include <algorithm>
-#include <io.h>
-
 #include "staff.hpp"
 #include "student.hpp"
-#include "course.hpp"
-
 
 Client::Client(): course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
     this->userID = "0000000";
     this->userName = "default";
     this->passcode = "123456";
+    this->classes;
 }
 
 
 // [todo] this constructor with many inputs may be erased if it's not used elsewhere.
 Client::Client(const std::string &inputID, const std::string &inputName, const std::string &userPass): userID(inputID),
     userName(inputName), passcode(userPass), course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
+    this->classes;
 }
 
 Client::Client(const std::string &inputID): userID(inputID), userName(""), passcode(""), profile_path(""),
                                             course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
+    this->classes;
 }
 
 Client::~Client() {
@@ -348,4 +347,30 @@ int Client::update_index_file(const std::string & index_dir, const std::string &
     fs.seekp(0, std::ios::end);
     fs << file_name << std::endl;
     return 0;
+}
+
+std::array<short, 49> Client::get_schedule() {
+    std::array<short,49> schedule;
+    for (int i = 0;i<49;i++) {
+        schedule[i] = -1;
+    }
+
+    for (short srt : classes) {
+        //testing
+        // 1. add lectures
+        Course c = Course(srt);
+        int nl = c.num_lec;
+
+        for (int i = 0;i< nl;i++) {
+            schedule[c.lec[i]-1] = srt; // 1-indexing
+        }
+        // 2. add tutorials
+        int nt = c.num_tut;
+        for (int i= 0; i<nt; i++) {
+            schedule[c.tut[i]-1] = srt;
+        }
+    }
+
+
+    return schedule;
 }

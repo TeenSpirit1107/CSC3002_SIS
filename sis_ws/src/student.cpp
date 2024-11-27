@@ -1,15 +1,13 @@
-#include"student.hpp"
-
 // cpp lib
 #include<string>
 #include<fstream>
 #include<memory>
 #include<iostream>
 #include<sstream>
-
-// sis classes
 #include <iomanip>
 
+// sis classes
+#include"student.hpp"
 #include"client.hpp"
 
 // Definition of const members
@@ -51,8 +49,6 @@ Student::Student(const std::string & inputID):
         std::string psc;
         std::string name1;
         std::string name2;
-        std::string classes; // [todo] read classes
-        classes = ""; //testing
 
         std::getline(fileReader,psc);
         std::getline(fileReader,name1);
@@ -60,7 +56,15 @@ Student::Student(const std::string & inputID):
 
         passcode = psc;
         userName = name1 + " " + name2;
-// [todo] read and add classes; add friends
+
+        int class_num;
+        fileReader >> class_num;
+
+        for (int i = 0;i<class_num;i++) {
+            short cls;
+            fileReader>>cls;
+            classes.insert(cls);
+        }
     }
 }
 
@@ -212,6 +216,9 @@ void Student::set_hw_scores(const short class_code, const int hw_num, double new
     for (const auto &l : lines) {
         fileWriter << l << std::endl;
     }
+
+
+
 }
 
 

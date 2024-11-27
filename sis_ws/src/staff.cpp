@@ -11,8 +11,8 @@
 
 // sis lib
 #include "staff.hpp"
+#include"course.hpp"
 
-// Definition of const members
 
 const std::string Staff::staff_path = ".\\sis_ws\\data_repo\\staff\\";
 
@@ -27,6 +27,7 @@ const std::string Staff::staff_path = ".\\sis_ws\\data_repo\\staff\\";
 *
 * @param inputID The ID of the staff member. Guaranteed to exist.
 */
+
 Staff::Staff(const std::string &inputID): Client(inputID) {
     profile_path = staff_path + inputID + ".txt";
     ifstream fileReader(profile_path);
@@ -52,6 +53,9 @@ Staff::Staff(const std::string &inputID): Client(inputID) {
         int course_num = 0;
         fileReader >> course_num;
 
+
+        // 1. Store to class and course
+
         for (int i = 0; i < course_num; i++) {
             std::string course_code;
             fileReader >> course_code;
@@ -61,14 +65,10 @@ Staff::Staff(const std::string &inputID): Client(inputID) {
             fileReader >> class_num;
             for (int j = 0; j < class_num; j++) {
                 std::string cls_str;
-                fileReader >> cls_str;
-                    try {
-                        short class_code = static_cast<short>(std::stoi(cls_str));
-                        v_ptr->push_back(class_code);
-                        classes.insert(class_code);
-                    } catch (const std::invalid_argument &e) {
-                        std::cerr << "Invalid class code: " << cls_str << std::endl;
-                    }
+                short class_code;
+                fileReader >> class_code;
+                v_ptr->push_back(class_code);
+                classes.insert(class_code);
             }
             v_ptr = nullptr;
         }
@@ -168,12 +168,8 @@ int Staff::create_course(const std::string &course_name, const std::string &pre_
  */
 
 int Staff::compute_final_grade(short class_code) {
-    // TODO: assumption:
-    // TODO: 更加复杂的计分方式：不固定的作业、考试次数；加权平均、去掉最差、x代表不被记入总分；通过assignmnet，test次数读取;
-    // TODO: skipped assignment and exmas
-    //test starts
+
     int SCORE_NUM = 3;
-    // test ends
     string str_class_code = std::to_string(class_code);
     std::string input_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\" + str_class_code + ".txt";
     std::ifstream fileReader = std::ifstream(input_dir);
@@ -199,6 +195,9 @@ int Staff::compute_final_grade(short class_code) {
         int student_id;
         double score1, score2, score3;
         iss >> student_id >> score1 >> score2 >> score3;
+        score1 = max(0.0,score1);
+        score2 = max(0.0,score2);
+        score3 = max(0.0,score3);
         double average = (score1 + score2 + score3) / 3.0;
         id_avg.push_back(std::make_tuple(student_id, average));
         arr_ind++;
@@ -219,7 +218,7 @@ int Staff::compute_final_grade(short class_code) {
     // grade: ABCDE, 5 even partitioning
     // test
     int PARTITION_NUM = 5;
-    char LETTER_GRADE[PARTITION_NUM] = {'a', 'd', 'g', 'j', 'l'};
+    char LETTER_GRADE[PARTITION_NUM] = {'a', 'b', 'd', 'g', 'l'};
 
     std::string output_dir = ".\\sis_ws\\data_repo\\student_grade\\" + str_class_code + ".txt";
 

@@ -7,10 +7,11 @@
 
 
 // packages
-# include "staff.hpp"
+// # include "staff.hpp"
 //# include "student.hpp"
 
 
+using namespace std;
 
 class Course{
 
