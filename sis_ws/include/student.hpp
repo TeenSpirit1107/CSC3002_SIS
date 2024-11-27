@@ -7,7 +7,10 @@
 #include<memory>
 #include <sstream>
 #include <unordered_set>
-#include<map>
+#include <ctime>
+#include<vector>
+#include <string>
+#include<direct.h>
 
 // packages
 #include"client.hpp"
@@ -19,30 +22,31 @@ class Student: public Client{
 public:
     // Member Variables
     vector<std::string> shoppingCart;
+    unordered_set<int> classes;
+    shared_ptr<Course> schedule[49];
 
-    //functions
+    //academic functions
     int searchCourse(std::string coursename);
-    void addToShoppingCart(std::string class_number);
-    void enrollCourse();
+    int addToShoppingCart(std::string class_number);
+    int addClass(int cls_number,std::string add_reason);
+    int dropClass(int cls_number,std::string add_reason);
+    //vector<vector<string>> viewTranscript();
+    //vector<string> checkCompleted();
+
+
     //辅助函数：返回txt文件指定行
-    string readTxt(string filename, int line);
+    string readTxt(std::string filename, int line);
 
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
     int addFrd(const std::string &friendID);
     int checkFrd();
     int acceptFrd();
-    // Member Functions
-
-
-public:
-
-    // Member Variables
 
     // The path of the object's profile description file in data_repo.
     static const string student_path;
     static const string stuFrd_path;
-    static const string class_path;
+    static const string course_path;
 
 
     // Member Functions
@@ -52,15 +56,9 @@ public:
     ~Student();
 
     // [todo] shall this be made private, but can be visited by "friend" Classes?
-
     static shared_ptr<Student> find_profile(std::string &inputID);
-    //static shared_ptr<Student> search_class(std::string &inputID);
+    //vector<shared_ptr<Course>> Student::get_course(std::string &inputID);
 
-
-
-    // Feature: homework
-    vector<double> get_hw_scores (const short class_code);
-    void set_hw_scores (const short class_code, const int hw_num, double new_score);
 };
 
 # endif
