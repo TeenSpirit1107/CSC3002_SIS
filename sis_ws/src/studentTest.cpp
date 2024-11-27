@@ -273,27 +273,6 @@ void test_view_transcript() {
     }
 }
 
-void test_check_completed() {
-    // Test checking completed courses
-    std::string inputID = "1230001"; // Example student ID
-    std::shared_ptr<Student> student = Student::find_profile(inputID);
-
-    if (student != nullptr) {
-        std::vector<std::string> completedCourses = student->checkCompleted();
-
-        if (!completedCourses.empty()) {
-            printf("Completed courses for student ID %s:\n", inputID.c_str());
-            for (const auto& course : completedCourses) {
-                printf("%s\n", course.c_str());
-            }
-        } else {
-            printf("Error: Unable to retrieve completed courses for student ID %s.\n", inputID.c_str());
-        }
-    } else {
-        printf("Student profile not found for ID %s.\n", inputID.c_str());
-    }
-}
-
 int main() {
     printf("Testing Student Module...\n");
 
@@ -310,7 +289,7 @@ int main() {
 
     //test_add_class();
     //test_drop_class();
-    //test_view_transcript();
+    test_view_transcript();
     //test_check_completed();
 
     printf("Student Module Testing Complete.\n");

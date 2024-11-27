@@ -509,4 +509,30 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
 
 //函数--查看公告(ui已融合)
 
+//函数--查看成绩(未通过测试)
+vector<vector<string>> Student::viewTranscript() {
+    std::string transPath = ".\\sis_ws\\data_repo\\student\\transcript\\"+ this->userID +".txt";
+    std::ifstream transfile(transPath);
+    if (!transfile.is_open()) {
+        return vector<vector<string>>();
+    }else {
+        int trans_number = stoi(readTxt(transPath, 1));
+        //cout<< trans_number << endl;
+        vector<vector<string>> trans(trans_number+1,vector<string>(2));
+        trans[trans_number]=vector<string>(3);//最后一行是3个string
+        //获取每一行，空格分割放进vector<string>,行数计数器i，将这个vector放进大vector[cnt]
+        int cnt = 0;
+        for (int cnt = 0; cnt < trans_number; cnt++) {
+            string rdL = readTxt(transPath, cnt + 2); //1：第二行开始为成绩
+            vector<string> lineV;
+            istringstream in(rdL);
+            while (getline(in, rdL, ' ')) {	//这里单引号要注意
+                lineV.push_back(rdL);
+            }
+            trans[cnt] = lineV;
+        }
+        return trans;
+    }
+}
 
+//函数--返回先修课列表（已删除，艺萌写的更简洁）
