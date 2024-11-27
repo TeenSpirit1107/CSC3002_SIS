@@ -230,6 +230,26 @@ void test_find_schedule() {
 
 }
 
+void test_validation() {
+    int i = -20;
+    shared_ptr<Student> s = make_shared<Student>("1230002");
+
+    print_schedule(s->get_schedule());
+
+    // trial 1, expected output:
+    short input[6] = {1002,-1,-1,-1,-1,-1};
+    i = s->class_validation(input);
+    std::cout<<i<<std::endl;
+
+
+    // Trial 6: expected outcome, confliction with current schedule.
+    short input6[6] = {1002,-1,-1,-1,-1,-1};
+    i = s->class_validation(input6);
+    std::cout<<i<<std::endl;
+
+
+}
+
 
 
 
@@ -248,10 +268,9 @@ int main() {
     //test_add_to_shopping_cart();
 
     // ym's student test
-    test_get_schedule();
-    test_find_schedule();
-
-
+    // test_get_schedule();
+    // test_find_schedule();
+    test_validation();
 
     printf("Student Module Testing Complete.\n");
     return 0;

@@ -419,6 +419,7 @@ string Student::readTxt(const string & filename, int line){
 
 int Student::class_validation(const short new_class[6]) {
 
+
     // Decide the true size
     vector<short> new_class_vec;
     int ctn = 1;
@@ -466,12 +467,13 @@ int Student::class_validation(const short new_class[6]) {
     // Check time conflict
     std::array<short,49> cur_sche = get_schedule();
     std::array<short,49> new_sche = find_schedule(new_class_vec);
+
     if (new_sche[0]==-2) {
         // indicating a conflict within the submitted classes
         return 5; // time conflict within new schedule
     }
     for (int i = 0;i<49;i++) {
-        if (new_sche[i]>=0&&cur_sche[i]>=0) {
+        if (new_sche[i]>0&&cur_sche[i]>0) {
             return 6; // time conflict with old schedule
         }
     }
@@ -485,11 +487,13 @@ int Student::class_validation(const short new_class[6]) {
         // Check grade
         int g;
         int entranceYear = std::stoi(userID.substr(1, 2));
-        int grade = 24 - entranceYear + 1; // 0-indexing; at Term 1, year 2024
-        if (!nc.grade[g]) return 3; // grade requirement not satisfied
+        g = 24 - entranceYear; // 0-indexing; at Term 1, year 2024
+        if (!nc.grade[g]) return 3; // not matching grade requirement
 
         // Check prerequisite
         std::string pr = nc.prereq;
+
+
 
         if (!(Course::pre_request_test(pr,learnt_str))) {
             int ret = -(short(nc.classCode));
@@ -519,6 +523,7 @@ vector<std::string> Student::get_taken_courses() {
     vector<std::string> v;
     if (!fileReader.is_open()) return v;
     std::string line;
+    std::getline(fileReader,line); // discard the first line
     while (std::getline(fileReader,line)) {
         v.push_back(line.substr(0,7)); // coursecode only the first seven characters
     }

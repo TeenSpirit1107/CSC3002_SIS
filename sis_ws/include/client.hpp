@@ -72,6 +72,7 @@ public:
     // void print_schedule(std::shared_ptr<Course> classes);
     std::array<short,49> get_schedule();
     static std::array<short,49> find_schedule(vector<short> input_class);
+    static void print_schedule(const std::array<short,49> (&sc));
 
 };
 #endif

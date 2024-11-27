@@ -434,3 +434,21 @@ std::array<short, 49> Client::find_schedule(vector<short> input_class) {
     return schedule;
 }
 
+void Client::print_schedule(const std::array<short,49> (&sc)) {
+    std::string time[7] = {"8:30","10:30","13:30","15:30","18:00","19:00","20:00"};
+    printf("\tMON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\n");
+    for (int i = 0;i<7;i++) {
+        printf("%s\t",time[i].c_str());
+        for (int j= 0;j<7;j++) {
+            int cls_code = sc[i*7+j];
+            if (cls_code>0) {
+                std::string cour = Course::get_courseCode(cls_code);
+                printf("%s\t",cour.c_str());
+            }
+            else {
+                printf("\t");
+            }
+        }
+        std::cout<<std::endl;
+    }
+}
