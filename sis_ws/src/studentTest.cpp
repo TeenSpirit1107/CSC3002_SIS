@@ -321,6 +321,7 @@ void test_update_drop() {
     }
 }
 
+//在开放OCTE前，一定要get_ProcessOCTE!否则填写OCTE时会找不到文件
 void test_get_ProcessOCTE() {
     // 测试获取OCTE处理状态
     std::string inputID = "1230001"; // 示例学生ID
