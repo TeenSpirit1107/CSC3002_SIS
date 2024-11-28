@@ -377,8 +377,6 @@ void Staff::profile_add_class( short class_code) {
     for (const auto &l : lines) {
         file << l << std::endl;
     }
-
-
 }
 
 Staff::~Staff() {

@@ -371,6 +371,7 @@ string Student::readTxt(const string & filename, int line){
     return strVec[line - 1];
 }
 
+// Feature: Enrollment
 /**
  * @brief Validates the new class schedule for the student.
  *
@@ -389,7 +390,6 @@ string Student::readTxt(const string & filename, int line){
  *         - 6: Time conflict with currently enrolled classes.
  *
  */
-
 int Student::class_validation(const short new_class[6]) {
 
 
@@ -498,6 +498,148 @@ vector<std::string> Student::get_taken_courses() {
         v.push_back(line.substr(0,7)); // coursecode only the first seven characters
     }
     return v;
+}
+
+// TODO :comment. zero indexing end.
+vector<std::array<short,6>> Student::generate_schemes(
+    const std::string (&new_course)[6],
+    const int end,
+    bool no_eight_am,
+    vector<int> unvailable_time,
+    const std::string (&prof)[6],
+    std::array<short,6> must_class)
+{
+    // Initialize a schedule for occupation
+    std::array<bool,49> occupied = {false};
+
+    // Value 1: current schedule
+    std::array<short,49> my_sche = get_schedule();
+    for (int i =0;i<49;i++) {
+        if (my_sche[i]>0) {
+            occupied[i] = true;
+        }
+    }
+
+    // Value 2: Excluding eight am
+    if (no_eight_am) {
+        for (int i = 0;i<7;i++) {
+            occupied[i] = true;
+        }
+    }
+
+    // Value 3: Unavailable time
+    for (int i = 0; i<unvailable_time.size();i++) {
+        occupied[unvailable_time[i]] = true;
+    }
+
+    std::array<short,6> cur_scheme = {-1,-1,-1,-1,-1,-1}; // -1 denotes not selecting
+
+    vector<std::array<short,6>> all_schemes = gc_rec(occupied,vector<std::array<short,6>>(), cur_scheme,new_course,0,end);
+
+    // further processing the schemes
+
+    for (int k = 0; k<all_schemes.size();k++) {
+        std::array<short,6> one_scheme = all_schemes[k];
+
+        // Iterate over
+        for (int i =0;i<end;i++) {
+
+            // if there's no valid courses
+            if (one_scheme[i]==-1) break;
+
+            // 1. consider must class
+
+            if (i < must_class.size() && must_class[i]!=-1 && must_class[i]!=one_scheme[i]) {
+
+                // all_schemes.erase(std::remove(all_schemes.begin(),all_schemes.end(),one_scheme),all_schemes.end());
+                all_schemes.erase(all_schemes.begin()+k);
+                k--;
+                break;
+            }
+
+            // 2. consider instructor
+
+            if (prof[i]!= "" && Course(one_scheme[i]).instructor!=name_get_id(prof[i],false)) {
+                all_schemes.erase(all_schemes.begin()+k);
+                k--;
+                break;
+            }
+        }
+    }
+    return all_schemes;
+}
+
+vector<std::array<short,6>> Student::gc_rec(
+    std::array<bool,49> occupied,
+    vector<std::array<short,6>> all_schemes,
+    std::array<short,6> cur_scheme,
+    const std::string (&new_course)[6],
+    int start, int end)
+{
+    if (start==end) {
+        // pased all trials, then a feasible solution.
+        // deep copy
+        std::array<short,6> temp_scheme;
+
+        // std::copy(std::begin(cur_scheme), std::end(cur_scheme), std::begin(temp_scheme));
+        for (int i = 0;i<6;i++) {
+            temp_scheme[i] = cur_scheme[i];
+        }
+        all_schemes.push_back(temp_scheme);
+
+        return all_schemes;
+    }
+
+
+    for (int i =start;i<end;i++) {
+        std::string course_code = new_course[i];
+        vector<short> all_classes = Course::search_course(course_code);
+
+
+        for (int j=0; j<all_classes.size(); j++) {
+            short cls = all_classes.at(j);
+
+            Course c = Course(cls);
+            vector<int> all_time = c.get_class_time(cls);
+            bool conflict = false;
+            for (int t: all_time) {
+                if (occupied[t]) {
+                    conflict = true;
+                    break; // cannot select
+                }
+            }
+            if (conflict) continue; // move to the next available class
+            // else, choose this class
+            for (int t: all_time) {
+                occupied[t] = true;
+            }
+            cur_scheme[start] = cls;
+            all_schemes = gc_rec(occupied,all_schemes,cur_scheme,new_course,start+1,end);
+
+            // not choose this class
+            for (int t: all_time) {
+                occupied[t] = false;
+
+            }
+        }
+    }
+    return all_schemes;
+}
+
+void Student::print_scheme(vector<std::array<short,6>> scheme) {
+    for (int i = 0;i<scheme.size();i++) {
+        std::array<short,6> s = scheme[i];
+        for (int j = 0;j<6;j++) {
+            printf("%d ",s[j]);
+        }
+        printf("\n");
+    }
+}
+
+void Student::print_scheme_individual(std::array<short,6> s) {
+    for (int j = 0;j<6;j++) {
+        printf("%d ",s[j]);
+    }
 }
 
 //函数--查看公告与成绩

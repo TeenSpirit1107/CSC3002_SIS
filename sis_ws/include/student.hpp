@@ -60,8 +60,21 @@ public:
     void student_add_classes();
     void class_add_student(const short class_code);
     vector<std::string> get_taken_courses();
+    vector<std::array<short,6>> generate_schemes(
+        const std::string (&new_course)[6],
+        const int end, bool no_eight_am = false,
+        vector<int> unvailable_time = {},
+        const std::string (&prof)[6] = {"","","","","",""},
+        std::array<short,6> must_class= {-1,-1,-1,-1,-1,-1});
+    vector<std::array<short,6>> gc_rec(
+        std::array<bool,49> occupied,
+        vector<std::array<short,6>> all_schemes,
+        std::array<short,6> cur_scheme,
+        const std::string (&new_course)[6],
+        int start, int end);
 
-
+    static void print_scheme(vector<std::array<short,6>> scheme);
+    static void print_scheme_individual(std::array<short,6> s);
 };
 
 # endif

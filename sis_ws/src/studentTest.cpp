@@ -210,7 +210,7 @@ void print_schedule(std::array<short,49> sc) {
 }
 
 void test_get_schedule(){
-  shared_ptr<Student> tym = Student::find_profile("1230002");
+  shared_ptr<Student> tym = Student::find_profile("1230004");
     printf("name: %s\n",tym->get_userName().c_str());
     print_schedule(tym->get_schedule());
 }
@@ -227,7 +227,6 @@ void test_find_schedule() {
         printf("Schedule found.\n");
         print_schedule(sc);
     }
-
 }
 
 void test_validation() {
@@ -288,6 +287,50 @@ void test_search_course() {
     std::cout<<std::endl;
 }
 
+void test_generate_schemes() {
+
+    printf("Generate course selection scheme for Slacker DUDE (Bai zi ge).\n");
+    shared_ptr<Student> slacker = Student::find_profile("1230005");
+    printf("Trial: MAT1001, without eight am courses. (already tested. not shown here.)\n");
+    printf("TRIAL: all scheme containing MAT1001 and CSC3001. Tested, not shown here.\n");
+    printf("Trial: MAT1001, CSC3001, MAT1001 specified to take class 1111\n");
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},2,false,{-1,-1,-1,-1,-1,-1},{"","","","","",""},{1111,-1,-1,-1,-1,-1});
+    printf("TRIAL: all schemes containing MAT1001, but must be taught by Baoxiang WANG\n"); // or by Xiaokai LIU
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","","","","",""},
+    //     1,false,{-1,-1,-1,-1,-1,-1},{"Baoxiang WANG","","","","",""});
+    printf("TRIAL: all schemes containing MAT1001,CSC3001, but excluding one time slot; MAT1001 must be by Xiaokai LIU\n");
+    vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},
+          1,false,{1,-1,-1,-1,-1,-1},{"","","","","",""});
+    int n = all_schemes.size();
+    printf("Schemes number: %d\n",n);
+    for (int i = 0; i < n; i++) {
+        printf("Scheme %d\n",i);
+        for (int j =0 ;j<6;j++) {
+            std::cout<<all_schemes.at(i)[j]<<" ";
+
+        }
+        std::cout<<std::endl;
+        std::vector<short> scheme_vector(all_schemes.at(i).begin(), all_schemes.at(i).end());
+        print_schedule(Client::find_schedule(scheme_vector));
+    }
+
+}
+
+void test_erase() {
+    vector<std::array<short,6>> v;
+    v.push_back({10,20,30,40,50,60});
+    v.push_back({-10,-20,-30,-40,-50,-60});
+    v.erase(v.begin()+1);
+    int n = v.size();
+    printf("size: %d\n",n);
+    for (int i =0;i<n;i++) {
+        for (int j=0;j<6;j++) {
+            std::cout<<v.at(i)[j]<<" ";
+        }
+    }
+
+}
+
 
 
 int main() {
@@ -308,7 +351,12 @@ int main() {
     // test_get_schedule();
     // test_find_schedule();
     // test_validation();
-    test_search_course();
+    // test_search_course();
+    // test_erase();
+
+
+    test_generate_schemes();
+
     printf("Student Module Testing Complete.\n");
     return 0;
 }

@@ -74,7 +74,7 @@ Course::Course(short class_Code) {
     ifstream f(work_dir);
     getline(f,courseName);
     string tmp;
-    getline(f,instructor);
+    getline(f,tmp);
     getline(f,prereq);
     int num;
     f>>num;
@@ -199,7 +199,7 @@ vector<int> Course::get_class_time(short class_code) {
     Course c = Course(class_code);
     int nl = c.num_lec;
     int nt = c.num_tut;
-    all_time.resize(c.num_lec+c.num_tut);
+    all_time.reserve(c.num_lec+c.num_tut);
     // 1. add lectures
     for (int i = 0;i< nl;i++) {
         all_time.push_back(c.lec[i]-1); // 1-indexing
@@ -208,7 +208,6 @@ vector<int> Course::get_class_time(short class_code) {
     for (int i= 0; i<nt; i++) {
         all_time.push_back(c.tut[i]+27);
     }
-
     return all_time;
 }
 

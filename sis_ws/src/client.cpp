@@ -406,7 +406,7 @@ std::array<short, 49> Client::find_schedule(vector<short> input_class) {
 
     // update with input classes
     for (short srt : input_class) {
-
+        if (srt==-1) continue;
         //testing
         // 1. add lectures
         Course c = Course(srt);
@@ -440,6 +440,7 @@ std::array<short, 49> Client::find_schedule(vector<short> input_class) {
     return schedule;
 }
 
+// a function for testing.
 void Client::print_schedule(const std::array<short,49> (&sc)) {
     std::string time[7] = {"8:30","10:30","13:30","15:30","18:00","19:00","20:00"};
     printf("\tMON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\n");
