@@ -273,6 +273,54 @@ void test_view_transcript() {
     }
 }
 
+void test_update_add() {
+    // Test updating add class approval
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int result = student->updateAdd();
+
+        if (result == 0) {
+            printf("No pending add class approval updates.\n");
+        } else if (result == 1) {
+            printf("Add class approval updates retrieved successfully.\n");
+        } else if (result == 2) {
+            printf("Error: Unable to open add class approval result file.\n");
+        } else if (result == 3) {
+            printf("Error: Unable to open current enrolled classes file.\n");
+        } else {
+            printf("Unexpected error occurred while updating add class approval.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_update_drop() {
+    // Test updating drop class approval
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int result = student->updateDrop();
+
+        if (result == 0) {
+            printf("No pending drop class approval updates.\n");
+        } else if (result == 1) {
+            printf("Drop class approval updates retrieved successfully.\n");
+        } else if (result == 2) {
+            printf("Error: Unable to open drop class approval result file.\n");
+        } else if (result == 3) {
+            printf("Error: Unable to open current enrolled classes file.\n");
+        } else {
+            printf("Unexpected error occurred while updating drop class approval.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
 int main() {
     printf("Testing Student Module...\n");
 
@@ -289,8 +337,10 @@ int main() {
 
     //test_add_class();
     //test_drop_class();
-    test_view_transcript();
+    //test_view_transcript();
     //test_check_completed();
+    //test_update_add();
+    //test_update_drop();
 
     printf("Student Module Testing Complete.\n");
     return 0;

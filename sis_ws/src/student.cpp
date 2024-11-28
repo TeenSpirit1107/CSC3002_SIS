@@ -98,11 +98,9 @@ shared_ptr<Student> Student::find_profile(std::string &inputID) {
     return student_ptr;
 }
 
-
 Student::~Student() {
     std::cout << "*Student destructor" << std::endl;
 }
-
 
 //函数--添加好友 (文件夹：addFrds；文件名：（有待处理申请的学号）.txt
 //例子：123090001向123090002发送好友申请，addFrds文件夹中有123090002.txt,文件内容为123090001
@@ -268,35 +266,29 @@ int Student::checkFrd() {
     }
 }
 
-//返回指针--搜索课程代码 （1127下午说交给ui的同学做，已删除，保留注释）
-// vector<shared_ptr<Course>> Student::get_course(std::string &inputID) {
-//
-//     std::string courseListPath = course_path + inputID + "_class_arrange.txt";
-//     std::ifstream courseFile(courseListPath);
-//     std::string li;
-//
-//     // check whether the id exists
-//     if(!courseFile.is_open()) {// case 1, id doesn't exist
-//         return std::vector<shared_ptr<Course>>();
-//     }
-//     //从文件获取班级代码
-//     vector<short> classID;
-//     while (std::getline(courseFile, li)) {
-//         if (!li.empty()) {
-//             classID.push_back(stoi(li));
-//             int q = classID.size();
-//             std::vector<shared_ptr<Course>> ptrVec(q);
-//             for (int i = 0; i < q; i++) {
-//                 shared_ptr<Course> course_pctr=make_shared<Course>(classID[i]);
-//                 ptrVec[i]=course_pctr;
-//                 return ptrVec;
-//             }
-//         }else {
-//             return std::vector<shared_ptr<Course>>();
-//         }
-//     }
-//
-// }
+//函数--搜索课程代码返回下属班级
+vector<short> Student::get_course(std::string &inputID) {
+
+    std::string courseListPath = course_path + inputID + "_class_arrange.txt";
+    std::ifstream courseFile(courseListPath);
+    std::string li;
+
+    // check whether the id exists
+    if(!courseFile.is_open()) {// case 1, id doesn't exist
+        return std::vector<short>();
+    }
+    //从文件获取班级代码
+    vector<short> classID;
+    while (std::getline(courseFile, li)) {
+        if (!li.empty()) {
+            classID.push_back(stoi(li));
+
+            return classID;
+        }else {
+            return std::vector<short>();
+        }
+    }
+}
 
 
 //函数--加入购物车
@@ -485,7 +477,7 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
                             clsAdFile << cls_number + "\n"<< std::endl;
                             clsAdFile << drop_reason << std::endl;
                             clsAdFile.close();
-                            std::string toDoPath = ".\\sis_ws\\data_repo\\course_drop\\regToDo.txt";
+                            std::string toDoPath = ".\\sis_ws\\data_repo\\course_drop\\stu2staff.txt";
                             std::ofstream tdFile(toDoPath);
                             if (!tdFile.is_open()) {
                                 return 6;//6:已写入加课文件，但无法写入toDo文件
@@ -504,12 +496,286 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
     }
 }
 
-//查看教务处审批加退课的todo.txt
+//查看教务处审批加退课update
+//返回值：0没有需要更新的加退课审批结果
+//1:加退课审批结果更新成功
+//2：无法打开加退课审批结果文件
+//3:无法打开学生在修列表
+int Student::updateAdd() {
+    std::string upAdPath = ".\\sis_ws\\data_repo\\course_add\\"+ this-> userID +"\\reg2stu.txt";
+    std::ifstream upAdfile(upAdPath);
+    if (upAdfile.is_open()) {
+        vector<string> TextToRd;
+        string line;
+        while (getline(upAdfile, line)) {
+            TextToRd.push_back(line);
+        }
+        upAdfile.close();
+        //cout<< "size of vector: " <<TextToRd.size() <<endl;
+
+        //加入数组后删除文件，然后新建一个同名空文件
+        remove(upAdPath.c_str());
+        std::ofstream ipFile(upAdPath);
+        ipFile.close();
+
+        //cout<< "size of vector after deletion: " <<TextToRd.size() <<endl;
+        //待阅读列表不为空
+        if (TextToRd.size() > 0) {
+            //跳过第一行开始打开文件
+            for (int i = 0; i < TextToRd.size(); i++) {
+                std::string p = ".\\sis_ws\\data_repo\\course_add\\"+ this-> userID +"\\"+TextToRd[i];
+                //cout<< p <<endl;
+                //std::ifstream op(p);
+                string result1 = readTxt(p, 4);
+                int re1 = stoi(result1);
+                //cout<< re1 << endl;
+                if (re1 == 1) {
+                    string result2 = readTxt(p, 5);
+                    int re2 = stoi(result2);
+                    if (re2 == 1) {
+                        string adClsCode = readTxt(p, 2);
+                        cout<< "classcode: " << adClsCode <<endl;
+                        std::string adSucPath = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
+                        std::fstream adfile(adSucPath);
+                        if (!adfile.is_open()) {
+                            return 3;//3:无法打开学生在修列表
+                        }else {
+                            adfile.close();
+                            int clsNum = stoi(readTxt(adSucPath, 4));
+                            clsNum = clsNum + 1;
+                            string temp_str = std::to_string(clsNum);
+                            char * lm =(char*)temp_str.data();
+
+                            char * ff =(char*)adSucPath.data();
+
+                            ModifyLineData(ff, 4, lm);
+
+                            fstream f;
+                            //追加写入,在原来基础上加了ios::app
+                            f.open(adSucPath,ios::out|ios::app);
+                            //输入你想写入的内容
+                            f<<adClsCode<<endl;
+                            f.close();
+
+                            return 1;
+                        }
+                    }else{
+                        string failReasonR = readTxt(p, 6);
+                        cout<<"Registry reject your application. Reason: "<<failReasonR<<endl;
+                        return 1;
+                    }
+                }else {
+                    string failReasonP = readTxt(p, 5);
+                    cout<<"Professor reject your application. Reason: "<<failReasonP<<endl;
+                    return 1;
+                }
+            }
+        }else {
+            return 0;//0没有需要更新的加退课审批结果
+        }
+    }else {
+        return 2;//2：打不开加退课审批结果文件
+    }
+}
+
+//查看教务处审批加退课update
+//返回值：0没有需要更新的加退课审批结果
+//1:加退课审批结果更新成功
+//2：无法打开加退课审批结果文件
+//3:无法打开学生在修列表
+//4：出现了未知错误或者退课的课不在当前修课列表
+int Student::updateDrop() {
+    std::string upDpPath = ".\\sis_ws\\data_repo\\course_drop\\"+ this-> userID +"\\reg2stu.txt";
+    std::ifstream upDpfile(upDpPath);
+    if (upDpfile.is_open()) {
+        vector<string> TextToRd;
+        string line;
+        while (getline(upDpfile, line)) {
+            TextToRd.push_back(line);
+        }
+        upDpfile.close();
+        //cout<< "size of vector: " <<TextToRd.size() <<endl;
+
+        //加入数组后删除文件，然后新建一个同名空文件
+        // remove(upDpPath.c_str());
+        // std::ofstream ipFile(upDpPath);
+        // ipFile.close();
+
+        //待阅读列表不为空
+        if (TextToRd.size() > 0) {
+            //跳过第一行开始打开文件
+
+            for (int i = 0; i < TextToRd.size(); i++) {
+                std::string p = ".\\sis_ws\\data_repo\\course_drop\\"+ this-> userID +"\\"+TextToRd[i];
+                std::ifstream op(p);
+                string result1 = readTxt(p, 4);
+                int re1 = stoi(result1);
+                if (re1 == 1) {
+                    string result2 = readTxt(p, 5);
+                    int re2 = stoi(result2);
+                    if (re2 == 1) {
+                        string dpClsCode = readTxt(p, 2);
+                        std::string dpSucPath = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
+                        std::ifstream dpfile(dpSucPath);
+                        if (!dpfile.is_open()) {
+                            return 3;//3:无法打开学生在修列表
+                        }else {
+                            string dpClsCode = readTxt(p, 2);
+                            int dpClassCode = stoi(dpClsCode);
+                            //读取文件，比对班级，删除指定行
+                            std::string inProcessCls = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
+                            std::ifstream inProcessfile(inProcessCls);
+                            if (!inProcessfile.is_open()) {
+                                return 3;
+                            }else {
+                                std::string inPCls = readTxt(inProcessCls, 4); //这个函数的line从1开始计数
+                                //cout<< " 4 th string(number of class enrolled): " << inPCls << endl;
+                                int clsNum = stoi(inPCls);
+                                vector<int> clsPIDs;
+                                for (int i = 5; i < 5 + clsNum; i++) { //文件第五行开始为班级，如有2个，读到第六行,检验正确）
+                                    int clsP = stoi(readTxt(inProcessCls, i));
+                                    clsPIDs.push_back(clsP) ;
+                                    //cout<< clsP << endl;
+                                }
+                                int dpLine = -1;
+                                for (int j = 0; j < clsNum; j++) {
+                                    if (dpClassCode == clsPIDs[j]) {
+                                        dpLine = j;//第5+dpLine应该被删除
+                                    }
+                                }
+                                if (dpLine == -1) {
+                                    return 4;//4：出现了未知错误或者退课的课不在当前修课列表
+                                }else {
+                                    char * f=(char*)inProcessCls.data();
+
+                                    //在修课程总数减一
+                                    int upClsNum = clsNum - 1;
+                                    string temp_str = std::to_string(upClsNum);
+                                    char * q=(char*)temp_str.data();
+                                    ModifyLineData(f, 4, q);
+
+                                    //删去5+dpLine
+                                    DelLineData(f, 5+dpLine);
+                                    vector<string> newTx;
+                                    while(getline(inProcessfile, line)) {
+                                        if (line.empty()) {
+                                            continue;
+                                        }else {
+                                            newTx.push_back(line);
+                                        }
+                                    }
+                                    cout << "line 5:" << newTx[4] << endl;
+                                    remove(inProcessCls.c_str());
+                                    std::ofstream ipFile(inProcessCls);
+                                    for (int i = 0; i < newTx.size(); i++) {
+                                        ipFile << newTx[i];
+                                        ipFile << "\n";
+                                    }
+                                    ipFile.close();
+
+                                    return 1;
+                                }
+
+                            }
+                            return 1;
+                        }
+                    }else{
+                        string failReasonR = readTxt(p, 6);
+                        cout<<"Registry reject your application. Reason: "<<failReasonR<<endl;
+                        return 1;
+                    }
+                }else {
+                    string failReasonP = readTxt(p, 5);
+                    cout<<"Professor reject your application. Reason: "<<failReasonP<<endl;
+                    return 1;
+                }
+            }
+        }
+    }else {
+        return 2;//2：打不开加退课审批结果文件
+    }
+}
+
+//辅助函数：char转string
+string Student::CharToStr(char * contentChar)
+{
+    string tempStr;
+    for (int i=0;contentChar[i]!='\0';i++)
+    {
+        tempStr+=contentChar[i];
+    }
+    return tempStr;
+}
+//辅助函数：删除指定行
+void Student::DelLineData(char* fileName, int lineNum)
+{
+    ifstream in;
+    in.open(fileName);
+
+    string strFileData = "";
+    int line = 1;
+    char lineData[1024] = {0};
+    while(in.getline(lineData, sizeof(lineData)))
+    {
+        if (line == lineNum)
+        {
+            strFileData += "\n";
+        }
+        else
+        {
+            strFileData += CharToStr(lineData);
+            strFileData += "\n";
+        }
+        line++;
+    }
+    in.close();
+
+    //写入文件
+    ofstream out;
+    out.open(fileName);
+    out.flush();
+    out<<strFileData;
+    out.close();
+}
+//辅助函数：修改指定行
+void Student::ModifyLineData(char* fileName, int lineNum, char* lineData)
+{
+    ifstream in;
+    in.open(fileName);
+
+    string strFileData = "";
+    int line = 1;
+    char tmpLineData[1024] = {0};
+    while(in.getline(tmpLineData, sizeof(tmpLineData)))
+    {
+        if (line == lineNum)
+        {
+            strFileData += CharToStr(lineData);
+            strFileData += "\n";
+        }
+        else
+        {
+            strFileData += CharToStr(tmpLineData);
+            strFileData += "\n";
+        }
+        line++;
+    }
+    in.close();
+
+    //写入文件
+    ofstream out;
+    out.open(fileName);
+    out.flush();
+    out<<strFileData;
+    out.close();
+}
 
 
 //函数--查看公告(ui已融合)
 
-//函数--查看成绩(未通过测试)
+//函数--返回先修课列表（已删除，艺萌写的更简洁）
+
+//函数--查看成绩
 vector<vector<string>> Student::viewTranscript() {
     std::string transPath = ".\\sis_ws\\data_repo\\student\\transcript\\"+ this->userID +".txt";
     std::ifstream transfile(transPath);
@@ -535,4 +801,3 @@ vector<vector<string>> Student::viewTranscript() {
     }
 }
 
-//函数--返回先修课列表（已删除，艺萌写的更简洁）
