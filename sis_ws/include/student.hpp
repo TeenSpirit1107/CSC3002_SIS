@@ -33,6 +33,9 @@ public:
     vector<vector<string>> viewTranscript();
     vector<short> get_course(std::string &inputID);
 
+    int get_ProcessOCTE();
+    int fill_octe(string classCode);
+
     int updateAdd();
     int updateDrop();
 
@@ -42,6 +45,7 @@ public:
     string CharToStr(char * contentChar);
     void DelLineData(char* fileName, int lineNum);//删除指定行
     void ModifyLineData(char* fileName, int lineNum, char* lineData);//修改指定行
+    //void Stringsplit(string str,const char split, vector<string>& rst);
 
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
