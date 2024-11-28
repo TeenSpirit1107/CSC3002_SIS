@@ -406,6 +406,7 @@ std::array<short, 49> Client::find_schedule(vector<short> input_class) {
 
     // update with input classes
     for (short srt : input_class) {
+
         //testing
         // 1. add lectures
         Course c = Course(srt);
@@ -413,11 +414,15 @@ std::array<short, 49> Client::find_schedule(vector<short> input_class) {
         int nt = c.num_tut;
 
         for (int i = 0;i< nl;i++) {
-            if (schedule[c.tut[i]-1]>0){
+            if (schedule[c.lec[i]-1]>0){
                 err = true;
                 break;
             }
             schedule[c.lec[i]-1] = srt; // 0-indexing
+        }
+        if (err) {
+            schedule[0]=-2;
+            return schedule;
         }
         // 2. add tutorials
         for (int i= 0; i<nt; i++) {
@@ -427,9 +432,10 @@ std::array<short, 49> Client::find_schedule(vector<short> input_class) {
             }
             schedule[c.tut[i]+27] = srt;
         }
-    }
-    if (err) {
-        schedule[0]=-2;
+        if (err) {
+            schedule[0]=-2;
+            return schedule;
+        }
     }
     return schedule;
 }

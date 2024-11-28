@@ -493,8 +493,6 @@ int Student::class_validation(const short new_class[6]) {
         // Check prerequisite
         std::string pr = nc.prereq;
 
-
-
         if (!(Course::pre_request_test(pr,learnt_str))) {
             int ret = -(short(nc.classCode));
             return ret;

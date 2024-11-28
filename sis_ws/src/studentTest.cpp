@@ -235,17 +235,50 @@ void test_validation() {
     shared_ptr<Student> s = make_shared<Student>("1230002");
 
     print_schedule(s->get_schedule());
+    std::array<short,49> j= Client::find_schedule({1001,3001});
 
-    // trial 1, expected output:
-    short input[6] = {1002,-1,-1,-1,-1,-1};
-    i = s->class_validation(input);
-    std::cout<<i<<std::endl;
+    if (j[0]==-2) {
+        printf("no valid schedule\n");
+    }else {
+        print_schedule(j);
+    }
 
+    // Trial 0: expected outcome 0
+    short input0[6] = {1001,3001,-1,-1,-1,-1};
+    i = s->class_validation(input0);
+    printf("Trial 0, expected outcome 0, actual outcome %d\n",i);
 
-    // Trial 6: expected outcome, confliction with current schedule.
-    short input6[6] = {1002,-1,-1,-1,-1,-1};
+    // Trial 1: exceed unit limit
+    short input1[6] = {1001,1002,3001,3002,-1,-1};
+    i = s->class_validation(input0);
+    printf("Trial 0, expected outcome 1, actual outcome %d\n",i);
+
+    // Trial 2.1: expected outcome 2, currently taking this course.
+    short input21[6] = {2,-1,-1,-1,-1,-1};
+    i = s->class_validation(input21);
+    printf("Trial 2.1, expected outcome 2, actual outcome %d\n",i);
+
+    // Triail 2.2: expected outcome 2, already taken this course
+    short input22[6] = {3001,-1,-1,-1,-1,-1};
+    i = s->class_validation(input22);
+    printf("Trial 2.2, expected outcome 2, actual outcome %d\n",i);
+
+    // Trial 4, expected output: -1002. The prerequisite of 1002 is not satisfied.
+    short input4[6] = {1002,-1,-1,-1,-1,-1};
+    i = s->class_validation(input4);
+    printf("Trial 4, expected outcome -1002, actual outcome %d\n",i);
+
+    // Trial 5: time conflict within new schedule
+    short input5[6] = {1111,3011,-1,-1,-1,-1};
+    i = s->class_validation(input5);
+    printf("Trial 5, expected outcome 5, actual outcome %d\n",i);
+
+    // Trial 6: time conflict with currently enrolled schedule
+    short input6[6] = {1011,-1,-1,-1,-1,-1};
     i = s->class_validation(input6);
-    std::cout<<i<<std::endl;
+    printf("Trial 6, expected outcome 6, actual outcome %d\n",i);
+
+
 
 
 }
@@ -271,7 +304,6 @@ int main() {
     // test_get_schedule();
     // test_find_schedule();
     test_validation();
-
     printf("Student Module Testing Complete.\n");
     return 0;
 }
