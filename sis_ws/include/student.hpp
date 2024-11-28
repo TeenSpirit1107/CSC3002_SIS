@@ -31,11 +31,17 @@ public:
     int addClass(int cls_number,std::string add_reason);
     int dropClass(int cls_number,std::string add_reason);
     vector<vector<string>> viewTranscript();
+    vector<short> get_course(std::string &inputID);
+
+    int updateAdd();
+    int updateDrop();
 
 
-
-    //辅助函数：返回txt文件指定行
-    string readTxt(std::string filename, int line);
+    //辅助函数
+    string readTxt(std::string filename, int line);//返回指定行
+    string CharToStr(char * contentChar);
+    void DelLineData(char* fileName, int lineNum);//删除指定行
+    void ModifyLineData(char* fileName, int lineNum, char* lineData);//修改指定行
 
     // connections (our new function：加好友)
     vector<Student> frd; // do not write "friend". Friend is a keyword, 友元。
