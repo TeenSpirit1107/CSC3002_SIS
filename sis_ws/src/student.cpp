@@ -664,7 +664,7 @@ int Student::updateDrop() {
                                             newTx.push_back(line);
                                         }
                                     }
-                                    cout << "line 5:" << newTx[4] << endl;
+                                    //cout << "line 5:" << newTx[4] << endl;
                                     remove(inProcessCls.c_str());
                                     std::ofstream ipFile(inProcessCls);
                                     for (int i = 0; i < newTx.size(); i++) {
