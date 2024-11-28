@@ -247,6 +247,10 @@ int Staff::compute_final_grade(short class_code) {
  * 0 - The class was created and written to the file successfully.
  * 1 - The file could not be opened (unknown error).
  * 2 - Error in handling to_claim_list.txt
+ * 3 - Class already exists
+ *
+ * What this function doesn't do: ensure there's no time conflict with the professor's current schedule.
+ * This can be done by only allowing professor to select the available time for themselves.
  *
  * @param course_code
  * @param class_code
@@ -255,15 +259,10 @@ int Staff::compute_final_grade(short class_code) {
  * @return status code.
  */
 int Staff::claim_class(const std::string &course_code, short class_code, vector<int> input_lec, vector<int> input_tut) {
-    // TODO: before, after? logic.
-    // TODO: test this.
-    // TODO: claim_class, claim_course, add to local directory.
-    // TODO: check class exists
 
     std::string file_name = get_current_datetime() + ".txt";
     std::string work_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\" + file_name;
     std::string index_dir = ".\\sis_ws\\data_repo\\class_claim\\registry\\to_claim_list.txt";
-
     std::ofstream os(work_dir, std::ios::out);
     if (!os.is_open()) {
         return 1;
@@ -271,7 +270,6 @@ int Staff::claim_class(const std::string &course_code, short class_code, vector<
     if (update_index_file(index_dir, file_name) != 0) {
         return 2;
     }
-
     os << course_code << std::endl;
     os << this->userID << std::endl;
     os << class_code << std::endl;
@@ -283,10 +281,46 @@ int Staff::claim_class(const std::string &course_code, short class_code, vector<
     for (int i = 0; i < input_tut.size(); i++) {
         os << input_tut[i] << std::endl;
     }
+
+    // validation 1: class doesn't exists yet
+    // case 1: class already exists
+    std::string testDir = ".\\sis_ws\\data_repo\\class_claim\\registry\\" + class_code;
+    std::ifstream testOpen(testDir);
+    if (testOpen.is_open()) return 3;
+
+    // case 2: doesn't. can claim.
     return 0;
 }
 
+/**
+ * @brief Handles the steps to be taken after successfully claiming a class.
+ *
+ * This function updates the staff profile and object by adding the claimed class code
+ * to the staff's list of classes. It also creates a new temporary grade file for the class.
+ *
+ * @param class_code The code of the class that was successfully claimed.
+ */
+void Staff::claim_class_succ(const short class_code) {
 
+    // update profile and object
+    profile_add_class(class_code);
+
+    // create student_temp_grade
+    std::string new_temp_grade = "./sis_ws/data_repo/student_temp_grade/"+std::to_string(class_code)+".txt";
+    ofstream fileWriter(new_temp_grade);
+    if (!fileWriter.is_open()) printf("error: cannot create new file");// TODO: test
+    fileWriter << "0" <<std::endl;
+}
+/**
+ * @brief Updates the staff profile and object after successfully claiming a class.
+ *
+ * This function updates the staff profile and object by adding the claimed class code
+ * to the staff's list of classes. It ensures that the class code is added to the
+ * appropriate course in the staff's profile.
+ * This is one step among the steps after a class_claim is approved.
+ *
+ * @param class_code The code of the class that was successfully claimed.
+ */
 void Staff::profile_add_class( short class_code) {
     // update object
     std::vector<std::string> lines;
@@ -343,6 +377,7 @@ void Staff::profile_add_class( short class_code) {
     for (const auto &l : lines) {
         file << l << std::endl;
     }
+
 
 }
 

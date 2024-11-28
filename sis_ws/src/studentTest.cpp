@@ -175,7 +175,7 @@ void test_add_to_shopping_cart() {
 
     if (student != nullptr) {
         std::string classCode = "CSC3002"; // Example class code
-        student->addToShoppingCart(classCode);
+        // student->addToShoppingCart(classCode);
 
         printf("Shopping cart updated. Added class code: %s\n", classCode.c_str());
     } else {
@@ -278,11 +278,15 @@ void test_validation() {
     i = s->class_validation(input6);
     printf("Trial 6, expected outcome 6, actual outcome %d\n",i);
 
-
-
-
 }
 
+void test_search_course() {
+    vector<short> v = Course::search_course("MAT1001");
+    for (short s: v) {
+        std::cout<<s<<" ";
+    }
+    std::cout<<std::endl;
+}
 
 
 
@@ -303,7 +307,8 @@ int main() {
     // ym's student test
     // test_get_schedule();
     // test_find_schedule();
-    test_validation();
+    // test_validation();
+    test_search_course();
     printf("Student Module Testing Complete.\n");
     return 0;
 }

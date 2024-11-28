@@ -183,6 +183,7 @@ bool Course::pre_request_test(const std::string & requirement, std::set<std::str
     return num.top() == 'T'?true:false;
 }
 
+//search
 /**
  * @brief Retrieves the class times for a given class code.
  *
@@ -209,4 +210,26 @@ vector<int> Course::get_class_time(short class_code) {
     }
 
     return all_time;
+}
+
+vector<short> Course::search_course(const std::string & courseCode) {
+    vector<short> v;
+    std::string work_dir = ".\\sis_ws\\data_repo\\course\\"+courseCode+"_class_arrange.txt";
+    ifstream fileReader(work_dir);
+    if (!fileReader.is_open()) return v; // course not found or something
+    int n;
+    fileReader>>n;
+    for (int i = 0;i<n;i++) {
+        short s ;
+        fileReader>>s;
+        v.push_back(s);
+    }
+    return v;
+}
+/**
+ * @brief Retrieves the course code for a given course.
+ */
+std::string Course::get_courseCode(short srt) {
+    Course c = Course(srt);
+    return c.courseCode;
 }

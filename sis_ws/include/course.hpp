@@ -61,6 +61,7 @@ public:
 
     // Tool: Search
     static std::string get_courseCode(short srt);
+    static vector<short> search_course(const std::string & courseCode);
     static vector<int> get_class_time(short class_code);
 
 };
