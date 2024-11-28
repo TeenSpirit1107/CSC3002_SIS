@@ -524,17 +524,16 @@ int Student::updateAdd() {
             //跳过第一行开始打开文件
             for (int i = 0; i < TextToRd.size(); i++) {
                 std::string p = ".\\sis_ws\\data_repo\\course_add\\"+ this-> userID +"\\"+TextToRd[i];
-                //cout<< p <<endl;
                 //std::ifstream op(p);
                 string result1 = readTxt(p, 4);
                 int re1 = stoi(result1);
                 //cout<< re1 << endl;
+                string adClsCode = readTxt(p, 2);
                 if (re1 == 1) {
                     string result2 = readTxt(p, 5);
                     int re2 = stoi(result2);
                     if (re2 == 1) {
-                        string adClsCode = readTxt(p, 2);
-                        cout<< "classcode: " << adClsCode <<endl;
+                        cout<< "classCode: " << adClsCode << " has been added"<<endl;
                         std::string adSucPath = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
                         std::fstream adfile(adSucPath);
                         if (!adfile.is_open()) {
@@ -557,19 +556,20 @@ int Student::updateAdd() {
                             f<<adClsCode<<endl;
                             f.close();
 
-                            return 1;
+                            //return 1;
                         }
                     }else{
                         string failReasonR = readTxt(p, 6);
-                        cout<<"Registry reject your application. Reason: "<<failReasonR<<endl;
-                        return 1;
+                        cout<<"Registry reject your class " << adClsCode << " application. Reason: "<<failReasonR<<endl;
+                        //return 1;
                     }
                 }else {
                     string failReasonP = readTxt(p, 5);
-                    cout<<"Professor reject your application. Reason: "<<failReasonP<<endl;
-                    return 1;
+                    cout<<"Professor reject your " << adClsCode << " application. Reason: "<<failReasonP<<endl;
+                    //return 1;
                 }
             }
+            return 1;
         }else {
             return 0;//0没有需要更新的加退课审批结果
         }
@@ -610,17 +610,17 @@ int Student::updateDrop() {
                 std::ifstream op(p);
                 string result1 = readTxt(p, 4);
                 int re1 = stoi(result1);
+                string dpClsCode = readTxt(p, 2);
                 if (re1 == 1) {
                     string result2 = readTxt(p, 5);
                     int re2 = stoi(result2);
                     if (re2 == 1) {
-                        string dpClsCode = readTxt(p, 2);
+
                         std::string dpSucPath = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
                         std::ifstream dpfile(dpSucPath);
                         if (!dpfile.is_open()) {
                             return 3;//3:无法打开学生在修列表
                         }else {
-                            string dpClsCode = readTxt(p, 2);
                             int dpClassCode = stoi(dpClsCode);
                             //读取文件，比对班级，删除指定行
                             std::string inProcessCls = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
@@ -654,7 +654,7 @@ int Student::updateDrop() {
                                     char * q=(char*)temp_str.data();
                                     ModifyLineData(f, 4, q);
 
-                                    //删去5+dpLine
+                                    //删去5+dpLine行
                                     DelLineData(f, 5+dpLine);
                                     vector<string> newTx;
                                     while(getline(inProcessfile, line)) {
@@ -664,7 +664,7 @@ int Student::updateDrop() {
                                             newTx.push_back(line);
                                         }
                                     }
-                                    //cout << "line 5:" << newTx[4] << endl;
+
                                     remove(inProcessCls.c_str());
                                     std::ofstream ipFile(inProcessCls);
                                     for (int i = 0; i < newTx.size(); i++) {
@@ -672,24 +672,25 @@ int Student::updateDrop() {
                                         ipFile << "\n";
                                     }
                                     ipFile.close();
+                                    cout<< "classCode: " << dpClsCode << " has been dropped"<<endl;
 
-                                    return 1;
                                 }
 
                             }
-                            return 1;
+
                         }
                     }else{
                         string failReasonR = readTxt(p, 6);
-                        cout<<"Registry reject your application. Reason: "<<failReasonR<<endl;
-                        return 1;
+                        cout<<"Registry reject your class " << dpClsCode << " drop. Reason: "<<failReasonR<<endl;
+
                     }
                 }else {
                     string failReasonP = readTxt(p, 5);
-                    cout<<"Professor reject your application. Reason: "<<failReasonP<<endl;
-                    return 1;
+                    cout<<"Registry reject your class " << dpClsCode << " drop. Reason: "<<failReasonP<<endl;
+
                 }
             }
+            return 1;
         }
     }else {
         return 2;//2：打不开加退课审批结果文件
@@ -801,3 +802,163 @@ vector<vector<string>> Student::viewTranscript() {
     }
 }
 
+//函数--创建octe待填文件
+//预设前提：填写octe时默认在修不会变动
+//返回值：0无法打开在修课程文件
+//1：成功创建octe待填文件
+//2:无法创建student的OCTE文件
+int Student::get_ProcessOCTE() {
+    std::string inProcessCls = ".\\sis_ws\\data_repo\\student\\"+ this-> userID +".txt";
+    std::ifstream inProcessfile(inProcessCls);
+    if (!inProcessfile.is_open()) {
+        return 0;
+    }else{
+        inProcessfile.close();
+        vector<string> ProcessCls;
+        string clsNum = readTxt(inProcessCls, 4);
+        int cNum = stoi(clsNum);
+        for (int cnt = 5; cnt < 5 + cNum; cnt++) {
+            ProcessCls.push_back(readTxt(inProcessCls, cnt));
+        }
+        std::string stuOCTEPath = ".\\sis_ws\\data_repo\\octe\\"+ this-> userID +"ToDo.txt";
+        std::ofstream stuOctefile(stuOCTEPath);
+        if (!stuOctefile.is_open()) {
+            return 2;
+        }else {
+            for (int i = 0; i < ProcessCls.size() ; i++) {
+                stuOctefile << ProcessCls[i] << "\n";
+            }
+            stuOctefile.close();
+        }
+        return 1;
+    }
+}
+
+//函数--查看octe
+//返回值:0:输入的OCTE班级并非本学期在修班级
+//1:填写成功
+//2：打不开OCTE题目
+//3：打不开已填OCTE的班级代码文件
+//4：已填写该班级OCTE，无需重复填写
+int Student::fill_octe(string classCode) {
+    int clsCode = stoi(classCode);
+    //cout << classCode << endl;
+
+    //要做OCTE的班级放进数组里
+    std::string stuOCTEPath = ".\\sis_ws\\data_repo\\octe\\"+ this-> userID +"ToDo.txt";
+    std::ifstream stuOctefile(stuOCTEPath);
+    vector<int> octeCls;
+    std::string line;
+    while (getline(stuOctefile, line)) {
+        //cout<< line << endl;
+        octeCls.push_back(stoi(line));
+    }
+    //cout<< octeCls[0] << endl;
+
+    int searchLine = -1;
+    for (int i = 0; i < octeCls.size(); i++) {
+        if (octeCls[i] == clsCode) {
+            searchLine = i + 1 ;
+        }
+    }
+
+    //不等于-1表示班级在在修列表中
+    if (searchLine == -1) {
+        return 0;//0:输入的OCTE班级并非本学期在修班级
+    }else {
+        std::string DoneOCTEPath =  ".\\sis_ws\\data_repo\\octe\\" + this -> userID +"Done.txt";
+        std::ifstream DoneOctefile(DoneOCTEPath);
+        if (!DoneOctefile.is_open()) {
+            return 3;//3：打不开已填OCTE的班级代码文件
+        }else {
+            string li;
+            vector<int> DoneCls;
+            while (getline(DoneOctefile, li)) {
+                DoneCls.push_back(stoi(li));
+                for (int j = 0; j < DoneCls.size(); j++) {
+                    if (DoneCls[j] == clsCode) {
+                        return 4;//4：已填写该班级OCTE，无需重复填写
+                    }else{
+                        std::string OCTEPath = ".\\sis_ws\\data_repo\\octe\\exampleOCTE.txt";
+                        std::ifstream Octefile(OCTEPath);
+                        if (!Octefile.is_open()) {
+                            return 2;//2：打不开OCTE题目
+                        }else {
+                            string lin;
+                            while (getline(Octefile, lin)) {
+                                cout << lin << endl;
+                            }
+                            Octefile.close();
+
+                            string ans;
+                            getline(cin,ans);
+                            std::string ClsOCTEPath = ".\\sis_ws\\data_repo\\octe\\" + classCode + "\\"+ this -> userID +".txt";
+                            std::ofstream ClsOctefile(ClsOCTEPath);
+                            if (!ClsOctefile.is_open()) {
+                                return 5; //无法打开存储评价的文件
+                            }else {
+                                ClsOctefile << ans;
+                                ClsOctefile.close();
+
+                                std::string DoneOCTEPath = ".\\sis_ws\\data_repo\\octe\\" + this -> userID +"Done.txt";
+                                std::ifstream DoneOctefile(DoneOCTEPath);
+                                if (!DoneOctefile.is_open()) {
+                                    return 3;
+                                }else {
+                                    DoneOctefile.close();
+                                    fstream f;
+                                    //追加写入,在原来基础上加了ios::app
+                                    f.open(DoneOCTEPath,ios::out|ios::app);
+                                    f<<classCode<<endl;
+                                    f.close();
+                                    return 1;//成功填写OCTE并保存
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            DoneOctefile.close();
+
+            cout<< "nothing's in DoneOctefile\n";
+
+            std::string OCTEPath = ".\\sis_ws\\data_repo\\octe\\exampleOCTE.txt";
+            std::ifstream Octefile(OCTEPath);
+            if (!Octefile.is_open()) {
+                return 2;//2：打不开OCTE题目
+            }else {
+                string lin;
+                while (getline(Octefile, lin)) {
+                    cout << lin << endl;
+                }
+                Octefile.close();
+
+                string ans;
+                getline(cin,ans);
+                std::string ClsOCTEPath = ".\\sis_ws\\data_repo\\octe\\" + classCode + "\\"+ this -> userID +".txt";
+                std::ofstream ClsOctefile(ClsOCTEPath);
+                if (!ClsOctefile.is_open()) {
+                    return 5; //无法打开存储评价的文件
+                }else {
+                    ClsOctefile << ans;
+                    ClsOctefile.close();
+
+                    std::string DoneOCTEPath = ".\\sis_ws\\data_repo\\octe\\" + this -> userID +"Done.txt";
+                    std::ifstream DoneOctefile(DoneOCTEPath);
+                    if (!DoneOctefile.is_open()) {
+                        return 3;
+                    }else {
+                        DoneOctefile.close();
+                        fstream f;
+                        //追加写入,在原来基础上加了ios::app
+                        f.open(DoneOCTEPath,ios::out|ios::app);
+                        f<<classCode<<endl;
+                        f.close();
+                        return 1;//成功填写OCTE并保存
+                    }
+                }
+            }
+        }
+    }
+    // return 0;
+}

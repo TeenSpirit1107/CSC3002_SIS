@@ -321,6 +321,51 @@ void test_update_drop() {
     }
 }
 
+void test_get_ProcessOCTE() {
+    // 测试获取OCTE处理状态
+    std::string inputID = "1230001"; // 示例学生ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int result = student->get_ProcessOCTE();
+
+        if (result == 0) {
+            printf("Unable to open OCTE todo file.\n");
+        } else if (result == 1) {
+            printf("OCTE todo file created successfully.\n");
+        } else if (result == 2) {
+            printf("Unable to create OCTE file.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_fill_octe() {
+    // 测试填写OCTE申请
+    std::string inputID = "1230001"; // 示例学生ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        std::string classCode = "6"; // 示例课程代码
+        int result = student->fill_octe(classCode);
+
+        if (result == 1) {
+            printf("OCTE submitted successfully for class code: %s\n", classCode.c_str());
+        } else if (result == 0) {
+            printf("Class code %s is not in process class.\n", classCode.c_str());
+        } else if (result == 2) {
+            printf("Error: Unable to open OCTE question file.\n");
+        } else if (result == 3){
+            printf("Unable to open OCTE done counting file.\n");
+        } else if (result == 4){
+            printf("OCTE for class code %s has been finished already, no need to submit again.\n", classCode.c_str());
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
 int main() {
     printf("Testing Student Module...\n");
 
@@ -341,6 +386,8 @@ int main() {
     //test_check_completed();
     //test_update_add();
     //test_update_drop();
+    //test_get_ProcessOCTE();
+    test_fill_octe();
 
     printf("Student Module Testing Complete.\n");
     return 0;
