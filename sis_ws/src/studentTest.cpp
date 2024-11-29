@@ -102,11 +102,11 @@ void test_find_profile() {
 
 void test_add_friend() {
     // Test adding a friend
-    std::string inputID = "1230901";     // Current student's ID
+    std::string inputID = "1230001";     // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
-        std::string friendID = "1230902"; // Example friend's ID
+        std::string friendID = "1230002"; // Example friend's ID
         int result = student->addFrd(friendID);
 
         if (result == 1) {
@@ -125,7 +125,7 @@ void test_add_friend() {
 
 void test_accept_friend() {
     // Test accepting a friend request
-    std::string inputID = "1230902"; // Current student's ID
+    std::string inputID = "1230002"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -167,6 +167,25 @@ void test_check_friend_list() {
     } else {
         printf("Student profile not found for ID %s.\n", inputID.c_str());
     }
+}
+
+void test_is_friend(){
+    std::string inputID = "1230001";     // Current student's ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        std::string inputID = "1230002"; // Example inputID
+        int result = student->addFrd(inputID);
+
+        if (result == 1) {
+            printf(" %s is your friend.\n", inputID.c_str());
+        } else {
+            printf("%s is not your friend.\n", inputID.c_str());
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+
 }
 
 void test_add_to_shopping_cart() {
@@ -552,10 +571,6 @@ int main() {
     //test_logIn();
     //test_find_profile();
 
-
-        // Test adding, accepting, and checking friends
-    //test_friend_workflow();
-
     //test_add_to_shopping_cart();
 
     //test_add_class();
@@ -568,8 +583,11 @@ int main() {
     //test_fill_octe();
 
 
-//    // Test adding, accepting, and checking friends
-//    test_friend_workflow();
+    // Test adding, accepting, and checking friends
+    //test_add_friend();
+    //test_accept_friend();
+    //test_check_friend_list();
+    //test_is_friend();
 
     //test_add_to_shopping_cart();
 

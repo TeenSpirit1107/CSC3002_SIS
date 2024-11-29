@@ -207,11 +207,17 @@ int Student::addFrd(const std::string &friendID) {
         // 定义申请好友文件的路径
         std::string addFriendFilePath = ".\\sis_ws\\data_repo\\addFrds\\" + friendID + ".txt";
         // 在 addFrds 文件夹中创建以目标好友学号命名的文件，填入当前用户的id
-        std::ofstream addFriendFile(addFriendFilePath);
+        std::ifstream addFriendFile(addFriendFilePath);
+
         if (addFriendFile.is_open()) {
             // 写入当前用户的 ID
-            addFriendFile << this->userID << std::endl;
             addFriendFile.close();
+            fstream f;
+            //追加写入,在原来基础上加了ios::app
+            f.open(addFriendFilePath,ios::out|ios::app);
+            //输入你想写入的内容
+            f<<this->userID<<endl;
+            f.close();
             // 输出申请发送的提示
             //std::cout << "已发送申请，请等待对方通过。" << std::endl;
             return 1;
@@ -280,11 +286,16 @@ int Student::acceptFrd() {
             if (userChoice == 1) {
                 // 用户同意好友申请，将好友添加到好友列表
                 //this->addFriend(friendID);
-                std::ofstream FriendFile(FrdFilePath);
+                std::ifstream FriendFile(FrdFilePath);
                 if (FriendFile.is_open()) {
                     // 写入当前用户的 ID
-                    FriendFile << friendID << std::endl;
                     FriendFile.close();
+                    fstream f;
+                    //追加写入,在原来基础上加了ios::app
+                    f.open(FrdFilePath,ios::out|ios::app);
+                    //输入你想写入的内容
+                    f<< friendID <<endl;
+                    f.close();
                 } else {
                     //std::cout << "错误：好友文件无法写入。" << std::endl;
                     return 2;
@@ -292,11 +303,16 @@ int Student::acceptFrd() {
 
                 std::string FrdAccPath = ".\\sis_ws\\data_repo\\frd\\" + friendID + ".txt";
                 //cout<< FrdAccPath << endl;
-                std::ofstream FrdAccFile(FrdAccPath);
+                std::ifstream FrdAccFile(FrdAccPath);
                 if (FrdAccFile.is_open()) {
                     // 写入当前用户的 ID
-                    FrdAccFile << this->userID << std::endl;
                     FrdAccFile.close();
+                    fstream f;
+                    //追加写入,在原来基础上加了ios::app
+                    f.open(FrdAccPath,ios::out|ios::app);
+                    //输入你想写入的内容
+                    f<< this->userID<<endl;
+                    f.close();
                 } else {
                     //std::cout << "错误：好友文件无法写入。" << std::endl;
                 }
@@ -348,6 +364,41 @@ int Student::checkFrd() {
         //std::cout << "无法查看好友列表文件。" << std::endl;
         return 0;
         // [todo]创建用户时就在文件夹创建文件
+    }
+}
+
+/**
+ * @brief check if a student is user's friend
+ *
+ * input a student's ID and check if it's user's friend
+ *
+ * @param inputID The ID if the student being checked
+ */
+bool Student::isFrd(const string &inputID) {
+    int iptID = stoi(inputID);
+    std::string FrdFilePath = ".\\sis_ws\\data_repo\\frd\\" + this->userID + ".txt";
+    std::ifstream in(FrdFilePath);
+    std::string line;
+    vector<int> FrdIDs;
+    if (in.is_open()) {
+        while (std::getline(in, line)) {
+            FrdIDs.push_back(stoi(line));
+        }
+        in.close();
+        int k = -1;
+        for (int i = 0; i < FrdIDs.size(); i++) {
+            if (FrdIDs[i] == iptID) {
+                k = 1;
+            }
+        }
+        if (k == -1) {
+            return false;
+        }else{
+            return true;
+        }
+    }else {
+        cout<< "Error: Friend file could not be opened, relationship check failed." << endl;
+        return false;
     }
 }
 
