@@ -8,6 +8,7 @@
 #include <ctime>
 #include <algorithm>
 #include <io.h>
+#include <array>
 
 
 // sis classes
@@ -21,7 +22,6 @@ Client::Client(): course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\
     this->passcode = "123456";
     this->classes;
 }
-
 
 // [todo] this constructor with many inputs may be erased if it's not used elsewhere.
 Client::Client(const std::string &inputID, const std::string &inputName, const std::string &userPass): userID(inputID),
@@ -50,6 +50,150 @@ std::string Client::get_passcode() const {
 
 std::string Client::get_userName() const {
     return userName;
+}
+
+// Feature: register
+/**
+ * @brief Registers a new user (student or professor) and generates a new ID.
+ *
+ * This function handles the registration process for both students and professors.
+ * It generates a new unique ID, updates the corresponding school and roster files,
+ * and creates a new profile file for the user.
+ *
+ * @param inputName1 The first name of the user.
+ * @param inputName2 The last name of the user.
+ * @param inputPass The passcode for the user.
+ * @param isStudent A boolean indicating if the user is a student.
+ * @param school The school number associated with the user.
+ * @return The newly generated user ID.
+ */
+std::string Client::user_register(const std::string & inputName1, const std::string & inputName2,
+    const std::string & inputPass, bool isStudent, int school){
+
+    std::string new_id;
+    int school_num;
+
+    //generate new id
+    if (!isStudent) {
+        // is professor
+        std::string school_path = ".\\sis_ws\\data_repo\\staff\\staff_school.txt";
+        ifstream schoolReader(school_path);
+        vector<std::string> school_lines;
+        std::string line;
+
+        while (std::getline(schoolReader, line)) {
+            school_lines.push_back(line);
+        }
+
+        int school_num;
+        try {
+            school_num = std::stoi(school_lines[school-1]);
+        }
+        catch (std::invalid_argument &e) {
+        }
+        school_num++;
+        school_lines[school-1] = std::to_string(school_num);
+
+        // for (int i =0;i<school-1;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        // schoolReader>>school_num;
+        // school_num++;
+        // school_lines.push_back(std::to_string(school_num));
+        // for (int i = school;i<6;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        schoolReader.close();
+
+        std::ostringstream oss;
+        oss << "9"<< std::to_string(school)  << std::setw(5) << std::setfill('0') << school_num;
+        new_id = oss.str();
+
+        // update school
+        ofstream schoolWriter(school_path);
+        schoolWriter.clear();
+        schoolWriter.seekp(0, std::ios::beg);
+        for (const auto &l : school_lines) {
+            schoolWriter << l << std::endl;
+        }
+
+        // update roster
+        std::string roster_path = ".\\sis_ws\\data_repo\\staff\\staff_roster.txt";
+        ofstream rosterWriter(roster_path, std::ios::app);
+        rosterWriter << new_id << " "<< inputName1 << " " << inputName2 << std::endl;
+        rosterWriter.close();
+
+        // update profile
+        std::string new_profile_path = ".\\sis_ws\\data_repo\\staff\\" + new_id + ".txt";
+        ofstream profileWriter(new_profile_path);
+        profileWriter << inputPass << std::endl;
+        profileWriter << inputName1 << std::endl;
+        profileWriter << inputName2 << std::endl;
+        profileWriter << "0" << std::endl;
+        profileWriter.close();
+
+    }else {
+        std::string school_path = ".\\sis_ws\\data_repo\\student\\student_school.txt";
+        ifstream schoolReader(school_path);
+        vector<std::string> school_lines;
+        std::string line;
+
+        while (std::getline(schoolReader, line)) {
+            school_lines.push_back(line);
+        }
+
+        int school_num;
+        try {
+            school_num = std::stoi(school_lines[school-1]);
+        }
+        catch (std::invalid_argument &e) {
+        }
+        school_num++;
+        school_lines[school-1] = std::to_string(school_num);
+
+        // for (int i =0;i<school-1;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        // schoolReader>>school_num;
+        // school_num++;
+        // school_lines.push_back(std::to_string(school_num));
+        // for (int i = school;i<6;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        schoolReader.close();
+
+        std::ostringstream oss;
+        oss << std::to_string(school) << "24" << std::setw(4) << std::setfill('0') << school_num;
+        new_id = oss.str();
+
+        // update school
+        ofstream schoolWriter(school_path);
+        schoolWriter.clear();
+        schoolWriter.seekp(0, std::ios::beg);
+        for (const auto &l : school_lines) {
+            schoolWriter << l << std::endl;
+        }
+
+        // update roster
+        std::string roster_path = ".\\sis_ws\\data_repo\\student\\student_roster.txt";
+        ofstream rosterWriter(roster_path, std::ios::app);
+        rosterWriter << new_id << " "<< inputName1 << " " << inputName2 << std::endl;
+        rosterWriter.close();
+
+        // update profile
+        std::string new_profile_path = ".\\sis_ws\\data_repo\\student\\" + new_id + ".txt";
+        ofstream profileWriter(new_profile_path);
+        profileWriter << inputPass << std::endl;
+        profileWriter << inputName1 << std::endl;
+        profileWriter << inputName2 << std::endl;
+        profileWriter << "0" << std::endl;
+        profileWriter.close();
+    }
+    return new_id;
 }
 
 
@@ -349,14 +493,23 @@ int Client::update_index_file(const std::string & index_dir, const std::string &
     return 0;
 }
 
+/**
+ * @brief Retrieves the current schedule of the client.
+ *
+ * This function returns an array representing the current schedule of the client.
+ * Each element in the array corresponds to a time slot, and the value indicates the class code
+ * scheduled for that time slot. If no class is scheduled for a time slot, the value is -1.
+ *
+ * This is Different from the function below, which is a static fucntion that gives the schedule generated by a bunch of input classes.
+ * @return std::array<short, 49> An array representing the current schedule.
+ */
 std::array<short, 49> Client::get_schedule() {
     std::array<short,49> schedule;
     for (int i = 0;i<49;i++) {
         schedule[i] = -1;
     }
-
     for (short srt : classes) {
-        //testing
+
         // 1. add lectures
         Course c = Course(srt);
         int nl = c.num_lec;
@@ -367,10 +520,85 @@ std::array<short, 49> Client::get_schedule() {
         // 2. add tutorials
         int nt = c.num_tut;
         for (int i= 0; i<nt; i++) {
-            schedule[c.tut[i]-1] = srt;
+            schedule[c.tut[i]+27] = srt;
         }
     }
-
-
     return schedule;
+}
+
+/**
+ * @brief Generates a schedule based on the provided class codes.
+ *
+ * This function takes a vector of class codes and returns an array representing the schedule.
+ * Each element in the array corresponds to a time slot, and the value indicates the class code
+ * scheduled for that time slot. If no class is scheduled for a time slot, the value is -1.
+ * If there is a conflict in the schedule, the first element of the array is set to -2.
+ *
+ * @param input_class A vector of class codes to generate the schedule.
+ * @return std::array<short, 49> An array representing the generated schedule.
+ */
+std::array<short, 49> Client::find_schedule(vector<short> input_class) {
+
+    bool err = false;
+
+    // initialized as -1
+    std::array<short,49> schedule;
+    for (int i = 0;i<49;i++) {
+        schedule[i] = -1;
+    }
+
+    // update with input classes
+    for (short srt : input_class) {
+        if (srt==-1) continue;
+        //testing
+        // 1. add lectures
+        Course c = Course(srt);
+        int nl = c.num_lec;
+        int nt = c.num_tut;
+
+        for (int i = 0;i< nl;i++) {
+            if (schedule[c.lec[i]-1]>0){
+                err = true;
+                break;
+            }
+            schedule[c.lec[i]-1] = srt; // 0-indexing
+        }
+        if (err) {
+            schedule[0]=-2;
+            return schedule;
+        }
+        // 2. add tutorials
+        for (int i= 0; i<nt; i++) {
+            if (schedule[c.tut[i]+27]>0) { // + 28 -1
+                err = true;
+                break;
+            }
+            schedule[c.tut[i]+27] = srt;
+        }
+        if (err) {
+            schedule[0]=-2;
+            return schedule;
+        }
+    }
+    return schedule;
+}
+
+// a function for testing.
+void Client::print_schedule(const std::array<short,49> (&sc)) {
+    std::string time[7] = {"8:30","10:30","13:30","15:30","18:00","19:00","20:00"};
+    printf("\tMON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\n");
+    for (int i = 0;i<7;i++) {
+        printf("%s\t",time[i].c_str());
+        for (int j= 0;j<7;j++) {
+            int cls_code = sc[i*7+j];
+            if (cls_code>0) {
+                std::string cour = Course::get_courseCode(cls_code);
+                printf("%s\t",cour.c_str());
+            }
+            else {
+                printf("\t");
+            }
+        }
+        std::cout<<std::endl;
+    }
 }

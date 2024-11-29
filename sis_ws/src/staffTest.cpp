@@ -5,11 +5,13 @@
 // include cpp lib
 #include "stdio.h"
 #include <memory>
+#include <bits/stdc++.h>
 
 // testing; for printing current working path
 #include <iostream>
 #include <unistd.h>
 #include<fstream>
+
 
 // include sis classes
 #include <iomanip>
@@ -118,40 +120,9 @@ void test_find_id_parseCode(int i) {
 }
 
 void test_schedule() {
-    shared_ptr<Student> tym = Student::find_profile("1230002");
-
-    (Course(4)).printCourse();
-    printf("MON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\t\n");
-    std::array<short, 49> schedule = tym->get_schedule();
-
-    shared_ptr<Course> cour_sche[7][7];
-
-    // value assignment
-    int k = 0;
-    for (int i =0;i<7;i++) {
-        for (int j=0;j<7;j++) {
-            if (schedule[k]>0) {
-                shared_ptr<Course> c = make_shared<Course>(schedule[k]);
-                cour_sche[i][j] = c;
-            }else {
-                cour_sche[i][j]=nullptr;
-            }
-            k++;
-        }
-    }
-
-    for (int i =0;i<7;i++) {
-        for (int j=0;j<7;j++) {
-            if (!(cour_sche[i][j])) {
-                printf("\t");
-            }else {
-                std::cout<<(cour_sche[i][j])->courseCode<<"\t";
-            }
-
-
-        }
-        printf("\n");
-    }
+  shared_ptr<Staff> bxw = Staff::find_profile("9100002");
+    std::array<short, 49> sc = bxw->get_schedule();
+    Client::print_schedule(sc);
 }
 
 void test_name_process() {
@@ -372,6 +343,14 @@ void test_final_grade() {
     test_compute_final_grade_parseCode(Staff::compute_final_grade(2));
 }
 
+void test_add_class_succ() {
+    shared_ptr<Staff> bxw = Staff::find_profile("9100002");
+    bxw->claim_class_succ(3011);
+
+}
+
+
+
 
 int main() {
     // test_logIn();
@@ -385,9 +364,9 @@ int main() {
     // test_rewrite_file();
     // test_do_hw();
     // test_student_find_profile();
-    test_schedule();
+     // test_schedule();
 
-
+    test_add_class_succ();
 
 
     // TODO: course.cpp reading problem?
