@@ -12,6 +12,9 @@
 
 #include <student.hpp>
 #include "registry.hpp"
+
+#include <staff.hpp>
+
 #include "client.hpp"
 
 using namespace std;
@@ -285,7 +288,8 @@ void class_pass_process(string prof_code, string courseCode, short classNum, int
     for (int i = 0; i < n; i++) fprintf(file, "%s\n", classCode[i].c_str());
     fprintf(file, "%d\n", classNum+1);
     fclose(file);
-
+    Staff staff = Staff(prof_code);
+    staff.claim_class_succ(classNum);
 }
 void class_fail_process(string prof_code, string courseCode) {
     string reason;
@@ -735,5 +739,37 @@ void Registry::Add_and_Drop(bool addition)
             fclose(file);
         }
         printf("all claims are done\n");
+    }
+}
+void Registry::fetchOCTE() {
+    string work_dir = ".\\sis_ws\\data_repo\\class\\Class Number.txt";
+    FILE *file = fopen(work_dir.c_str(), "r");
+    int class_number;
+    fscanf(file, "%d", &class_number);
+    fclose(file);
+    for(int i = 1; i <= class_number; i++) {
+        int tot_sc[5] = {}, tot_num = 0;
+        work_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\"+to_string(i)+".txt";
+        ifstream infile(work_dir);
+        string studentCode;
+        while(getline(infile, studentCode)) {
+            studentCode = studentCode.substr(0, 7);
+            work_dir = ".\\sis_ws\\data_repo\\octe\\"+to_string(i)+"\\"+studentCode+".txt";
+            file = fopen(work_dir.c_str(), "r");
+            if (!file) {
+                cout << studentCode << "didn't finish OCTE" << endl;
+            } else {
+                int sc[5];
+                for(int j = 0; j < 5; j++) fscanf(file, "%d", &sc[j]), tot_sc[j] += sc[j];
+                fclose(file);
+                tot_num++;
+            }
+        }
+        infile.close();
+        work_dir = ".\\sis_ws\\data_repo\\octe\\"+to_string(i)+"\\summary.txt";
+        file = fopen(work_dir.c_str(), "w");
+        fprintf(file, "%d ", tot_num);
+        for(int j = 0; j < 5; j++) fprintf(file, "%d ", tot_sc[j]);
+        fclose(file);
     }
 }

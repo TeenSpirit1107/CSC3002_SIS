@@ -34,6 +34,9 @@ int main(){
         else if(op == 'g') {
             reg.Add_and_Drop(false);
         }
+        else if(op == 'h'){
+            reg.fetchOCTE();
+        }
         else if(op == 'e') {
             break;
         }

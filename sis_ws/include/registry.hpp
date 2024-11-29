@@ -20,6 +20,7 @@ public:
     void classroom_arrangement();
     void stu_final_grade();
     void Add_and_Drop(bool addition);
+    void fetchOCTE();
     ~Registry();
 };
 // class Announcement: public Client{
