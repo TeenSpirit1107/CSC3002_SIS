@@ -1,6 +1,3 @@
-//
-// Created by Tester on 2024/11/26.
-//
 
 // include cpp lib
 #include <iostream>
@@ -11,11 +8,15 @@
 #include "stdio.h"
 #include <memory>
 #include <unistd.h>
+#include <ctime>
+#include<vector>
+#include <string>
 
 // include sis classes
 #include "student.hpp"
 #include "client.hpp"
 #include "staff.hpp"
+
 #include "course.hpp"
 
 // expected outcome of this testing file:
@@ -87,7 +88,7 @@ void test_logIn() {
     }
 }
 void test_find_profile() {
-    std::string inputID = "123090001"; // Example student ID
+    std::string inputID = "1230901"; // Example student ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student == nullptr) {
@@ -101,11 +102,11 @@ void test_find_profile() {
 
 void test_add_friend() {
     // Test adding a friend
-    std::string inputID = "123090001";     // Current student's ID
+    std::string inputID = "1230901";     // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
-        std::string friendID = "123090002"; // Example friend's ID
+        std::string friendID = "1230902"; // Example friend's ID
         int result = student->addFrd(friendID);
 
         if (result == 1) {
@@ -124,7 +125,7 @@ void test_add_friend() {
 
 void test_accept_friend() {
     // Test accepting a friend request
-    std::string inputID = "123090002"; // Current student's ID
+    std::string inputID = "1230902"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -150,7 +151,7 @@ void test_accept_friend() {
 
 void test_check_friend_list() {
     // Test checking the friend list
-    std::string inputID = "123090001"; // Current student's ID
+    std::string inputID = "1230901"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -170,7 +171,7 @@ void test_check_friend_list() {
 
 void test_add_to_shopping_cart() {
     // Test adding a class to the shopping cart
-    std::string inputID = "123090001"; // Current student's ID
+    std::string inputID = "1230901"; // Current student's ID
     std::shared_ptr<Student> student = Student::find_profile(inputID);
 
     if (student != nullptr) {
@@ -188,6 +189,185 @@ void test_friend_workflow() {
     test_add_friend();
     test_accept_friend();
     test_check_friend_list();
+}
+
+
+void test_add_class() {
+    // Test adding a class
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int classNumber = 2; // Example class number
+        std::string addReason = "Quota is full, but this course is in my school package."; // Example reason for adding a class
+        int result = student->addClass(classNumber, addReason);
+
+        if (result == 1) {
+            printf("Class add application handed in successfully. Class number: %d\n", classNumber);
+        } else if (result == 0) {
+            printf("Error: Add class request file could not be opened.\n");
+        } else if (result == 2) {
+            printf("Error: Class number file could not be opened.\n");
+        } else if (result == 3) {
+            printf("Error: Class number %d does not exist.\n", classNumber);
+        } else if (result == 4) {
+            printf("Error: Unable to view current enrolled classes.\n");
+        } else if (result == 5) {
+            printf("Error: Already enrolled in class number %d.\n", classNumber);
+        } else {
+            printf("Unexpected error occurred while adding class.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_drop_class() {
+    // Test dropping a class
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int classNumber = 1; // Example class number
+        std::string dropReason = "No longer need this class."; // Example reason for dropping a class
+        int result = student->dropClass(classNumber, dropReason);
+
+        if (result == 1) {
+            printf("Class drop application handed in successfully. Class number: %d\n", classNumber);
+        } else if (result == 0) {
+            printf("Error: Drop class request file could not be opened.\n");
+        } else if (result == 2) {
+            printf("Error: Class number file could not be opened.\n");
+        } else if (result == 3) {
+            printf("Error: Class number %d does not exist.\n", classNumber);
+        } else if (result == 4) {
+            printf("Error: Unable to view current enrolled classes.\n");
+        } else if (result == 5) {
+            printf("Error: Not enrolled in class number %d, cannot drop this class.\n", classNumber);
+        } else {
+            printf("Unexpected error occurred while dropping class.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_view_transcript() {
+    // Test viewing the transcript
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        std::vector<std::vector<std::string>> transcript = student->viewTranscript();
+
+        if (!transcript.empty()) {
+            printf("Transcript for student ID %s:\n", inputID.c_str());
+            for (const auto& record : transcript) {
+                for (const auto& field : record) {
+                    printf("%s ", field.c_str());
+                }
+                printf("\n");
+            }
+        } else {
+            printf("Error: Unable to retrieve transcript for student ID %s.\n", inputID.c_str());
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_update_add() {
+    // Test updating add class approval
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int result = student->updateAdd();
+
+        if (result == 0) {
+            printf("No pending add class approval updates.\n");
+        } else if (result == 1) {
+            printf("Add class approval updates retrieved successfully.\n");
+        } else if (result == 2) {
+            printf("Error: Unable to open add class approval result file.\n");
+        } else if (result == 3) {
+            printf("Error: Unable to open current enrolled classes file.\n");
+        } else {
+            printf("Unexpected error occurred while updating add class approval.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_update_drop() {
+    // Test updating drop class approval
+    std::string inputID = "1230001"; // Example student ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int result = student->updateDrop();
+
+        if (result == 0) {
+            printf("No pending drop class approval updates.\n");
+        } else if (result == 1) {
+            printf("Drop class approval updates retrieved successfully.\n");
+        } else if (result == 2) {
+            printf("Error: Unable to open drop class approval result file.\n");
+        } else if (result == 3) {
+            printf("Error: Unable to open current enrolled classes file.\n");
+        } else {
+            printf("Unexpected error occurred while updating drop class approval.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+//在开放OCTE前，一定要get_ProcessOCTE!否则填写OCTE时会找不到文件
+void test_get_ProcessOCTE() {
+    // 测试获取OCTE处理状态
+    std::string inputID = "1230001"; // 示例学生ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        int result = student->get_ProcessOCTE();
+
+        if (result == 0) {
+            printf("Unable to open OCTE todo file.\n");
+        } else if (result == 1) {
+            printf("OCTE todo file created successfully.\n");
+        } else if (result == 2) {
+            printf("Unable to create OCTE file.\n");
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
+}
+
+void test_fill_octe() {
+    // 测试填写OCTE申请
+    std::string inputID = "1230001"; // 示例学生ID
+    std::shared_ptr<Student> student = Student::find_profile(inputID);
+
+    if (student != nullptr) {
+        std::string classCode = "6"; // 示例课程代码
+        int result = student->fill_octe(classCode);
+
+        if (result == 1) {
+            printf("OCTE submitted successfully for class code: %s\n", classCode.c_str());
+        } else if (result == 0) {
+            printf("Class code %s is not in process class.\n", classCode.c_str());
+        } else if (result == 2) {
+            printf("Error: Unable to open OCTE question file.\n");
+        } else if (result == 3){
+            printf("Unable to open OCTE done counting file.\n");
+        } else if (result == 4){
+            printf("OCTE for class code %s has been finished already, no need to submit again.\n", classCode.c_str());
+        }
+    } else {
+        printf("Student profile not found for ID %s.\n", inputID.c_str());
+    }
 }
 
 void print_schedule(std::array<short,49> sc) {
@@ -367,6 +547,7 @@ void test_remove_class() {
     printf("lyx removed from 3011\n");
 
 }
+
 int main() {
     printf("Testing Student Module...\n");
 
@@ -375,6 +556,21 @@ int main() {
 
     //test_logIn();
     //test_find_profile();
+
+
+        // Test adding, accepting, and checking friends
+    //test_friend_workflow();
+
+    //test_add_to_shopping_cart();
+
+    //test_add_class();
+    //test_drop_class();
+    //test_view_transcript();
+    //test_check_completed();
+    //test_update_add();
+    //test_update_drop();
+    //test_get_ProcessOCTE();
+    //test_fill_octe();
 
 
 //    // Test adding, accepting, and checking friends
@@ -386,13 +582,14 @@ int main() {
     // test_get_schedule();
     // test_find_schedule();
     // test_validation();
-    test_add_class();
+    // test_add_class();
     // test_search_course();
     // test_erase();
     // test_generate_schemes();
     // test_format_userID();
     // test_register();
     // test_remove_class();
+
 
     printf("Student Module Testing Complete.\n");
     return 0;
