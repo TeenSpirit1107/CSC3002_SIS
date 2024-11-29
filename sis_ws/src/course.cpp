@@ -37,6 +37,19 @@ Course::Course(string inputCode, string inputName, string inputIns, int inp_unit
     for (int i = 0; i < num_tut; i++)
         tut[i] = inputTut[i];
 }
+Course::Course() {
+    classCode = -1;
+    courseCode = "";
+    courseName = "";
+    instructor = "";
+    capacity = 0;
+    major = "";
+    unit = 0;
+    num_lec = 0;
+    num_tut = 0;
+    for (int i = 0; i < 28; i++)
+        lec[i] = tut[i] = 0;
+}
 
 Course::Course(short class_Code) {
 
@@ -44,6 +57,17 @@ Course::Course(short class_Code) {
     string work_dir = ".\\sis_ws\\data_repo\\class\\"+to_string(classCode)+".txt";
     FILE *file = fopen(work_dir.c_str(), "r");
     if (file== nullptr) {
+        classCode = -1;
+        courseCode = "";
+        courseName = "";
+        instructor = "";
+        capacity = 0;
+        major = "";
+        unit = 0;
+        num_lec = 0;
+        num_tut = 0;
+        for (int i = 0; i < 28; i++)
+            lec[i] = tut[i] = 0;
         cout<<"[System Message] File could not be opened."<<endl;
         return;
     }

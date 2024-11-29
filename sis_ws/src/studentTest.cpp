@@ -294,13 +294,16 @@ void test_generate_schemes() {
     printf("Trial: MAT1001, without eight am courses. (already tested. not shown here.)\n");
     printf("TRIAL: all scheme containing MAT1001 and CSC3001. Tested, not shown here.\n");
     printf("Trial: MAT1001, CSC3001, MAT1001 specified to take class 1111\n");
-    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},2,false,{-1,-1,-1,-1,-1,-1},{"","","","","",""},{1111,-1,-1,-1,-1,-1});
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},2,false,{},{"","","","","",""},{1111,-1,-1,-1,-1,-1});
     printf("TRIAL: all schemes containing MAT1001, but must be taught by Baoxiang WANG\n"); // or by Xiaokai LIU
     // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","","","","",""},
-    //     1,false,{-1,-1,-1,-1,-1,-1},{"Baoxiang WANG","","","","",""});
+    //     1,false,{},{"Baoxiang WANG","","","","",""});
+    // printf("TRIAL: all schemes containing MAT1001,CSC3001, but excluding one time slot; MAT1001 must be by Xiaokai LIU\n");
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},
+    //       2,false,{},{"Xiaokai LIU","","","","",""});
     printf("TRIAL: all schemes containing MAT1001,CSC3001, but excluding one time slot; MAT1001 must be by Xiaokai LIU\n");
     vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},
-          1,false,{1,-1,-1,-1,-1,-1},{"","","","","",""});
+      2,false,{1},{"Xiaokai LIU","","","","",""});
     int n = all_schemes.size();
     printf("Schemes number: %d\n",n);
     for (int i = 0; i < n; i++) {

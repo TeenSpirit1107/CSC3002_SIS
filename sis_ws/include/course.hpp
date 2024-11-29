@@ -44,6 +44,7 @@ public:
                int inputLec[], int inputTut[], int inputCap);
 
     explicit Course(short classCode);
+    Course();
     ~Course();
 
     // Filehandling

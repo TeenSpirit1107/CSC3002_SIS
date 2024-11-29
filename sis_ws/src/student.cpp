@@ -500,12 +500,24 @@ vector<std::string> Student::get_taken_courses() {
     return v;
 }
 
-// TODO :comment. zero indexing end.
+
+/**
+ * @brief Generates possible class schedules based on given constraints.
+ *
+ * Please strictly follow the input rule!
+ *
+ * @param new_course An array of strings representing the new courses to be considered. Course number <=6; filled from left to right; empty positions filled with empty string "".
+ * @param end The number of courses to consider from the new_course array. Namely, the number of non-empty strings parameter "new_course"
+ * @param no_eight_am A boolean indicating whether to exclude 8 AM classes. True to exclude.
+ * @param unavialable_time A vector of integers representing time slots that are unavailable. 0-index, namely 8:30 a.m., Monday is represented by 0. The largest value is 48.
+ * @param prof An array of strings representing preferred professors for each course. Empty strings "" indicate no preference.
+ * @param must_class An array of short integers representing specific classes that must be included. -1 indicates no specific class.
+ */
 vector<std::array<short,6>> Student::generate_schemes(
     const std::string (&new_course)[6],
     const int end,
     bool no_eight_am,
-    vector<int> unvailable_time,
+    vector<int> unavialable_time,
     const std::string (&prof)[6],
     std::array<short,6> must_class)
 {
@@ -528,22 +540,24 @@ vector<std::array<short,6>> Student::generate_schemes(
     }
 
     // Value 3: Unavailable time
-    for (int i = 0; i<unvailable_time.size();i++) {
-        occupied[unvailable_time[i]] = true;
+    for (int i = 0; i<unavialable_time.size();i++) {
+        occupied[unavialable_time[i]] = true;
     }
 
     std::array<short,6> cur_scheme = {-1,-1,-1,-1,-1,-1}; // -1 denotes not selecting
 
-    vector<std::array<short,6>> all_schemes = gc_rec(occupied,vector<std::array<short,6>>(), cur_scheme,new_course,0,end);
+
+    vector<std::array<short,6>> all_schemes;
+
+
+    all_schemes=gc_rec(occupied,vector<std::array<short,6>>(), cur_scheme,new_course,0,end);
 
     // further processing the schemes
 
-    for (int k = 0; k<all_schemes.size();k++) {
-        std::array<short,6> one_scheme = all_schemes[k];
-
         // Iterate over
+    for (int k = 0; k<all_schemes.size();k++){
+        std::array<short,6> one_scheme = all_schemes[k];
         for (int i =0;i<end;i++) {
-
             // if there's no valid courses
             if (one_scheme[i]==-1) break;
 
@@ -566,9 +580,24 @@ vector<std::array<short,6>> Student::generate_schemes(
             }
         }
     }
+
     return all_schemes;
 }
 
+/**
+ * @brief Recursive function to generate all possible class schedules. A part of the function generate_schemes
+ *
+ * This function is a recursive function that generates all possible class schedules
+ * based on the given constraints. It is called by the generate_schemes function.
+ *
+ * @param occupied An array of boolean values representing the occupation of each time slot.
+ * @param all_schemes A vector of arrays of short integers representing all possible class schedules.
+ * @param cur_scheme An array of short integers representing the current class schedule being generated.
+ * @param new_course An array of strings representing the new courses to be considered.
+ * @param start The starting index of the new_course array.
+ * @param end The ending index of the new_course array.
+ * @return vector<std::array<short,6>> A vector of arrays of short integers representing all possible class schedules.
+ */
 vector<std::array<short,6>> Student::gc_rec(
     std::array<bool,49> occupied,
     vector<std::array<short,6>> all_schemes,
@@ -592,9 +621,9 @@ vector<std::array<short,6>> Student::gc_rec(
 
 
     for (int i =start;i<end;i++) {
+
         std::string course_code = new_course[i];
         vector<short> all_classes = Course::search_course(course_code);
-
 
         for (int j=0; j<all_classes.size(); j++) {
             short cls = all_classes.at(j);
@@ -626,6 +655,9 @@ vector<std::array<short,6>> Student::gc_rec(
     return all_schemes;
 }
 
+/**
+ * @brief Prints all class schemdule in a scheme of schedules.
+ */
 void Student::print_scheme(vector<std::array<short,6>> scheme) {
     for (int i = 0;i<scheme.size();i++) {
         std::array<short,6> s = scheme[i];
@@ -636,6 +668,14 @@ void Student::print_scheme(vector<std::array<short,6>> scheme) {
     }
 }
 
+/**
+ * @brief Prints a single class schedule.
+ *
+ * This function takes an array representing a class schedule and prints
+ * each class code in the schedule.
+ *
+ * @param s An array of short integers representing the class schedule.
+ */
 void Student::print_scheme_individual(std::array<short,6> s) {
     for (int j = 0;j<6;j++) {
         printf("%d ",s[j]);
