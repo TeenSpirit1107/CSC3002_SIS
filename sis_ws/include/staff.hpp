@@ -12,19 +12,15 @@
 #include <memory>
 
 #include"client.hpp"
-#include"registry.hpp"
+// #include"registry.hpp"
 #include"course.hpp"
-
-class Course;
 
 class Staff: public Client{
 
 public:
 
     // courses
-
     std::unordered_map<std::string,std::vector<short>> courses;
-    unordered_set<short> classes;
     // string: course code; short: class code.
 
     friend class Registry;
@@ -41,10 +37,9 @@ public:
     // Constructor Destructor
     explicit Staff(const std::string & inputID);
     // Retrieve a staff without using passcode; only supposed to be used by someone with permission.
-    ~Staff(); // [todo] not yet implemented
+    ~Staff();
     
     static shared_ptr<Staff> find_profile(const std::string & inputID);
-    // [todo] shall this be made private, and only be useed by some "friend" classes?
 
     // Features
 
@@ -57,6 +52,7 @@ public:
     // Feature 3: Claim Class
     int claim_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
     void profile_add_class(short class_code);
+    void claim_class_succ(const short class_code);
 };
 
 # endif

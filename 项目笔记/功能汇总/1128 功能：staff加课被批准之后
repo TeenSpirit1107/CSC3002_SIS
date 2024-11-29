@@ -1,0 +1,6 @@
+请教务处调用Staff中的成员函数
+`void Staff::claim_class_succ(const short class_code)`
+
+(目的：
+1. 更新staff的profile，并且更新staff对象
+2. 为新的课程创建临时成绩单·student_temp_grade·

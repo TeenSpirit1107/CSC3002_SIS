@@ -12,10 +12,11 @@
 
 #include <student.hpp>
 #include "registry.hpp"
+#include "client.hpp"
 
 using namespace std;
 
-Registry::Registry() {
+Registry::Registry(): Client("0000000") {
     this->userID = "0000000";
     this->userName = "Registry";
     // this->userType = 'a';

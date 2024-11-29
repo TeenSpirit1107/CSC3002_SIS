@@ -17,6 +17,8 @@
 #include "client.hpp"
 #include "staff.hpp"
 
+#include "course.hpp"
+
 // expected outcome of this testing file:
 /*
 1. Test logging in as a student and checking basic profile information.
@@ -174,7 +176,7 @@ void test_add_to_shopping_cart() {
 
     if (student != nullptr) {
         std::string classCode = "CSC3002"; // Example class code
-        student->addToShoppingCart(classCode);
+        // student->addToShoppingCart(classCode);
 
         printf("Shopping cart updated. Added class code: %s\n", classCode.c_str());
     } else {
@@ -188,6 +190,7 @@ void test_friend_workflow() {
     test_accept_friend();
     test_check_friend_list();
 }
+
 
 void test_add_class() {
     // Test adding a class
@@ -367,6 +370,184 @@ void test_fill_octe() {
     }
 }
 
+void print_schedule(std::array<short,49> sc) {
+    std::string time[7] = {"8:30","10:30","13:30","15:30","18:00","19:00","20:00"};
+    printf("\tMON\tTUE\tWED\tTHU\tFRI\tSAT\tSUN\n");
+    for (int i = 0;i<7;i++) {
+        printf("%s\t",time[i].c_str());
+        for (int j= 0;j<7;j++) {
+            int cls_code = sc[i*7+j];
+            if (cls_code>0) {
+                std::string cour = Course::get_courseCode(cls_code);
+                printf("%s\t",cour.c_str());
+            }
+            else {
+                printf("\t");
+            }
+        }
+        std::cout<<std::endl;
+    }
+}
+
+void test_get_schedule(){
+  shared_ptr<Student> tym = Student::find_profile("1230004");
+    printf("name: %s\n",tym->get_userName().c_str());
+    print_schedule(tym->get_schedule());
+}
+
+void test_find_schedule() {
+    vector<short> v;
+    v.push_back(1);
+    // v.push_back(4);
+    v.push_back(1002);
+    std::array<short,49> sc = Client::find_schedule(v);
+    if (sc[0]==-2) {
+        printf("Time conflict within the classes.\n");
+    } else {
+        printf("Schedule found.\n");
+        print_schedule(sc);
+    }
+}
+
+void test_validation() {
+    int i = -20;
+    shared_ptr<Student> s = make_shared<Student>("1230002");
+
+    print_schedule(s->get_schedule());
+    std::array<short,49> j= Client::find_schedule({1001,3001});
+
+    if (j[0]==-2) {
+        printf("no valid schedule\n");
+    }else {
+        print_schedule(j);
+    }
+
+    // Trial 0: expected outcome 0
+    short input0[6] = {1001,3001,-1,-1,-1,-1};
+    i = s->class_validation(input0);
+    printf("Trial 0, expected outcome 0, actual outcome %d\n",i);
+
+    // Trial 1: exceed unit limit
+    short input1[6] = {1001,1002,3001,3002,-1,-1};
+    i = s->class_validation(input0);
+    printf("Trial 0, expected outcome 1, actual outcome %d\n",i);
+
+    // Trial 2.1: expected outcome 2, currently taking this course.
+    short input21[6] = {2,-1,-1,-1,-1,-1};
+    i = s->class_validation(input21);
+    printf("Trial 2.1, expected outcome 2, actual outcome %d\n",i);
+
+    // Triail 2.2: expected outcome 2, already taken this course
+    short input22[6] = {3001,-1,-1,-1,-1,-1};
+    i = s->class_validation(input22);
+    printf("Trial 2.2, expected outcome 2, actual outcome %d\n",i);
+
+    // Trial 4, expected output: -1002. The prerequisite of 1002 is not satisfied.
+    short input4[6] = {1002,-1,-1,-1,-1,-1};
+    i = s->class_validation(input4);
+    printf("Trial 4, expected outcome -1002, actual outcome %d\n",i);
+
+    // Trial 5: time conflict within new schedule
+    short input5[6] = {1111,3011,-1,-1,-1,-1};
+    i = s->class_validation(input5);
+    printf("Trial 5, expected outcome 5, actual outcome %d\n",i);
+
+    // Trial 6: time conflict with currently enrolled schedule
+    short input6[6] = {1011,-1,-1,-1,-1,-1};
+    i = s->class_validation(input6);
+    printf("Trial 6, expected outcome 6, actual outcome %d\n",i);
+
+}
+
+void test_search_course() {
+    vector<short> v = Course::search_course("MAT1001");
+    for (short s: v) {
+        std::cout<<s<<" ";
+    }
+    std::cout<<std::endl;
+}
+
+void test_generate_schemes() {
+
+    printf("Generate course selection scheme for Slacker DUDE (Bai zi ge).\n");
+    shared_ptr<Student> slacker = Student::find_profile("1230005");
+    printf("Trial: MAT1001, without eight am courses. (already tested. not shown here.)\n");
+    printf("TRIAL: all scheme containing MAT1001 and CSC3001. Tested, not shown here.\n");
+    printf("Trial: MAT1001, CSC3001, MAT1001 specified to take class 1111\n");
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},2,false,{},{"","","","","",""},{1111,-1,-1,-1,-1,-1});
+    printf("TRIAL: all schemes containing MAT1001, but must be taught by Baoxiang WANG\n"); // or by Xiaokai LIU
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","","","","",""},
+    //     1,false,{},{"Baoxiang WANG","","","","",""});
+    // printf("TRIAL: all schemes containing MAT1001,CSC3001, but excluding one time slot; MAT1001 must be by Xiaokai LIU\n");
+    // vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},
+    //       2,false,{},{"Xiaokai LIU","","","","",""});
+    printf("TRIAL: all schemes containing MAT1001,CSC3001, but excluding one time slot; MAT1001 must be by Xiaokai LIU\n");
+    vector<std::array<short,6>> all_schemes = slacker->generate_schemes({"MAT1001","CSC3001","","","",""},
+      2,false,{1},{"Xiaokai LIU","","","","",""});
+    int n = all_schemes.size();
+    printf("Schemes number: %d\n",n);
+    for (int i = 0; i < n; i++) {
+        printf("Scheme %d\n",i);
+        for (int j =0 ;j<6;j++) {
+            std::cout<<all_schemes.at(i)[j]<<" ";
+
+        }
+        std::cout<<std::endl;
+        std::vector<short> scheme_vector(all_schemes.at(i).begin(), all_schemes.at(i).end());
+        print_schedule(Client::find_schedule(scheme_vector));
+    }
+
+}
+
+void test_erase() {
+    vector<std::array<short,6>> v;
+    v.push_back({10,20,30,40,50,60});
+    v.push_back({-10,-20,-30,-40,-50,-60});
+    v.erase(v.begin()+1);
+    int n = v.size();
+    printf("size: %d\n",n);
+    for (int i =0;i<n;i++) {
+        for (int j=0;j<6;j++) {
+            std::cout<<v.at(i)[j]<<" ";
+        }
+    }
+
+}
+
+void test_add_class() {
+    shared_ptr<Student> yuxuan = Student::find_profile("1230004");
+    yuxuan->class_add_student(3011);
+    printf("yuxuan enrolls in class 3011\n");
+}
+
+void test_format_userID() {
+    int school = 6;
+    int school_num = 7;
+    std::ostringstream oss;
+    oss << "9"<< std::to_string(school)  << std::setw(5) << std::setfill('0') << school_num;
+    std::string new_id = oss.str();
+    std::cout<<new_id;
+
+
+    std::ostringstream oss2;
+    oss2 << std::to_string(school) << "24" << std::setw(4) << std::setfill('0') << school_num;
+    std::cout << oss2.str();
+}
+
+void test_register() {
+    std::string uid = Client::user_register("Jane","DOE","jd",true,3);
+    std::cout<<"Dear Student, your id is : "<<uid<<std::endl;
+    uid = Client::user_register("Cathay","WONG","kw",false,4);
+    std::cout<<"Dear Professor, Your id is: "<<uid<<std::endl;
+}
+
+void test_remove_class() {
+    shared_ptr<Student> lyx = Student::find_profile("1230004");
+    lyx->class_remove_student(3011);
+    printf("lyx removed from 3011\n");
+
+}
+
 int main() {
     printf("Testing Student Module...\n");
 
@@ -375,6 +556,7 @@ int main() {
 
     //test_logIn();
     //test_find_profile();
+
 
         // Test adding, accepting, and checking friends
     //test_friend_workflow();
@@ -388,7 +570,26 @@ int main() {
     //test_update_add();
     //test_update_drop();
     //test_get_ProcessOCTE();
-    test_fill_octe();
+    //test_fill_octe();
+
+
+//    // Test adding, accepting, and checking friends
+//    test_friend_workflow();
+
+    //test_add_to_shopping_cart();
+
+    // ym's student test
+    // test_get_schedule();
+    // test_find_schedule();
+    // test_validation();
+    // test_add_class();
+    // test_search_course();
+    // test_erase();
+    // test_generate_schemes();
+    // test_format_userID();
+    // test_register();
+    // test_remove_class();
+
 
     printf("Student Module Testing Complete.\n");
     return 0;
