@@ -377,6 +377,19 @@ void Staff::profile_add_class( short class_code) {
         file << l << std::endl;
     }
 }
+
+/**
+ * @brief Design a homework assignment for a course.
+ *
+ * This function creates a new homework file for a course with the given homework number,
+ * topic, questions, and solutions. The file is saved in the homework directory of the course.
+ *
+ * @param course_code The code of the course for which to design the homework. THE COURSE MUST EXIST.
+ * @param hw_num The number of the homework assignment. MUST be among 1,2,3.
+ * @param hw_topic The topic of the homework assignment.
+ * @param question An array of strings representing the questions.
+ * @param solution An array of integers representing the solutions. NOTICE: 1-indexing, namely A corresponds to 1, B corresponds to 2. ...
+ */
 void Staff::design_hw(const std::string & course_code, int hw_num, const std::string & hw_topic,const std::string (&question)[4],const int (&solution)[4]) {
     std::string work_dir = ".\\sis_ws\\data_repo\\hw\\" + course_code;
     if (_mkdir(work_dir.c_str()) != 0 && errno != EEXIST) {
