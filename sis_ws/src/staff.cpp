@@ -339,9 +339,7 @@ void Staff::profile_add_class( short class_code) {
     // update file
 
     // save to temporary vector; do modifications
-
-
-
+    
     std::fstream file(profile_path, std::ios::in | std::ios::out);
 
     if (!file.is_open()) {

@@ -57,8 +57,8 @@ public:
     // Feature: Normal Course Registration
     int class_validation(const short new_class[6]);
     void class_enroll();
-    void student_add_classes();
     void class_add_student(const short class_code);
+    void class_remove_student(const short class_code);
     vector<std::string> get_taken_courses();
     vector<std::array<short,6>> generate_schemes(
         const std::string (&new_course)[6],

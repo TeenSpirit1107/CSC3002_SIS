@@ -23,7 +23,6 @@ Client::Client(): course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\
     this->classes;
 }
 
-
 // [todo] this constructor with many inputs may be erased if it's not used elsewhere.
 Client::Client(const std::string &inputID, const std::string &inputName, const std::string &userPass): userID(inputID),
     userName(inputName), passcode(userPass), course_claim_path_prefix(".\\sis_ws\\data_repo\\course_claim\\") {
@@ -51,6 +50,150 @@ std::string Client::get_passcode() const {
 
 std::string Client::get_userName() const {
     return userName;
+}
+
+// Feature: register
+/**
+ * @brief Registers a new user (student or professor) and generates a new ID.
+ *
+ * This function handles the registration process for both students and professors.
+ * It generates a new unique ID, updates the corresponding school and roster files,
+ * and creates a new profile file for the user.
+ *
+ * @param inputName1 The first name of the user.
+ * @param inputName2 The last name of the user.
+ * @param inputPass The passcode for the user.
+ * @param isStudent A boolean indicating if the user is a student.
+ * @param school The school number associated with the user.
+ * @return The newly generated user ID.
+ */
+std::string Client::user_register(const std::string & inputName1, const std::string & inputName2,
+    const std::string & inputPass, bool isStudent, int school){
+
+    std::string new_id;
+    int school_num;
+
+    //generate new id
+    if (!isStudent) {
+        // is professor
+        std::string school_path = ".\\sis_ws\\data_repo\\staff\\staff_school.txt";
+        ifstream schoolReader(school_path);
+        vector<std::string> school_lines;
+        std::string line;
+
+        while (std::getline(schoolReader, line)) {
+            school_lines.push_back(line);
+        }
+
+        int school_num;
+        try {
+            school_num = std::stoi(school_lines[school-1]);
+        }
+        catch (std::invalid_argument &e) {
+        }
+        school_num++;
+        school_lines[school-1] = std::to_string(school_num);
+
+        // for (int i =0;i<school-1;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        // schoolReader>>school_num;
+        // school_num++;
+        // school_lines.push_back(std::to_string(school_num));
+        // for (int i = school;i<6;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        schoolReader.close();
+
+        std::ostringstream oss;
+        oss << "9"<< std::to_string(school)  << std::setw(5) << std::setfill('0') << school_num;
+        new_id = oss.str();
+
+        // update school
+        ofstream schoolWriter(school_path);
+        schoolWriter.clear();
+        schoolWriter.seekp(0, std::ios::beg);
+        for (const auto &l : school_lines) {
+            schoolWriter << l << std::endl;
+        }
+
+        // update roster
+        std::string roster_path = ".\\sis_ws\\data_repo\\staff\\staff_roster.txt";
+        ofstream rosterWriter(roster_path, std::ios::app);
+        rosterWriter << new_id << " "<< inputName1 << " " << inputName2 << std::endl;
+        rosterWriter.close();
+
+        // update profile
+        std::string new_profile_path = ".\\sis_ws\\data_repo\\staff\\" + new_id + ".txt";
+        ofstream profileWriter(new_profile_path);
+        profileWriter << inputPass << std::endl;
+        profileWriter << inputName1 << std::endl;
+        profileWriter << inputName2 << std::endl;
+        profileWriter << "0" << std::endl;
+        profileWriter.close();
+
+    }else {
+        std::string school_path = ".\\sis_ws\\data_repo\\student\\student_school.txt";
+        ifstream schoolReader(school_path);
+        vector<std::string> school_lines;
+        std::string line;
+
+        while (std::getline(schoolReader, line)) {
+            school_lines.push_back(line);
+        }
+
+        int school_num;
+        try {
+            school_num = std::stoi(school_lines[school-1]);
+        }
+        catch (std::invalid_argument &e) {
+        }
+        school_num++;
+        school_lines[school-1] = std::to_string(school_num);
+
+        // for (int i =0;i<school-1;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        // schoolReader>>school_num;
+        // school_num++;
+        // school_lines.push_back(std::to_string(school_num));
+        // for (int i = school;i<6;i++) {
+        //     std::getline(schoolReader,line);
+        //     school_lines.push_back(line);
+        // }
+        schoolReader.close();
+
+        std::ostringstream oss;
+        oss << std::to_string(school) << "24" << std::setw(4) << std::setfill('0') << school_num;
+        new_id = oss.str();
+
+        // update school
+        ofstream schoolWriter(school_path);
+        schoolWriter.clear();
+        schoolWriter.seekp(0, std::ios::beg);
+        for (const auto &l : school_lines) {
+            schoolWriter << l << std::endl;
+        }
+
+        // update roster
+        std::string roster_path = ".\\sis_ws\\data_repo\\student\\student_roster.txt";
+        ofstream rosterWriter(roster_path, std::ios::app);
+        rosterWriter << new_id << " "<< inputName1 << " " << inputName2 << std::endl;
+        rosterWriter.close();
+
+        // update profile
+        std::string new_profile_path = ".\\sis_ws\\data_repo\\student\\" + new_id + ".txt";
+        ofstream profileWriter(new_profile_path);
+        profileWriter << inputPass << std::endl;
+        profileWriter << inputName1 << std::endl;
+        profileWriter << inputName2 << std::endl;
+        profileWriter << "0" << std::endl;
+        profileWriter.close();
+    }
+    return new_id;
 }
 
 

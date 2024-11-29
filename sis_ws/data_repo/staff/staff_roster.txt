@@ -2,3 +2,5 @@
 9100002 Baoxiang WANG
 9200001 Yangsheng XU
 9200002 Xiaokai LIU
+9400001 Kaixi WANG
+9400002 Cathay WONG

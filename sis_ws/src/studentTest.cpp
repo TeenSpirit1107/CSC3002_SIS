@@ -334,8 +334,39 @@ void test_erase() {
 
 }
 
+void test_add_class() {
+    shared_ptr<Student> yuxuan = Student::find_profile("1230004");
+    yuxuan->class_add_student(3011);
+    printf("yuxuan enrolls in class 3011\n");
+}
+
+void test_format_userID() {
+    int school = 6;
+    int school_num = 7;
+    std::ostringstream oss;
+    oss << "9"<< std::to_string(school)  << std::setw(5) << std::setfill('0') << school_num;
+    std::string new_id = oss.str();
+    std::cout<<new_id;
 
 
+    std::ostringstream oss2;
+    oss2 << std::to_string(school) << "24" << std::setw(4) << std::setfill('0') << school_num;
+    std::cout << oss2.str();
+}
+
+void test_register() {
+    std::string uid = Client::user_register("Jane","DOE","jd",true,3);
+    std::cout<<"Dear Student, your id is : "<<uid<<std::endl;
+    uid = Client::user_register("Cathay","WONG","kw",false,4);
+    std::cout<<"Dear Professor, Your id is: "<<uid<<std::endl;
+}
+
+void test_remove_class() {
+    shared_ptr<Student> lyx = Student::find_profile("1230004");
+    lyx->class_remove_student(3011);
+    printf("lyx removed from 3011\n");
+
+}
 int main() {
     printf("Testing Student Module...\n");
 
@@ -344,6 +375,7 @@ int main() {
 
     //test_logIn();
     //test_find_profile();
+
 
 //    // Test adding, accepting, and checking friends
 //    test_friend_workflow();
@@ -354,11 +386,13 @@ int main() {
     // test_get_schedule();
     // test_find_schedule();
     // test_validation();
+    test_add_class();
     // test_search_course();
     // test_erase();
-
-
-    test_generate_schemes();
+    // test_generate_schemes();
+    // test_format_userID();
+    // test_register();
+    // test_remove_class();
 
     printf("Student Module Testing Complete.\n");
     return 0;

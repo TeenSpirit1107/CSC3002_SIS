@@ -8,6 +8,7 @@
 #include<unordered_set>
 #include<set>
 
+
 // sis classes
 #include"student.hpp"
 #include"client.hpp"
@@ -392,7 +393,6 @@ string Student::readTxt(const string & filename, int line){
  */
 int Student::class_validation(const short new_class[6]) {
 
-
     // Decide the true size
     vector<short> new_class_vec;
     int ctn = 1;
@@ -476,6 +476,163 @@ int Student::class_validation(const short new_class[6]) {
     // TODO: Schedule generation
     // TODO: When submit class schedule, only allow prof select the available time.
     // TODO: after enroll, add studnet to class.
+}
+
+
+/**
+ * @brief Adds the student to a specified class.
+ *
+ * This function updates the class file to include the student and updates the student's profile
+ * to include the new class. It reads the current class file, increments the student count, and
+ * appends the student's ID with default homework scores. It also updates the student's profile
+ * to reflect the new class enrollment.
+ *
+ * @param class_code The code of the class to add the student to.
+ */
+void Student::class_add_student(const short class_code) {
+
+    // 1. Add student to course
+
+    std::string class_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\"+std::to_string(class_code)+".txt";
+    std::ifstream fileReader(class_dir);
+    if (!fileReader.is_open()) return;
+
+    // 1.1 reading backup
+    int first_line_number;
+    std::vector<std::string> lines;
+    std::string line;
+    // first line: student count.
+    fileReader>>first_line_number;
+    while (std::getline(fileReader, line)) {
+        lines.push_back(line);
+    }
+    fileReader.close();
+    if (!lines.empty()) {
+        lines[0] = std::to_string(first_line_number + 1);
+    }
+
+    // 1.2. writing new file with modification
+    std::ofstream fileWriter(class_dir);
+    if (!fileWriter.is_open()) return;
+
+    for (const auto &l : lines) {
+        fileWriter << l << std::endl;
+    }
+    fileWriter << userID << " -1 -1 -1" << std::endl;
+    fileWriter.close();
+
+    // 2. add course to student
+    int class_num;
+    std::ifstream fileReader2(profile_path);
+    if (!fileReader2.is_open()) return;
+    std::vector<std::string> lines2;
+    std::string line2;
+    // read first 3 lines
+    for (int i = 0;i<3;i++) {
+        std::getline(fileReader2,line2);
+        // fileReader>>line2;
+        lines2.push_back(line2);
+    }
+    // read class number
+    std::getline(fileReader2,line2);
+    try {
+        class_num = std::stoi(line2);
+    }catch(std::invalid_argument &e) {
+    }
+    lines2.push_back(std::to_string(class_num+1));
+
+
+    // while(std::getline(fileReader2,line2)) {
+    //     lines2.push_back(line2);
+    // }
+    for (int i =0;i<class_num;i++) {
+        fileReader2>>line2;
+        lines2.push_back(line2);
+    }
+    lines2.push_back(std::to_string(class_code));
+
+    std::ofstream fileWriter2(profile_path);
+    if (!fileWriter2.is_open()) return;
+    fileWriter2.clear();
+    fileWriter2.seekp(0, std::ios::beg);
+    for (const auto &l : lines2) {
+        fileWriter2 << l << std::endl;
+    }
+
+}
+
+
+void Student::class_remove_student(const short class_code) {
+
+    // 1. read temporary grade; store; do changes
+
+    std::string class_dir = ".\\sis_ws\\data_repo\\student_temp_grade\\"+std::to_string(class_code)+".txt";
+    std::ifstream fileReader(class_dir);
+    if (!fileReader.is_open()) return;
+
+    int first_line_number;
+    int vector_index;
+    int line_ctn;
+    std::vector<std::string> lines;
+    std::string line;
+    fileReader>>first_line_number;
+    fileReader.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    while (std::getline(fileReader, line)) {
+        if (userID==line.substr(0,7)) vector_index = line_ctn;
+        lines.push_back(line);
+        line_ctn++;
+    }
+    fileReader.close();
+
+    if (!lines.empty()) {
+        lines[0] = std::to_string(first_line_number -1);
+    }
+
+    line_ctn = 0;
+
+    std::ofstream fileWriter(class_dir);
+    if (!fileWriter.is_open()) return;
+
+    for (const auto &l : lines) {
+        if (line_ctn!=vector_index) {
+            fileWriter << l << std::endl;
+        }
+        line_ctn++;
+    }
+    fileWriter.close();
+
+    // 2. delete course from student
+    int class_num;
+    std::string class_code_str = std::to_string(class_code);
+    std::ifstream profileReader(profile_path);
+    std::vector<std::string> lines2;
+    std::string line2;
+    for (int i = 0;i<3;i++) {
+        std::getline(profileReader,line2);
+        lines2.push_back(line2);
+    }
+    std::getline(profileReader,line2);
+    try {
+        class_num = std::stoi(line2);
+    }catch(std::invalid_argument &e) {
+
+    }
+    lines2.push_back(std::to_string(class_num-1));
+    while (std::getline(profileReader, line2)) {
+
+        if (class_code_str!=line2) {
+            lines2.push_back(line2);
+        }
+
+    }
+
+    std::ofstream profileWriter(profile_path);
+    if (!profileWriter.is_open()) return;
+    for (const auto &l : lines2) {
+        profileWriter << l << std::endl;
+
+    }
+    profileWriter.close();
 }
 
 /**

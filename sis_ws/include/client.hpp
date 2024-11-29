@@ -50,6 +50,10 @@ public:
     static bool id_exist(const std::string & inputID);
     static bool validate_passcode(const std::string & inputID, const std::string & inputPass);
 
+    // Feature: register
+    static std::string user_register(const std::string & inputName1, const std::string & inputName2, const std::string & inputPass, bool isStudent, int school);
+    static std::string registry_register();
+
     // Testing
     // TODO: may delete this after debuggin
     void output_basic_info() const;
