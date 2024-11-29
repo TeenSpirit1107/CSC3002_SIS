@@ -514,11 +514,6 @@ void test_erase() {
 
 }
 
-void test_add_class() {
-    shared_ptr<Student> yuxuan = Student::find_profile("1230004");
-    yuxuan->class_add_student(3011);
-    printf("yuxuan enrolls in class 3011\n");
-}
 
 void test_format_userID() {
     int school = 6;
@@ -535,7 +530,7 @@ void test_format_userID() {
 }
 
 void test_register() {
-    std::string uid = Client::user_register("Jane","DOE","jd",true,3);
+    std::string uid = Client::user_register("John","DOE","jd",true,3);
     std::cout<<"Dear Student, your id is : "<<uid<<std::endl;
     uid = Client::user_register("Cathay","WONG","kw",false,4);
     std::cout<<"Dear Professor, Your id is: "<<uid<<std::endl;
@@ -587,7 +582,7 @@ int main() {
     // test_erase();
     // test_generate_schemes();
     // test_format_userID();
-    // test_register();
+    test_register();
     // test_remove_class();
 
 

@@ -88,7 +88,7 @@ Student::Student(const std::string & inputID):
 * @param inputID The ID of the student to find.
 * @return shared_ptr<Student> A shared pointer to the Student object if found, otherwise nullptr.
 */
-shared_ptr<Student> Student::find_profile(std::string &inputID) {
+shared_ptr<Student> Student::find_profile(const std::string &inputID) {
     std::string find_path = student_path + inputID + ".txt";
 
     // check whether the id exists
@@ -103,49 +103,6 @@ shared_ptr<Student> Student::find_profile(std::string &inputID) {
 Student::~Student() {
     std::cout << "*Student destructor" << std::endl;
 }
-
-
-//函数--添加好友 (文件夹：addFrds；文件名：（有待处理申请的学号）.txt
-//例子：123090001向123090002发送好友申请，addFrds文件夹中有123090002.txt,文件内容为123090001
-//返回值：0好友名无效或者找不到好友文件
-//1申请发送成功
-//2打不开加好友文件
-int Student::addFrd(const std::string &friendID) {
-
-    // 学生信息文件路径
-    std::string friendFilePath = ".\\sis_ws\\data_repo\\student\\" + friendID + ".txt";
-    std::ifstream friendFile(friendFilePath);
-
-    // 检查是否存在好友的个人档案文件
-    if (friendFile.is_open()) {
-        // 如果好友文件存在，关闭文件流
-        friendFile.close();
-
-        // 定义申请好友文件的路径
-        std::string addFriendFilePath = ".\\sis_ws\\data_repo\\addFrds\\" + friendID + ".txt";
-              // 在 addFrds 文件夹中创建以目标好友学号命名的文件，填入当前用户的id
-        std::ofstream addFriendFile(addFriendFilePath);
-        if (addFriendFile.is_open()) {
-            // 写入当前用户的 ID
-            addFriendFile << this->userID << std::endl;
-            addFriendFile.close();
-            // 输出申请发送的提示
-            //std::cout << "已发送申请，请等待对方通过。" << std::endl;
-            return 1;
-        } else {
-            //std::cout << "error:unable to create addFrd file" << std::endl;
-            return 2;
-        }
-    } else {
-        // 如果好友文件不存在，输出提示
-        //std::cout << "未找到该好友的学号，请检查输入。" << std::endl;
-        return 0;
-    }
-}
-
-
-// Feature: homework
-
 
 // Feature: homework
 /**
@@ -230,19 +187,14 @@ void Student::set_hw_scores(const short class_code, const int hw_num, double new
     for (const auto &l : lines) {
         fileWriter << l << std::endl;
     }
-
-
-
 }
-
-// Feature: friends
-
 //函数--添加好友 (文件夹：addFrds；文件名：（有待处理申请的学号）.txt
 //例子：123090001向123090002发送好友申请，addFrds文件夹中有123090002.txt,文件内容为123090001
 //返回值：0好友名无效或者找不到好友文件
 //1申请发送成功
 //2打不开加好友文件
 int Student::addFrd(const std::string &friendID) {
+
     // 学生信息文件路径
     std::string friendFilePath = ".\\sis_ws\\data_repo\\student\\" + friendID + ".txt";
     std::ifstream friendFile(friendFilePath);
@@ -254,8 +206,27 @@ int Student::addFrd(const std::string &friendID) {
 
         // 定义申请好友文件的路径
         std::string addFriendFilePath = ".\\sis_ws\\data_repo\\addFrds\\" + friendID + ".txt";
+        // 在 addFrds 文件夹中创建以目标好友学号命名的文件，填入当前用户的id
+        std::ofstream addFriendFile(addFriendFilePath);
+        if (addFriendFile.is_open()) {
+            // 写入当前用户的 ID
+            addFriendFile << this->userID << std::endl;
+            addFriendFile.close();
+            // 输出申请发送的提示
+            //std::cout << "已发送申请，请等待对方通过。" << std::endl;
+            return 1;
+        } else {
+            //std::cout << "error:unable to create addFrd file" << std::endl;
+            return 2;
+        }
+    } else {
+        // 如果好友文件不存在，输出提示
+        //std::cout << "未找到该好友的学号，请检查输入。" << std::endl;
+        return 0;
+    }
+}
 
-
+// Feature: friends
 
 //函数--通过好友申请 (文件夹：addFrds；文件名：（有待处理申请的学号）.txt
 //访问文件输出待处理的学号，同意1（在文件夹frd两人学号txt中加入对方）或者拒绝0，操作后删除已处理学号，更新加好友文件)

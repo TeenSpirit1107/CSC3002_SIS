@@ -28,7 +28,6 @@ public:
 
 
     //academic functions
-    int searchCourse(std::string coursename);
     int addToShoppingCart(std::string class_number);
     int addClass(int cls_number,std::string add_reason);
     int dropClass(int cls_number,std::string add_reason);
@@ -57,8 +56,6 @@ public:
     //functions
     vector<int> searchCourse(std::string coursename);
     //static shared_ptr<Student> search_class(std::string &inputID);
-    //辅助函数：返回txt文件指定行
-    string readTxt(const std::string &filename, int line);
 
 
     // connections (our new function：加好友)
@@ -69,8 +66,7 @@ public:
 
 
     // The path of the object's profile description file in data_repo.
-    static const string student_path;
-    static const string stuFrd_path;
+
     static const string course_path;
 
 

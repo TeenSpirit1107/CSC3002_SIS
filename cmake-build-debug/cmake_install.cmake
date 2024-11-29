@@ -1,4 +1,4 @@
-# Install script for directory: C:/Languages/C_Code/sis_versions/sis1126v1_fromMain/CSC3002_SIS
+# Install script for directory: C:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Languages/C_Code/sis_versions/sis1126v1_fromMain/CSC3002_SIS/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
