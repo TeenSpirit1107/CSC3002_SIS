@@ -192,6 +192,24 @@ std::string Client::user_register(const std::string & inputName1, const std::str
         profileWriter << inputName2 << std::endl;
         profileWriter << "0" << std::endl;
         profileWriter.close();
+
+        //update addFrd files
+        std::string addFriendDiPath = ".\\sis_ws\\data_repo\\addFrds";
+        mkdir(addFriendDiPath.c_str());
+        std::string addFriendFilePath = ".\\sis_ws\\data_repo\\addFrds"+ new_id + ".txt";
+        std::ofstream addFriendFile(addFriendFilePath);
+
+        //update frd file
+        std::string FrdDiPath = ".\\sis_ws\\data_repo\\frd" ;
+        mkdir(FrdDiPath.c_str());
+        std::string FrdFilePath = ".\\sis_ws\\data_repo\\frd" + new_id + ".txt";
+        std::ofstream FrdAccFile(FrdFilePath);
+
+        //update transcript file
+        std::string transDiPath = ".\\sis_ws\\data_repo\\student\\transcript";
+        mkdir(transDiPath.c_str());
+        std::string transPath = ".\\sis_ws\\data_repo\\student\\transcript\\"+ new_id +".txt";
+        std::ofstream transFile(transPath);
     }
     return new_id;
 }
