@@ -1,17 +1,9 @@
 # ninja log v6
-119	6518	7545485991983917	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/course.cpp.obj	ae35d7cdc6badf49
-51	8321	7545574624433768	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.obj	b30428d2b2d72fde
-4	691	7545623561107143	build.ninja	f81ec3ccd5774571
-1886	2591	7545600354676724	CSC3002_SIS.exe	e279b84a327d4a5a
-8	1885	7545600335884066	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/studentTest.cpp.obj	40a378601dd92572
-12	3784	7545591114553482	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj	9e713e37b18ba179
-14	2906	7545600059171968	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj	ff7052cc23667537
-5	40	7543350702507989	clean	54a06fd83fad62cf
 46	3063	7545625235194592	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/course.cpp.obj	2ea7f57e3e5fe735
 80	3429	7545625235535725	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.obj	3617e4ba338126db
-22	6908	7545627271001536	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj	1e6aaa64b2dc8994
-140	7142	7545627272185647	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/studentTest.cpp.obj	636d0364bb95f659
-14	2652	7545630393120427	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj	1e6aaa64b2dc8994
-76	2791	7545630393751258	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/studentTest.cpp.obj	636d0364bb95f659
-41	3617	7545630393398847	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj	df816f9d1ffb5bdc
+4	691	7545660488002748	build.ninja	f81ec3ccd5774571
 3617	4567	7545630429152169	CSC3002_SIS.exe	e279b84a327d4a5a
+76	2791	7545630393751258	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/studentTest.cpp.obj	636d0364bb95f659
+14	2652	7545630393120427	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj	1e6aaa64b2dc8994
+41	3617	7545630393398847	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj	df816f9d1ffb5bdc
+5	40	7543350702507989	clean	54a06fd83fad62cf
