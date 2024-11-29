@@ -605,6 +605,9 @@ void Student::class_add_student(const short class_code) {
         fileWriter2 << l << std::endl;
     }
 
+    // update object
+    classes.insert(class_code);
+
 }
 
 
@@ -679,6 +682,11 @@ void Student::class_remove_student(const short class_code) {
 
     }
     profileWriter.close();
+
+    auto it = classes.find(class_code);
+    if (it!=classes.end()) {
+        classes.erase(it);
+    }
 }
 
 /**
