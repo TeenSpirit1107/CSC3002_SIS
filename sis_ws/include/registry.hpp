@@ -19,6 +19,7 @@ public:
     void claim_class();
     void classroom_arrangement();
     void stu_final_grade();
+    void fetchOCTE();
     ~Registry();
 };
 // class Announcement: public Client{
