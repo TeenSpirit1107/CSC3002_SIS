@@ -582,7 +582,7 @@ int main() {
     // test_erase();
     // test_generate_schemes();
     // test_format_userID();
-    test_register();
+    // test_register();
     // test_remove_class();
 
 

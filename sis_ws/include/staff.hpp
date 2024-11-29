@@ -53,6 +53,9 @@ public:
     int claim_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
     void profile_add_class(short class_code);
     void claim_class_succ(const short class_code);
+
+    // Feature 4: Homework
+    void design_hw(const std::string & course_code, int hw_num, const std::string & hw_topic,const std::string (&question)[4],const int (&solution)[4]);
 };
 
 # endif

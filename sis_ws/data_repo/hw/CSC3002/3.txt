@@ -1,5 +1,5 @@
 Objects
-3
+4
 1
 1. Which of the following is the correct way to define a class in C++?
 A. `class MyClass { int x; };`
@@ -18,3 +18,9 @@ A. To define a constant
 B. To declare a pointer
 C. To enable polymorphism
 D. To create a template
+1
+4. Which of the following is the correct way to define a class with a constructor in C++?
+A. `class MyClass { public: MyClass() {} };`
+B. `class MyClass { MyClass() {} public: };`
+C. `class MyClass { MyClass() {} };`
+D. `class MyClass { public: MyClass; }`

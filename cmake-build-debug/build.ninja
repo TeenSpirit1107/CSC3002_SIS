@@ -77,15 +77,15 @@ build CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj: CXX_COMPILER__CSC30
   OBJECT_DIR = CMakeFiles\CSC3002_SIS.dir
   OBJECT_FILE_DIR = CMakeFiles\CSC3002_SIS.dir\sis_ws\src
 
-build CMakeFiles/CSC3002_SIS.dir/sis_ws/src/studentTest.cpp.obj: CXX_COMPILER__CSC3002_SIS_unscanned_Debug C$:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/sis_ws/src/studentTest.cpp || cmake_object_order_depends_target_CSC3002_SIS
-  DEP_FILE = CMakeFiles\CSC3002_SIS.dir\sis_ws\src\studentTest.cpp.obj.d
+build CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj: CXX_COMPILER__CSC3002_SIS_unscanned_Debug C$:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/sis_ws/src/registry.cpp || cmake_object_order_depends_target_CSC3002_SIS
+  DEP_FILE = CMakeFiles\CSC3002_SIS.dir\sis_ws\src\registry.cpp.obj.d
   FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
   INCLUDES = -IC:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/sis_ws/include
   OBJECT_DIR = CMakeFiles\CSC3002_SIS.dir
   OBJECT_FILE_DIR = CMakeFiles\CSC3002_SIS.dir\sis_ws\src
 
-build CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj: CXX_COMPILER__CSC3002_SIS_unscanned_Debug C$:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/sis_ws/src/registry.cpp || cmake_object_order_depends_target_CSC3002_SIS
-  DEP_FILE = CMakeFiles\CSC3002_SIS.dir\sis_ws\src\registry.cpp.obj.d
+build CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.obj: CXX_COMPILER__CSC3002_SIS_unscanned_Debug C$:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/sis_ws/src/staffTest.cpp || cmake_object_order_depends_target_CSC3002_SIS
+  DEP_FILE = CMakeFiles\CSC3002_SIS.dir\sis_ws\src\staffTest.cpp.obj.d
   FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
   INCLUDES = -IC:/Languages/C_Code/sis_versions/sis1129v1_merged/CSC3002_SIS/sis_ws/include
   OBJECT_DIR = CMakeFiles\CSC3002_SIS.dir
@@ -99,7 +99,7 @@ build CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj: CXX_COMPILER__CSC3
 #############################################
 # Link the executable CSC3002_SIS.exe
 
-build CSC3002_SIS.exe: CXX_EXECUTABLE_LINKER__CSC3002_SIS_Debug CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/course.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/studentTest.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj
+build CSC3002_SIS.exe: CXX_EXECUTABLE_LINKER__CSC3002_SIS_Debug CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/course.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-Bstatic  -leasyx  -lgdi32  -lole32  -Wl,-Bdynamic  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\CSC3002_SIS.dir

@@ -349,7 +349,19 @@ void test_add_class_succ() {
 
 }
 
+void test_design_hw() {
+    shared_ptr<Staff> xys = Staff::find_profile("9100001");
+    std::string question[4] = {"1. What is the correct syntax to declare a pointer in C++?\nA. `int ptr;`\nB. `int *ptr;`\nC. `int &ptr;`\nD. `int ptr*;`",
+        "2. Which of the following is used to define a constant in C++?\nA. `#define`\nB. `const`\nC. `static`\nD. `final`",
+        "3. What is the output of the following code? int a = 5; int b = 10; cout << a + b;\nA. `15`\nB. `510\nC. `5`\nD. `10`",
+        "4. Which of the following is the correct way to allocate memory dynamically for an array in C++?\nA. `int arr = new int[10];`\nB. `int *arr = new int[10];`\nC. `int arr[10];`\nD. `int *arr = malloc(10 * sizeof(int));"
+    };
 
+    // xys->design_hw("CSC3100",3,"Trees and Graphs",question,{3,2,1,1});
+    xys->design_hw("CSC3100",2,"Trees and Graphs",question,{3,2,1,1});
+
+
+}
 
 
 int main() {
@@ -366,8 +378,9 @@ int main() {
     // test_student_find_profile();
      // test_schedule();
 
-    test_add_class_succ();
+    // test_add_class_succ();
 
+    test_design_hw();
 
     // TODO: course.cpp reading problem?
 

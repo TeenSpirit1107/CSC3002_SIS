@@ -1,5 +1,5 @@
 Operators and Functions
-3
+4
 3
 1. Which of the following operators cannot be overloaded in C++?
 A. `+`
@@ -18,3 +18,9 @@ A. `void functionName();`
 B. `int functionName();`
 C. `functionName();`
 D. `void functionName;`
+1
+4. What is the correct way to define a function in C++ that takes two integers as parameters and returns their sum?
+A. `int sum(int a, int b) { return a + b; }`
+B. `int sum(int a, int b) { return a - b; }`
+C. `void sum(int a, int b) { return a + b; }`
+D. `int sum(int a, int b) { cout << a + b; }`

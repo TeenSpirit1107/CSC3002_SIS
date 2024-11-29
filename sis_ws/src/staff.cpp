@@ -8,6 +8,7 @@
 #include<tuple>
 #include<algorithm>
 #include<cmath>
+#include"direct.h"
 
 // sis lib
 #include "staff.hpp"
@@ -376,7 +377,24 @@ void Staff::profile_add_class( short class_code) {
         file << l << std::endl;
     }
 }
+void Staff::design_hw(const std::string & course_code, int hw_num, const std::string & hw_topic,const std::string (&question)[4],const int (&solution)[4]) {
+    std::string work_dir = ".\\sis_ws\\data_repo\\hw\\" + course_code;
+    if (_mkdir(work_dir.c_str()) != 0 && errno != EEXIST) {
+        std::cerr << "Error creating directory: " << work_dir << std::endl;
+        return;
+    }
+    work_dir = work_dir+"\\"+ std::to_string(hw_num) +".txt";
+    ofstream fileWriter(work_dir,std::ios::out);
+    if (!fileWriter.is_open()) return;
 
+    fileWriter<<"4"<<std::endl;
+    fileWriter<<hw_topic<<std::endl;
+    for (int i = 0;i<4;i++) {
+        fileWriter<<std::to_string(solution[i])<<std::endl;
+        fileWriter<<question[i]<<std::endl;
+    }
+    fileWriter.close();
+}
 Staff::~Staff() {
     //[todo] finish destructor
 }
