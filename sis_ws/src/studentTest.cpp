@@ -342,6 +342,29 @@ void test_update_drop() {
         printf("Student profile not found for ID %s.\n", inputID.c_str());
     }
 }
+//void test_check_add(){
+//    std::string inputID = "1230001";
+//    std::shared_ptr<Student> student = Student::find_profile(inputID);
+//    std::string fileName = "20241127164103.txt";
+//
+//    if (student != nullptr) {
+//        int result = student->checkAdd(fileName);
+//
+//        if (result == 0) {
+//            printf("0.\n");
+//        } else if (result == 1) {
+//            printf("1.\n");
+//        } else if (result == 2) {
+//            printf("2.\n");
+//        } else if (result == 3) {
+//            printf("3.\n");
+//        } else if (result == 4) {
+//            printf("4.\n");
+//        }
+//    } else {
+//        printf("Student profile not found for ID %s.\n", inputID.c_str());
+//    }
+//}
 
 //在开放OCTE前，一定要get_ProcessOCTE!否则填写OCTE时会找不到文件
 void test_get_ProcessOCTE() {
@@ -579,6 +602,7 @@ int main() {
     //test_check_completed();
     //test_update_add();
     //test_update_drop();
+
     //test_get_ProcessOCTE();
     //test_fill_octe();
 

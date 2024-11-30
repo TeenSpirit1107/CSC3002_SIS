@@ -992,6 +992,14 @@ int Student::addClass(int cls_number,std::string add_reason) {
                     clsAdFile << add_reason << std::endl;
                     clsAdFile.close();
 
+                    //写入已提交文件
+                    std::string addApplyDonePath = ".\\sis_ws\\data_repo\\course_add\\"+ this-> userID+"\\done.txt";
+                    fstream f;
+                    //追加写入,在原来基础上加了ios::app
+                    f.open(addApplyDonePath,ios::out|ios::app);
+                    f<< filName <<".txt "<<endl;
+                    f.close();
+
                     std::string toDoPath = ".\\sis_ws\\data_repo\\course_add\\stu2staff.txt";
                     std::ifstream tdFile(toDoPath);
                     if (!tdFile.is_open()) {
@@ -1118,13 +1126,12 @@ int Student::updateAdd() {
         upAdfile.close();
         //cout<< "size of vector: " <<TextToRd.size() <<endl;
 
-        //加入数组后删除文件，然后新建一个同名空文件
-        remove(upAdPath.c_str());
-        std::ofstream ipFile(upAdPath);
-        ipFile.close();
-
         //cout<< "size of vector after deletion: " <<TextToRd.size() <<endl;
         //待阅读列表不为空
+        //加入数组后删除文件，然后新建一个同名空文件
+        // remove(upAdPath.c_str());
+        // std::ofstream ipFile(upAdPath);
+        // ipFile.close();
         if (TextToRd.size() > 0) {
             //跳过第一行开始打开文件
             for (int i = 0; i < TextToRd.size(); i++) {
@@ -1174,6 +1181,10 @@ int Student::updateAdd() {
                     //return 1;
                 }
             }
+            //加入数组后删除文件，然后新建一个同名空文件
+            remove(upAdPath.c_str());
+            std::ofstream ipFile(upAdPath);
+            ipFile.close();
             return 1;
         }else {
             return 0;//0没有需要更新的加退课审批结果
@@ -1202,19 +1213,25 @@ int Student::updateDrop() {
         //cout<< "size of vector: " <<TextToRd.size() <<endl;
 
         //加入数组后删除文件，然后新建一个同名空文件
-         remove(upDpPath.c_str());
-         std::ofstream ipFile(upDpPath);
-         ipFile.close();
+         // remove(upDpPath.c_str());
+         // std::ofstream ipFile(upDpPath);
+         // ipFile.close();
 
         //待阅读列表不为空
         if (TextToRd.size() > 0) {
             //跳过第一行开始打开文件
-
+            //cout<< "yes" <<endl;
             for (int i = 0; i < TextToRd.size(); i++) {
                 std::string p = ".\\sis_ws\\data_repo\\course_drop\\"+ this-> userID +"\\"+TextToRd[i];
+                //cout<< p <<endl;
                 std::ifstream op(p);
+                if (!op.is_open()) {
+                    return 2;
+                }
                 string result1 = readTxt(p, 4);
+                //cout<< result1<<endl;
                 int re1 = stoi(result1);
+                cout<< re1 <<endl;
                 string dpClsCode = readTxt(p, 2);
                 if (re1 == 1) {
                     string result2 = readTxt(p, 5);
@@ -1295,6 +1312,10 @@ int Student::updateDrop() {
 
                 }
             }
+            //加入数组后删除文件，然后新建一个同名空文件
+            remove(upDpPath.c_str());
+            std::ofstream ipFile(upDpPath);
+            ipFile.close();
             return 1;
         }
     }else {
@@ -1302,19 +1323,73 @@ int Student::updateDrop() {
     }
 }
 
-//查看加课申请
+//查看每一个加课申请
 /**
  * @brief return the state of a class add application
  *
  * This function reads a classCode input for a course add application and return the result
- * @param class_code The code of the class.
- * @return 1 for successfully getting the result, 0 for unable to open the object file
+ * @param class_code The code of the class
+ * @return 1 for successfully getting the result
+ * 0 for unable to open the object file
+ * 2 for unable to open submitted list file
+ * 3 for "0 sumbitted application"
+ * 4 for input fileName not found
  */
-int Student::checkAdd(const string &class_code) {
-    return 0;
-}
+// int Student::checkAdd(const string &fileName) {
+//     std::string addApplyDonePath = ".\\sis_ws\\data_repo\\course_add\\"+ this-> userID+"\\done.txt";
+//     ifstream ifs(addApplyDonePath);
+//     if (!ifs.is_open()) {
+//         return 2;//2 for unable to open submitted list file
+//     }else {
+//         string temp_str;
+//         vector<string> appList;
+//         while(getline(ifs, temp_str)) {
+//             if (temp_str.empty()) {
+//                 return 3;
+//             }else {
+//                 appList.push_back(temp_str);
+//             }
+//         }
+//         int i = 0;
+//         for (int i = 0; i < appList.size(); i++) {
+//             if(fileName+".txt" == appList[i]) {
+//                 i = 1;
+//             }
+//         }
+//         if(i == 1) {
+//             std::string addFilePath = ".\\sis_ws\\data_repo\\course_add\\"+ fileName +".txt";
+//             ifstream ifs(addFilePath);
+//             if (!ifs.is_open()) {
+//                 return 0;//0 for unable to open the object file
+//             }else {
+//                 string result1 = readTxt(addFilePath, 4);
+//                 int re1 = stoi(result1);
+//                 //cout<< re1 << endl;
+//                 string adClsCode = readTxt(addFilePath, 2);
+//                 if (re1 == 1) {
+//                     string result2 = readTxt(addFilePath, 5);
+//                     int re2 = stoi(result2);
+//                     if (re2 == 1) {
+//                         cout<< "classCode: " << adClsCode << " has been added"<<endl;
+//                         return 1;
+//                     }else{
+//                         string failReasonR = readTxt(addFilePath, 6);
+//                         cout<<"Registry reject your class " << adClsCode << " application. Reason: "<<failReasonR<<endl;
+//                         return 1;
+//                     }
+//                 }else {
+//                     string failReasonP = readTxt(addFilePath, 5);
+//                     cout<<"Professor reject your " << adClsCode << " application. Reason: "<<failReasonP<<endl;
+//                     return 1;
+//                 }
+//             }
+//         }else {
+//             return 4;//4: input fileName not found
+//         }
+//     }
+// }
 
-//查看退课申请
+//查看每一个退课申请
 /**
  * @brief return the state of a class drop application
  *
@@ -1322,9 +1397,9 @@ int Student::checkAdd(const string &class_code) {
  * @param class_code The code of the class.
  * @return 1 for successfully getting the result, 0 for unable to open the object file
  */
-int Student::checkDrop(const string &class_code) {
-    return 0;
-}
+// int Student::checkDrop(const string &fileName) {
+//     return 0;
+// }
 
 //辅助函数：char转string
 string Student::CharToStr(char * contentChar)

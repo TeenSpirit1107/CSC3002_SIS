@@ -208,15 +208,23 @@ std::string Client::user_register(const std::string & inputName1, const std::str
         //update course add directory
         string addPath = ".\\sis_ws\\data_repo\\course_add\\"+ new_id;
         mkdir(addPath.c_str());
+        std::string addToDoFilePath = ".\\sis_ws\\data_repo\\course_add\\stu2staff.txt";
+        std::ofstream addToDoFile(addToDoFilePath);
+        // std::string addApplyDonePath = ".\\sis_ws\\data_repo\\course_add\\"+ new_id+"\\done.txt";
+        // std::ofstream addApplyDoneFile(addApplyDonePath);
 
         //update course drop directory
         string dropPath = ".\\sis_ws\\data_repo\\course_drop\\"+ new_id;
         mkdir(dropPath.c_str());
+        std::string dropToDoFilePath = ".\\sis_ws\\data_repo\\course_drop\\stu2staff.txt";
+        std::ofstream dropToDoFile(dropToDoFilePath);
+        // std::string dropApplyDonePath = ".\\sis_ws\\data_repo\\course_drop\\"+ new_id +"\\done.txt";
+        // std::ofstream dropApplyDoneFile(dropApplyDonePath);
 
         //the following three directories should be created beforehead
         // std::string addFriendDiPath = ".\\sis_ws\\data_repo\\addFrds";
         // mkdir(addFriendDiPath.c_str());
-        // std::string FrdDiPath = ".\\sis_ws\\data_repo\\frd" ;
+        // std::string FrdDiPath = ".\\sis_ws\\data_repo\\frd";
         // mkdir(FrdDiPath.c_str());
         // std::string transDiPath = ".\\sis_ws\\data_repo\\student\\transcript";
         // mkdir(transDiPath.c_str());
