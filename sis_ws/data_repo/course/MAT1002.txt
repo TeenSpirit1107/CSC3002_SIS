@@ -2,4 +2,5 @@ Calculus II
 9200002
 MAT1001
 2 1 2
+3
 Multivariable Calculus.

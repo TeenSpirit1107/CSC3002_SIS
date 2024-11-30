@@ -108,6 +108,7 @@ Course::Course(short class_Code) {
         f>>x;
         grade[x-1] = true;
     }
+    f >> unit;
     f.close();
 }
 

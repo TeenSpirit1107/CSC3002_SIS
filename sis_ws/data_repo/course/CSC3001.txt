@@ -2,4 +2,5 @@ Discrete Mathematics
 9100002
 None
 3 2 3 4
+3
 Logics, sets, number theory, graphs, counting.

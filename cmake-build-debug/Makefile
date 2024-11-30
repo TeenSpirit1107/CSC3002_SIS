@@ -200,30 +200,6 @@ sis_ws/src/registry.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.s
 .PHONY : sis_ws/src/registry.cpp.s
 
-sis_ws/src/registryTest.obj: sis_ws/src/registryTest.cpp.obj
-.PHONY : sis_ws/src/registryTest.obj
-
-# target to build an object file
-sis_ws/src/registryTest.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registryTest.cpp.obj
-.PHONY : sis_ws/src/registryTest.cpp.obj
-
-sis_ws/src/registryTest.i: sis_ws/src/registryTest.cpp.i
-.PHONY : sis_ws/src/registryTest.i
-
-# target to preprocess a source file
-sis_ws/src/registryTest.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registryTest.cpp.i
-.PHONY : sis_ws/src/registryTest.cpp.i
-
-sis_ws/src/registryTest.s: sis_ws/src/registryTest.cpp.s
-.PHONY : sis_ws/src/registryTest.s
-
-# target to generate assembly for a file
-sis_ws/src/registryTest.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registryTest.cpp.s
-.PHONY : sis_ws/src/registryTest.cpp.s
-
 sis_ws/src/staff.obj: sis_ws/src/staff.cpp.obj
 .PHONY : sis_ws/src/staff.obj
 
@@ -247,6 +223,30 @@ sis_ws/src/staff.s: sis_ws/src/staff.cpp.s
 sis_ws/src/staff.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.s
 .PHONY : sis_ws/src/staff.cpp.s
+
+sis_ws/src/staffTest.obj: sis_ws/src/staffTest.cpp.obj
+.PHONY : sis_ws/src/staffTest.obj
+
+# target to build an object file
+sis_ws/src/staffTest.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.obj
+.PHONY : sis_ws/src/staffTest.cpp.obj
+
+sis_ws/src/staffTest.i: sis_ws/src/staffTest.cpp.i
+.PHONY : sis_ws/src/staffTest.i
+
+# target to preprocess a source file
+sis_ws/src/staffTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.i
+.PHONY : sis_ws/src/staffTest.cpp.i
+
+sis_ws/src/staffTest.s: sis_ws/src/staffTest.cpp.s
+.PHONY : sis_ws/src/staffTest.s
+
+# target to generate assembly for a file
+sis_ws/src/staffTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CSC3002_SIS.dir\build.make CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.s
+.PHONY : sis_ws/src/staffTest.cpp.s
 
 sis_ws/src/student.obj: sis_ws/src/student.cpp.obj
 .PHONY : sis_ws/src/student.obj
@@ -290,12 +290,12 @@ help:
 	@echo ... sis_ws/src/registry.obj
 	@echo ... sis_ws/src/registry.i
 	@echo ... sis_ws/src/registry.s
-	@echo ... sis_ws/src/registryTest.obj
-	@echo ... sis_ws/src/registryTest.i
-	@echo ... sis_ws/src/registryTest.s
 	@echo ... sis_ws/src/staff.obj
 	@echo ... sis_ws/src/staff.i
 	@echo ... sis_ws/src/staff.s
+	@echo ... sis_ws/src/staffTest.obj
+	@echo ... sis_ws/src/staffTest.i
+	@echo ... sis_ws/src/staffTest.s
 	@echo ... sis_ws/src/student.obj
 	@echo ... sis_ws/src/student.i
 	@echo ... sis_ws/src/student.s

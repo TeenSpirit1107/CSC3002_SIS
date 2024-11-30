@@ -2,4 +2,5 @@ Introduction to statistics
 0000001
 MAT1002&MAT2041
 4 1 2 3 4 
+3
 It's a fundamental course that introduces statistics. 

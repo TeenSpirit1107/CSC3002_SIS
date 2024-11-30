@@ -376,6 +376,171 @@ void Staff::profile_add_class( short class_code) {
         file << l << std::endl;
     }
 }
+struct node1 {
+    string filename;
+    node1 *nxt;
+    node1 *prv;
+    explicit node1(string s);
+};
+
+node1::node1(string s): filename(std::move(s)), nxt(nullptr), prv(nullptr) {}
+
+void insert_at_tail(node1 *head, string filename) {
+    node1 *new_node = new node1(std::move(filename));
+    node1 *p = head;
+    while (p->nxt != head) p = p->nxt;
+    new_node->nxt = p->nxt;
+    new_node->prv = p;
+    head->prv = new_node;
+    p->nxt = new_node;
+}
+void print_list(node1 *head) {
+    if (head == nullptr) return;
+    node1 *p = head;
+    bool flag = true;
+    while(p != head or flag) {
+        printf("%s\n", p->filename.c_str());
+        p = p->nxt;
+        flag = false;
+    }
+}
+void print_list_rev(node1 *head) {
+    if (head == nullptr) return;
+    node1 *p = head->prv;
+    bool flag = true;
+    while(p != head->prv or flag) {
+        printf("%s\n", p->filename.c_str());
+        p = p->prv;
+        flag = false;
+    }
+}
+void list_delete(node1 *&head, node1 *p) {
+    if(p == head) head = head->nxt;
+    p->nxt->prv = p->prv;
+    p->prv->nxt = p->nxt;
+    delete p;
+}
+
+void normal_addition_next_process_prof(string fn, string stuCode, short classCode, string description, string subpath, bool passed) {
+    printf("normal addition next process\n");
+    string reason = "";
+    if(!passed) {
+        cin >> reason;
+    }
+    string work_dir = ".\\sis_ws\\data_repo\\"+subpath+fn;
+    FILE *file = fopen(work_dir.c_str(), "w");
+    if(!file) {
+        printf("File not found\n");
+    } else {
+        fprintf(file, "%s\n", stuCode.c_str());
+        fprintf(file, "%04d\n", classCode);
+        fprintf(file, "%s\n", description.c_str());
+        fprintf(file, "%d\n", passed);
+        if(!passed) fprintf(file, "%s\n", reason.c_str());
+        fclose(file);
+    }
+    work_dir = ".\\sis_ws\\data_repo\\"+subpath+"\\staff2reg.txt";
+    ifstream infile(work_dir);
+    int n;
+    string filenames[1000];
+    if(infile.is_open()) {
+        infile >> n;
+        string tmp;
+        getline(infile, tmp);
+        for(int i = 0; i < n; i++) getline(infile, filenames[i]);
+        infile.close();
+    } else {
+        n = 0;
+    }
+    file = fopen(work_dir.c_str(), "w");
+    fprintf(file, "%d\n", n+1);
+    for(int i = 0; i < n; i++) {
+        fprintf(file, "%s\n", filenames[i].c_str());
+    }
+    fprintf(file, "%s\n", fn.c_str());
+    fclose(file);
+}
+void Staff::Add_and_Drop(bool addition)
+{
+    string subpath = "";
+    if(addition) subpath = "course_add\\";
+    else subpath = "course_drop\\";
+    cout << "Dealing Student Enrollments" << endl;
+    string work_dir = ".\\sis_ws\\data_repo\\"+subpath;
+    string index_dir = work_dir + "stu2staff.txt";
+    FILE *file = fopen(index_dir.c_str(), "r");
+    if (!file) {
+        cout << "could not open file " << index_dir << endl;
+    } else {
+        int n;
+        fscanf(file, "%d", &n);
+        printf("%d to be claim\n", n);
+        char fn[20];
+        fscanf(file, "%s", fn);
+        node1 *head = new node1(fn);
+        head->prv = head; head->nxt = head;
+        for (int i = 1; i < n; i++) {
+            fscanf(file, "%s", fn);
+            insert_at_tail(head, fn);
+        }
+        printf("normal addition list\n");
+        print_list(head);
+        node1 *p = head;
+        while(n) {
+            string fn = p->filename;
+            printf("student %s\n", fn.c_str());
+            string stu_path = work_dir + fn;
+            ifstream class_file(stu_path);
+            if (!class_file.is_open()) {
+                cout << "could not open file " << stu_path << endl;
+            } else {
+                string stuCode, description;
+                getline(class_file, stuCode);
+                string tmp;
+                getline(class_file, tmp);
+                short classCode = static_cast<short>(stoi(tmp));
+                getline(class_file, description);
+                class_file.close();
+                printf("student code: %s\n", stuCode.c_str());
+                printf("student description: %s\n", description.c_str());
+                // get transcript
+                Course C = Course(classCode);
+                printf("%s: %s\n", C.courseCode.c_str(), C.courseName.c_str());
+                printf("Instructor: %s\n", C.instructor.c_str());
+                printf("Capacity: %d\n", C.capacity);
+                printf("Unit: %d\n", C.unit);
+                char c;
+                printf("judgement: (P/F/S/B)\n"); // pass fail skip break
+                scanf("%c", &c);
+                while (c != 'P' && c != 'F' && c != 'S' && c != 'B') scanf("%c", &c);
+                if (c == 'P') normal_addition_next_process_prof(fn, stuCode, classCode, description, subpath, true);
+                else if (c == 'F') normal_addition_next_process_prof(fn, stuCode, classCode, description, subpath, false);
+                else if (c == 'S') {
+                    p = p->nxt;
+                    continue;
+                }
+                else if(c == 'B') break;
+                printf("%s claimed successfully\n", p->filename.c_str());
+                p = p->nxt;
+                list_delete(head, p->prv);
+                n--;
+            }
+        }
+        fclose(file);
+        FILE *file = fopen(index_dir.c_str(), "w");
+        if (!file) {
+            cout << "could not open file " << index_dir << endl;
+        } else {
+            fprintf(file, "%d\n", n);
+            p = head;
+            for (int i = 0; i < n; i++, p = p->nxt) {
+                fprintf(file, "%s\n", p->filename.c_str());
+            }
+            fclose(file);
+        }
+        printf("all claims are done\n");
+    }
+}
 
 Staff::~Staff() {
     //[todo] finish destructor

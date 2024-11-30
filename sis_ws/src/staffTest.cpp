@@ -366,8 +366,9 @@ int main() {
     // test_student_find_profile();
      // test_schedule();
 
-    test_add_class_succ();
-
+    //test_add_class_succ();
+    shared_ptr<Staff> bxw = Staff::find_profile("9100002");
+    bxw->Add_and_Drop(true);
 
     // TODO: course.cpp reading problem?
 

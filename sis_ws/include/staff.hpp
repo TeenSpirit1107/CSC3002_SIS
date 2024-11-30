@@ -53,6 +53,7 @@ public:
     int claim_class(const std::string & course_code,short class_code, vector<int> input_lec, vector<int> input_tut);
     void profile_add_class(short class_code);
     void claim_class_succ(const short class_code);
+    void Add_and_Drop(bool additions);
 };
 
 # endif
