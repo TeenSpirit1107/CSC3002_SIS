@@ -31,15 +31,15 @@ public:
     int addToShoppingCart(std::string class_number);
     int addClass(int cls_number,std::string add_reason);
     int dropClass(int cls_number,std::string add_reason);
+    int updateAdd();
+    int updateDrop();
+    int checkAdd(const string &class_code);
+    int checkDrop(const string &class_code);
     vector<vector<string>> viewTranscript();
     vector<short> get_course(std::string &inputID);
 
     int get_ProcessOCTE();
     int fill_octe(string classCode);
-
-    int updateAdd();
-    int updateDrop();
-
 
     //辅助函数
     string readTxt(std::string filename, int line);//返回指定行
@@ -86,7 +86,8 @@ public:
     // [todo] shall this be made private, but can be visited by "friend" Classes?
 
     static shared_ptr<Student> find_profile(const std::string &inputID);
-    
+
+
     // Feature: homework
     vector<double> get_hw_scores (const short class_code);
     void set_hw_scores (const short class_code, const int hw_num, double new_score);

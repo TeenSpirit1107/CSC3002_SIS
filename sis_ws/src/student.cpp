@@ -7,7 +7,7 @@
 #include <ctime>
 #include<memory>
 #include<direct.h>
-#include <iomanip>
+ #include <iomanip>
 #include<unordered_set>
 #include<set>
  #include<vector>
@@ -324,24 +324,7 @@ int Student::acceptFrd() {
                 //std::cout << "已拒绝 " << friendID << " 的好友申请。" << std::endl;
             }
             return 1;
-            // } else {
-            //     //std::cout << "输入无效，已保留" << friendID << " 的好友申请。" << std::endl;
-            //     remainingFriends.push_back(friendID);
-            //     return 3;
-            // }
-        }
 
-        // 将未处理的好友申请写回文件
-        std::ofstream outFile(addFrdFilePath, std::ios::trunc);  // 覆盖原文件
-        if (outFile.is_open()) {
-            for (const std::string &friendID : remainingFriends) {
-                outFile << friendID << std::endl;
-            }
-            outFile.close();
-            return 1;
-        } else {
-            //std::cout << "错误：无法更新好友申请文件。" << std::endl;
-            return 4;
         }
     }
 }
@@ -443,12 +426,6 @@ int Student::addToShoppingCart(std::string class_number) {
         return 0;
     }
 }
-
-//函数--检查先修与时间后向教务处提交选课(艺萌在做)
-//思路：shoppingCart班级代码-》课程代码-》获取先修课（先修课=enrolled=.\data_repo\student\(ID.txt)）
-//shoppingCart班级代码-》上课时间
-//打开文件夹看先修课，7*7的表格检查时间（注册时0改1）返回成功(加入enrolled)/失败
-//这个函数正在写，改完search函数就接着写这个
 
 /*
   **辅助函数：读取txt指定行数据存入string
@@ -991,8 +968,8 @@ int Student::addClass(int cls_number,std::string add_reason) {
                     }
                 }
 
-                string path = ".\\sis_ws\\data_repo\\course_add\\"+ this -> userID ;
-                mkdir(path.c_str());
+                // string path = ".\\sis_ws\\data_repo\\course_add\\"+ this -> userID ;
+                // mkdir(path.c_str());
 
                 time_t curtime;
                 time(&curtime);
@@ -1015,12 +992,18 @@ int Student::addClass(int cls_number,std::string add_reason) {
                     clsAdFile << add_reason << std::endl;
                     clsAdFile.close();
 
-                    std::string toDoPath = ".\\sis_ws\\data_repo\\course_add\\staff2reg.txt";
-                    std::ofstream tdFile(toDoPath);
+                    std::string toDoPath = ".\\sis_ws\\data_repo\\course_add\\stu2staff.txt";
+                    std::ifstream tdFile(toDoPath);
                     if (!tdFile.is_open()) {
                         return 6;//6:已写入加课文件，但无法写入toDo文件
                     }else {
-                        tdFile <<  addCrsPath << std::endl;
+                        tdFile.close();
+                        fstream f;
+                        //追加写入,在原来基础上加了ios::app
+                        f.open(toDoPath,ios::out|ios::app);
+                        //输入你想写入的内容
+                        f<< addCrsPath<<endl;
+                        f.close();
                         return 1;//1:加课申请发送成功
                     }
                 }
@@ -1070,8 +1053,9 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
                 }
                 for (int j = 0; j < clsNum; j++) {
                     if( cls_number == clsPIDs[j]) {
-                        string path = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID ;
-                        mkdir(path.c_str());
+                        // string path = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID ;
+                        // mkdir(path.c_str());
+
                         time_t curtime;
                         time(&curtime);
                         tm *nowtime = localtime(&curtime);
@@ -1093,11 +1077,17 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
                             clsAdFile << drop_reason << std::endl;
                             clsAdFile.close();
                             std::string toDoPath = ".\\sis_ws\\data_repo\\course_drop\\stu2staff.txt";
-                            std::ofstream tdFile(toDoPath);
+                            std::ifstream tdFile(toDoPath);
                             if (!tdFile.is_open()) {
                                 return 6;//6:已写入加课文件，但无法写入toDo文件
                             }else {
-                                tdFile <<  dropCrsPath << std::endl;
+                                tdFile.close();
+                                fstream f;
+                                //追加写入,在原来基础上加了ios::app
+                                f.open(toDoPath,ios::out|ios::app);
+                                //输入你想写入的内容
+                                f<< dropCrsPath<<endl;
+                                f.close();
                                 return 1;//1:加课申请发送成功
                             }
                         }
@@ -1111,7 +1101,7 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
     }
 }
 
-//查看教务处审批加退课update
+//根据教务处审批加退课update
 //返回值：0没有需要更新的加退课审批结果
 //1:加退课审批结果更新成功
 //2：无法打开加退课审批结果文件
@@ -1193,7 +1183,7 @@ int Student::updateAdd() {
     }
 }
 
-//查看教务处审批加退课update
+//根据教务处审批加退课update
 //返回值：0没有需要更新的加退课审批结果
 //1:加退课审批结果更新成功
 //2：无法打开加退课审批结果文件
@@ -1212,9 +1202,9 @@ int Student::updateDrop() {
         //cout<< "size of vector: " <<TextToRd.size() <<endl;
 
         //加入数组后删除文件，然后新建一个同名空文件
-        // remove(upDpPath.c_str());
-        // std::ofstream ipFile(upDpPath);
-        // ipFile.close();
+         remove(upDpPath.c_str());
+         std::ofstream ipFile(upDpPath);
+         ipFile.close();
 
         //待阅读列表不为空
         if (TextToRd.size() > 0) {
@@ -1312,6 +1302,30 @@ int Student::updateDrop() {
     }
 }
 
+//查看加课申请
+/**
+ * @brief return the state of a class add application
+ *
+ * This function reads a classCode input for a course add application and return the result
+ * @param class_code The code of the class.
+ * @return 1 for successfully getting the result, 0 for unable to open the object file
+ */
+int Student::checkAdd(const string &class_code) {
+    return 0;
+}
+
+//查看退课申请
+/**
+ * @brief return the state of a class drop application
+ *
+ * This function reads a classCode input for a course drop application and return the result
+ * @param class_code The code of the class.
+ * @return 1 for successfully getting the result, 0 for unable to open the object file
+ */
+int Student::checkDrop(const string &class_code) {
+    return 0;
+}
+
 //辅助函数：char转string
 string Student::CharToStr(char * contentChar)
 {
@@ -1386,10 +1400,6 @@ void Student::ModifyLineData(char* fileName, int lineNum, char* lineData)
     out.close();
 }
 
-
-//函数--查看公告(ui已融合)
-
-//函数--返回先修课列表（已删除，艺萌写的更简洁）
 
 //函数--查看成绩
 vector<vector<string>> Student::viewTranscript() {
