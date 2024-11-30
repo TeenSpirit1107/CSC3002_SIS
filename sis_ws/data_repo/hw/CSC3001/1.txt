@@ -1,0 +1,26 @@
+Set
+4
+2
+1. What is the definition of a set in set theory?
+A. A collection of ordered elements
+B. A collection of unique elements
+C. A collection of repeated elements
+D. A collection of sorted elements
+2
+2. Which of the following is a subset?
+A. A set containing all elements of another set
+B. A set containing some elements of another set
+C. A set containing no elements of another set
+D. A set containing elements not in another set
+2
+3. What is the union of two sets?
+A. A set containing elements common to both sets
+B. A set containing elements in either set
+C. A set containing elements in the first set only
+D. A set containing elements in the second set only
+1
+4. What is the intersection of two sets?
+A. A set containing elements common to both sets
+B. A set containing elements in either set
+C. A set containing elements in the first set only
+D. A set containing elements in the second set only

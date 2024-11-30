@@ -7,7 +7,7 @@
 #include <ctime>
 #include<memory>
 #include<direct.h>
- #include <iomanip>
+#include <iomanip>
 #include<unordered_set>
 #include<set>
  #include<vector>
@@ -1071,7 +1071,6 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
                     if( cls_number == clsPIDs[j]) {
                         string path = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID ;
                         mkdir(path.c_str());
-
                         time_t curtime;
                         time(&curtime);
                         tm *nowtime = localtime(&curtime);

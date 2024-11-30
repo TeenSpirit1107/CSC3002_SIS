@@ -108,6 +108,8 @@ Course::Course(short class_Code) {
         f>>x;
         grade[x-1] = true;
     }
+    f>>capacity;
+    f>>unit;
     f.close();
 }
 
