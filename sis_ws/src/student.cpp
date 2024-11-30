@@ -21,6 +21,7 @@
 const std::string Student::student_path = ".\\sis_ws\\data_repo\\student\\";
 const std::string Student::stuFrd_path= ".\\sis_ws\\data_repo\\addfrds\\";
 const std::string Student::course_path= ".\\sis_ws\\data_repo\\course\\";
+
 //Student::Student(int inputID, string inputName, char inputType, string inputPass):
 //Client(inputID, inputName, inputType, inputPass)
 //{

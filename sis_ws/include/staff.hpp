@@ -56,6 +56,10 @@ public:
 
     // Feature 4: Homework
     void design_hw(const std::string & course_code, int hw_num, const std::string & hw_topic,const std::string (&question)[4],const int (&solution)[4]);
+
+    // Feature 5: ad
+    void Add_and_Drop(bool additions);
+
 };
 
 # endif

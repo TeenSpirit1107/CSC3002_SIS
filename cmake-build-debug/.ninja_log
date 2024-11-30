@@ -9,3 +9,12 @@
 5	40	7543350702507989	clean	54a06fd83fad62cf
 99	5299	7545767409206875	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj	8a4e8f7c32057ab1
 9	1861	7545779198197556	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.obj	636c84a2955b61e4
+117	2751	7546347324563479	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/course.cpp.obj	2ea7f57e3e5fe735
+253	2800	7546347325912836	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staffTest.cpp.obj	636c84a2955b61e4
+9	2804	7546347323478005	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/client.cpp.obj	1e6aaa64b2dc8994
+147	3188	7546347324859884	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.obj	3617e4ba338126db
+186	3701	7546347325245855	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/student.cpp.obj	df816f9d1ffb5bdc
+223	4977	7546347325623485	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/registry.cpp.obj	8a4e8f7c32057ab1
+4977	6095	7546347373160590	CSC3002_SIS.exe	d99ce0bd3be44d27
+8	2089	7546348728713430	CMakeFiles/CSC3002_SIS.dir/sis_ws/src/staff.cpp.obj	3617e4ba338126db
+2090	3044	7546348749540861	CSC3002_SIS.exe	d99ce0bd3be44d27
