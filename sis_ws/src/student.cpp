@@ -443,12 +443,6 @@ int Student::addToShoppingCart(std::string class_number) {
     }
 }
 
-//函数--检查先修与时间后向教务处提交选课(艺萌在做)
-//思路：shoppingCart班级代码-》课程代码-》获取先修课（先修课=enrolled=.\data_repo\student\(ID.txt)）
-//shoppingCart班级代码-》上课时间
-//打开文件夹看先修课，7*7的表格检查时间（注册时0改1）返回成功(加入enrolled)/失败
-//这个函数正在写，改完search函数就接着写这个
-
 /*
   **辅助函数：读取txt指定行数据存入string
   *///这个函数的line从0开始计数
@@ -990,8 +984,8 @@ int Student::addClass(int cls_number,std::string add_reason) {
                     }
                 }
 
-                string path = ".\\sis_ws\\data_repo\\course_add\\"+ this -> userID ;
-                mkdir(path.c_str());
+                // string path = ".\\sis_ws\\data_repo\\course_add\\"+ this -> userID ;
+                // mkdir(path.c_str());
 
                 time_t curtime;
                 time(&curtime);
@@ -1069,8 +1063,8 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
                 }
                 for (int j = 0; j < clsNum; j++) {
                     if( cls_number == clsPIDs[j]) {
-                        string path = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID ;
-                        mkdir(path.c_str());
+                        // string path = ".\\sis_ws\\data_repo\\course_drop\\"+ this -> userID ;
+                        // mkdir(path.c_str());
 
                         time_t curtime;
                         time(&curtime);
@@ -1111,7 +1105,7 @@ int Student::dropClass(int cls_number,std::string drop_reason) {
     }
 }
 
-//查看教务处审批加退课update
+//根据教务处审批加退课update
 //返回值：0没有需要更新的加退课审批结果
 //1:加退课审批结果更新成功
 //2：无法打开加退课审批结果文件
@@ -1193,7 +1187,7 @@ int Student::updateAdd() {
     }
 }
 
-//查看教务处审批加退课update
+//根据教务处审批加退课update
 //返回值：0没有需要更新的加退课审批结果
 //1:加退课审批结果更新成功
 //2：无法打开加退课审批结果文件
@@ -1312,6 +1306,30 @@ int Student::updateDrop() {
     }
 }
 
+//查看加课申请
+/**
+ * @brief return the state of a class add application
+ *
+ * This function reads a classCode input for a course add application and return the result
+ * @param class_code The code of the class.
+ * @return 1 for successfully getting the result, 0 for unable to open the object file
+ */
+// int Student::checkAdd(const string &class_code) {
+//
+// }
+
+//查看退课申请
+/**
+ * @brief return the state of a class drop application
+ *
+ * This function reads a classCode input for a course drop application and return the result
+ * @param class_code The code of the class.
+ * @return 1 for successfully getting the result, 0 for unable to open the object file
+ */
+// int Student::checkDrop(const string &class_code) {
+//
+// }
+
 //辅助函数：char转string
 string Student::CharToStr(char * contentChar)
 {
@@ -1386,10 +1404,6 @@ void Student::ModifyLineData(char* fileName, int lineNum, char* lineData)
     out.close();
 }
 
-
-//函数--查看公告(ui已融合)
-
-//函数--返回先修课列表（已删除，艺萌写的更简洁）
 
 //函数--查看成绩
 vector<vector<string>> Student::viewTranscript() {
