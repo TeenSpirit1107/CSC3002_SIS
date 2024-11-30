@@ -63,6 +63,7 @@ public:
     int addFrd(const std::string &friendID);
     int checkFrd();
     int acceptFrd();
+    bool isFrd(const string &inputID);
 
 
     // The path of the object's profile description file in data_repo.
