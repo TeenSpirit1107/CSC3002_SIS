@@ -991,7 +991,7 @@ int Student::addClass(int cls_number,std::string add_reason) {
                     clsAdFile << add_reason << std::endl;
                     clsAdFile.close();
 
-                    std::string toDoPath = ".\\sis_ws\\data_repo\\course_add\\staff2reg.txt";
+                    std::string toDoPath = ".\\sis_ws\\data_repo\\course_add\\stu2staff.txt";
                     std::ifstream tdFile(toDoPath);
                     if (!tdFile.is_open()) {
                         return 6;//6:已写入加课文件，但无法写入toDo文件
