@@ -1,0 +1,26 @@
+Number Theory
+4
+4
+1. Which of the following is a prime number?
+A. 4
+B. 6
+C. 9
+D. 11
+3
+2. What is the greatest common divisor of 24 and 36?
+A. 4
+B. 6
+C. 12
+D. 18
+3
+3. Which of the following numbers is a perfect square?
+A. 8
+B. 15
+C. 16
+D. 20
+3
+4. What is the least common multiple of 5 and 7?
+A. 12
+B. 30
+C. 35
+D. 42

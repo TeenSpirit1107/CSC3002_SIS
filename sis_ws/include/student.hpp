@@ -86,8 +86,7 @@ public:
     // [todo] shall this be made private, but can be visited by "friend" Classes?
 
     static shared_ptr<Student> find_profile(const std::string &inputID);
-
-
+    
     // Feature: homework
     vector<double> get_hw_scores (const short class_code);
     void set_hw_scores (const short class_code, const int hw_num, double new_score);

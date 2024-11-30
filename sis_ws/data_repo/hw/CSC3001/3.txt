@@ -1,0 +1,25 @@
+Pigeonhole Principle
+4
+1. What is the Pigeonhole Principle?
+A. If you have more pigeons than pigeonholes, at least one pigeonhole must contain more than one pigeon.
+B. If you have more pigeonholes than pigeons, at least one pigeonhole must be empty.
+C. If you have an equal number of pigeons and pigeonholes, each pigeonhole will contain exactly one pigeon.
+D. If you have fewer pigeons than pigeonholes, each pigeonhole will contain at least one pigeon.
+2
+2. Which of the following is an application of the Pigeonhole Principle?
+A. Sorting a list of numbers
+B. Proving that in any group of 13 people, at least two people will have birthdays in the same month
+C. Calculating the area of a triangle
+D. Finding the greatest common divisor of two numbers
+2
+3. How many socks must you draw from a drawer containing 10 black socks and 10 white socks to ensure you have a matching pair?
+A. 2
+B. 3
+C. 4
+D. 5
+3
+4. If you distribute 15 apples among 4 baskets, what is the minimum number of apples in the fullest basket according to the Pigeonhole Principle?
+A. 3
+B. 4
+C. 5
+D. 6
