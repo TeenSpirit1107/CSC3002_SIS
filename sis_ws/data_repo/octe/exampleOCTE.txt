@@ -1,0 +1,9 @@
+Following are 5 rating question for this course.
+Please input 5 integer(1 - 10) to answer these questions, Separate your answers with spaces.
+eg. 10 9 9 9 9
+1.professor's passion in class
+2.professor's politeness in class
+3.professor's professionalism in class
+4.teaching material quality
+5.homework quality of this course
+Please input your answer:
